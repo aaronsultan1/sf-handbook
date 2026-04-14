@@ -109,6 +109,91 @@
     li { font-size: 14.5px; line-height: 1.7; color: #374151; }
     li + li { margin-top: 4px; }
 
+    /* SEARCH BAR */
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .search-inner {
+      position: relative;
+      flex: 1;
+      max-width: 540px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 15px;
+      pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,0.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    #search-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: none;
+      white-space: nowrap;
+    }
+    #search-clear {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 18px;
+      line-height: 1;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    #no-results .no-results-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh {
+      background: #fff3b0;
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+    .search-hidden { display: none !important; }
+
     /* INTEGRATION CARDS */
     .integration-card {
       background: var(--card-bg);
@@ -188,7 +273,25 @@
       <p class="subtitle">Salesforce doesn't work alone. MMA connects it to a dozen external platforms for email marketing, data enrichment, outreach sequencing, and more. This page explains what each integration does and what it touches in Salesforce.</p>
     </div>
 
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search integrations, field names, descriptions…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear search (Esc)">✕</button>
+      </div>
+    </div>
+
     <div class="content">
+
+      <div id="no-results">
+        <div class="no-results-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a field name, tool name, or keyword</div>
+      </div>
 
       <!-- OVERVIEW -->
       <h2 class="section-heading">Integration Ecosystem Overview</h2>
@@ -585,5 +688,144 @@
     MMA Salesforce Handbook — Integrations &amp; APIs — Last updated April 2026
   </div>
 
+  <script>
+  (function () {
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+
+    // Searchable block types — each is shown/hidden as a unit
+    var cards       = Array.from(document.querySelectorAll('.integration-card'));
+    var overviewItems = Array.from(document.querySelectorAll('.overview-item'));
+    var tableRows   = Array.from(document.querySelectorAll('tbody tr'));
+    var allBlocks   = cards.concat(overviewItems).concat(tableRows);
+
+    // Section headings + their associated wrappers for smart hiding
+    var sectionHeadings = Array.from(document.querySelectorAll('h2.section-heading'));
+
+    // Snapshot original HTML so we can restore before re-highlighting
+    var origHTML = new Map();
+    allBlocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    // Escape regex special chars in the query
+    function escapeRe(s) {
+      return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Wrap matching text in <mark> — only touches text between tags, not tag attributes
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, text) {
+        return '>' + text.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore all originals first (removes previous highlights)
+      allBlocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+
+      // Show section headings
+      sectionHeadings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      document.querySelector('.overview-grid') && document.querySelector('.overview-grid').classList.remove('search-hidden');
+      noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escapeRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      // Filter + highlight integration cards
+      cards.forEach(function (card) {
+        if (card.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          card.innerHTML = highlight(origHTML.get(card), re);
+          total++;
+        } else {
+          card.classList.add('search-hidden');
+        }
+      });
+
+      // Filter + highlight overview items
+      var overviewHits = 0;
+      overviewItems.forEach(function (item) {
+        if (item.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          item.innerHTML = highlight(origHTML.get(item), re);
+          overviewHits++;
+        } else {
+          item.classList.add('search-hidden');
+        }
+      });
+      var grid = document.querySelector('.overview-grid');
+      if (grid) grid.classList.toggle('search-hidden', overviewHits === 0);
+      total += overviewHits;
+
+      // Filter + highlight table rows
+      var tableHits = 0;
+      tableRows.forEach(function (row) {
+        if (row.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          row.innerHTML = highlight(origHTML.get(row), re);
+          tableHits++;
+        } else {
+          row.classList.add('search-hidden');
+        }
+      });
+      total += tableHits;
+
+      // Smart-hide section headings whose entire following section is empty
+      // (walk siblings until next h2 and check if anything visible remains)
+      sectionHeadings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var hasVisible = false;
+        while (el && el.tagName !== 'H2') {
+          if (!el.classList.contains('search-hidden')) {
+            // Check if it's not an empty overview-grid
+            if (el.classList.contains('overview-grid')) {
+              var visItems = el.querySelectorAll('.overview-item:not(.search-hidden)');
+              if (visItems.length > 0) hasVisible = true;
+            } else {
+              hasVisible = true;
+            }
+          }
+          el = el.nextElementSibling;
+        }
+        if (!hasVisible) h.classList.add('search-hidden');
+      });
+
+      // Update UI
+      countEl.textContent = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0) {
+        noResultsQ.textContent = '"' + q + '"';
+        noResults.style.display = 'block';
+      }
+    }
+
+    // Debounced input handler
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+
+    // ESC or clear button resets
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () { input.value = ''; applySearch(''); input.focus(); });
+  })();
+  </script>
 </body>
 </html>
