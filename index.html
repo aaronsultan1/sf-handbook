@@ -192,6 +192,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 <a href="#" onclick="showSection('governance');return false;" id="nav-governance"><span class="nav-icon">🛡️</span> Governance</a>
 <a href="#" onclick="showSection('integrations');return false;" id="nav-integrations"><span class="nav-icon">🔌</span> Integrations</a>
 <a href="#" onclick="showSection('pardot');return false;" id="nav-pardot"><span class="nav-icon">📧</span> Pardot / Email</a>
+<a href="#" onclick="showSection('reports');return false;" id="nav-reports"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
 
   </div>
   <div class="sidebar-footer">Last updated: April 2026</div>
@@ -270,6 +271,12 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 <div class="card-title">Pardot / Email</div>
 <div class="card-desc">How to build and send emails, manage lists, set up form handlers, and automation — the platform guide for Jason and Dan.</div>
 <div class="card-arrow">Read guide →</div>
+</a>
+<a class="section-card" href="#" onclick="showSection('reports');return false;">
+<div class="card-icon">📊</div>
+<div class="card-title">Reports &amp; Dashboards</div>
+<div class="card-desc">Key dashboards (Events, Member Engagement, DAMit), board &amp; community rosters, key audience lists, webinar reports, and Shauna's membership baselines — with direct Salesforce links.</div>
+<div class="card-arrow">View reports →</div>
 </a>
 <a class="section-card" href="#" onclick="showSection('quick-ref');return false;">
 <div class="card-icon">⚡</div>
@@ -3640,9 +3647,294 @@ ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</pre>
 <span class="callout-icon">💡</span>
 <div><strong>When in doubt, ask Aaron Sultan for the audience list.</strong> For any send where the audience is derived from Salesforce data (member type, event attendance, campaign history), Aaron can build the list in Python and provide a clean CSV to import into Pardot rather than attempting to replicate the Salesforce filters manually in a dynamic list.</div>
 </div>
+
+<h2 class="section-heading">Naming Conventions</h2>
+<p>Naming consistency is critical — Pardot reports filter by name, so inconsistent naming breaks reporting. MMA uses a standardized naming format across all Pardot assets.</p>
+<div class="card">
+<h3>MMA Standard — Pardot Asset Naming</h3>
+<p style="font-size:14px;color:#374151;margin-bottom:8px;"><strong>Email Format:</strong> <code>YYYYMMDD_Region_Type_Audience_Description</code></p>
+<p style="font-size:14px;color:#374151;margin-bottom:8px;"><strong>Example:</strong> <code>20260415_NA_InviteEmail_MarketerMembers_CCS2026</code></p>
+<p style="font-size:14px;color:#374151;margin-bottom:8px;"><strong>Campaign Format:</strong> <code>Region_Type_Date_Description</code></p>
+<p style="font-size:14px;color:#374151;margin-bottom:0;"><strong>Regions:</strong> <code>NA</code> &nbsp;·&nbsp; <code>EMEA</code> &nbsp;·&nbsp; <code>APAC</code> &nbsp;·&nbsp; <code>Global</code><br><strong>Types:</strong> <code>InviteEmail</code> &nbsp;·&nbsp; <code>Newsletter</code> &nbsp;·&nbsp; <code>Webinar</code> &nbsp;·&nbsp; <code>Reminder</code> &nbsp;·&nbsp; <code>Announcement</code><br>When in doubt, check with your Pardot admin before naming a new asset.</p>
+</div>
+<div class="callout callout-warning">
+<span class="callout-icon">⚠️</span>
+<div><strong>Naming consistency is not optional.</strong> Pardot's built-in reports filter emails and campaigns by name. If you use a different format for one send, it won't appear in the right filter bucket and reporting will break.</div>
+</div>
+
+<h2 class="section-heading">List Scoring, Rule Groups &amp; Segmentation Rules</h2>
+<p>Beyond basic list types, Pardot has a built-in <strong>scoring system</strong> and advanced criteria-building tools. Understanding these makes you a much more precise sender.</p>
+<h3 class="sub-heading">Prospect Scoring</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Action</th><th>Points</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Email click</td><td><strong>+3 pts</strong></td><td>Any link click in a Pardot-sent email</td></tr>
+<tr><td>File / content access</td><td><strong>+3 pts</strong></td><td>Accessing a Pardot-tracked file download or landing page</td></tr>
+<tr><td>Form submission</td><td><strong>+10 pts</strong></td><td>Submitting a Pardot form or form handler</td></tr>
+<tr><td>Email open</td><td>+1 pt</td><td>Less reliable due to image blocking — clicks are a stronger signal</td></tr>
+<tr><td>Page visit</td><td>+1 pt</td><td>Visiting a Pardot-tracked landing page</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout callout-tip">
+<span class="callout-icon">💡</span>
+<div><strong>Scoring categories are scoped to folders.</strong> Pardot's scoring categories let you track engagement per program or initiative (e.g., a "CCS 2026" scoring category that only tallies activity from CCS-related assets). More useful than the global score when evaluating event-specific engagement.</div>
+</div>
+<h3 class="sub-heading">Rule Groups in Dynamic Lists</h3>
+<p>When building dynamic list criteria, Pardot uses <strong>AND logic within a rule group</strong> and <strong>OR logic between groups</strong>. This lets you build "this AND that, OR this other combination" audiences.</p>
+<div class="card">
+<h3>Example: Multi-Condition Dynamic List</h3>
+<p style="font-size:14px;color:#374151;margin-bottom:6px;"><strong>Goal:</strong> All mailable NA Marketer members, OR any board member who is also a Marketer</p>
+<p style="font-size:14px;color:#374151;margin-bottom:4px;"><strong>Rule Group 1 (AND):</strong> Account Status = Active-Parent · Primary Ecosystem = Marketer · Region = NA</p>
+<p style="font-size:14px;color:#374151;margin-bottom:0;"><strong>Rule Group 2 (OR from Group 1, AND internally):</strong> Is Board Member = true · Primary Ecosystem = Marketer</p>
+</div>
+<h3 class="sub-heading">Segmentation Rules</h3>
+<p><strong>Segmentation Rules</strong> run only <em>once</em>. Use them when you want to perform a one-time bulk action on a defined segment — for example, adding all contacts who clicked a specific link in a past email to a new list. Once run, they don't re-evaluate new prospects.</p>
+
+<h2 class="section-heading">Disengaged Contacts &amp; Deliverability</h2>
+<p><strong>Disengaged contacts</strong> — prospects who haven't interacted with an email in 6 or more months — require careful handling to protect MMA's sender reputation and overall email deliverability.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Prospect Status</th><th>Definition</th><th>Risk if Ignored</th></tr></thead>
+<tbody>
+<tr><td><strong>Engaged</strong></td><td>Has opened, clicked, or interacted with a Pardot email within the last 6 months</td><td>Low — safe to email through the normal Pardot environment</td></tr>
+<tr><td><strong>Unengaged</strong></td><td>No email engagement activity for 6+ months</td><td>High — mass-emailing unengaged contacts can tank MMA's sender reputation</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout callout-danger">
+<span class="callout-icon">🚫</span>
+<div><strong>Do not mass-email large lists of unengaged contacts from MMA's main Pardot.</strong> ISPs interpret this as emailing people who don't want your mail — it drives up spam complaints and can cause all future emails, even to engaged contacts, to land in spam or get blocked. Screen your lists for engagement before large sends.</div>
+</div>
+<div class="callout callout-tip">
+<span class="callout-icon">💡</span>
+<div><strong>Audit list engagement before every large send.</strong> Before sending to a list of 5,000+ contacts, check when those prospects last engaged. Pardot's prospect list view can be filtered by last activity date. If a significant portion hasn't engaged in 6+ months, consider a smaller re-engagement send first.</div>
+</div>
+
+<h2 class="section-heading">Email Best Practices</h2>
+<p>Apply these best practices to every MMA email campaign, regardless of audience size.</p>
+<h3 class="sub-heading">Subject Lines</h3>
+<div class="card">
+<ul style="margin-left:16px;font-size:14px;">
+<li><strong>50–65 characters is the sweet spot</strong> — displays fully in most desktop and mobile clients without truncation</li>
+<li><strong>Front-load the key message</strong> — the most important word should come first; mobile clients truncate early</li>
+<li><strong>Personalize when possible</strong> — adding the recipient's name or company can lift open rates</li>
+<li><strong>Avoid spam-trigger words</strong> — FREE, URGENT, CLICK NOW, excessive ALL CAPS, multiple exclamation points (!!!)</li>
+<li><strong>Test before committing</strong> — test one variable at a time (emoji vs. no emoji, question vs. statement)</li>
+</ul>
+</div>
+<h3 class="sub-heading">Pre-Header Text</h3>
+<p>The pre-header is the preview snippet that appears after the subject line in most inboxes. It should <em>complement</em> the subject — not repeat it. Keep it under 100 characters. If left blank, email clients pull the first visible line of the email body (often the unsubscribe link or image alt tag).</p>
+<h3 class="sub-heading">Content Length</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Email Type</th><th>Target Word Count</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><strong>Event invite / cold outreach</strong></td><td>100–150 words</td><td>Get to the point. Busy executives won't scroll through a wall of text.</td></tr>
+<tr><td><strong>Newsletter / member update</strong></td><td>250–300 words</td><td>Subscribers expect more content — keep it scannable with headers and bullets.</td></tr>
+<tr><td><strong>Reminder / follow-up</strong></td><td>50–100 words</td><td>Shorter is better for reminders — just the CTA and key details.</td></tr>
+</tbody>
+</table>
+</div>
+<h3 class="sub-heading">Responsive Design &amp; CTAs</h3>
+<div class="card">
+<ul style="margin-left:16px;font-size:14px;">
+<li><strong>Single-column layout</strong> — multi-column side-by-side designs break on mobile</li>
+<li><strong>Minimum 14px font size</strong> for body text — smaller is hard to read without zooming on a phone</li>
+<li><strong>CTA buttons at least 44px tall</strong> — thumb-friendly on touchscreens</li>
+<li><strong>Images under 200kb</strong> — always include alt text; never send an email that's only images (spam filters block it)</li>
+<li><strong>One primary CTA above the fold</strong> + one secondary CTA in the body</li>
+<li><strong>Action-oriented CTA text:</strong> "Register Now", "View the Report", "Save Your Seat" — not "Click Here"</li>
+</ul>
+</div>
+<h3 class="sub-heading">Segmentation &amp; Personalization</h3>
+<div class="card">
+<ul style="margin-left:16px;font-size:14px;">
+<li><strong>Segment before you send</strong> — a Marketer member and a Solution Provider should receive tailored messaging, not the same generic blast</li>
+<li><strong>Use variable tags:</strong> <code>{{Recipient.FirstName}}</code>, <code>{{Recipient.Company}}</code>, etc.</li>
+<li><strong>Test merge fields before send</strong> — send a test to an account with known values to confirm tags populate correctly</li>
+<li><strong>Set fallback values</strong> — if a contact has no first name, "Hi there" is better than a blank space</li>
+</ul>
+</div>
+<h3 class="sub-heading">Send Timing</h3>
+<div class="card">
+<ul style="margin-left:16px;font-size:14px;">
+<li><strong>Best days:</strong> Tuesday, Wednesday, Thursday</li>
+<li><strong>Best time:</strong> 9–11am Eastern</li>
+<li><strong>Avoid:</strong> Mondays (post-weekend inbox overload), Fridays, major US holidays</li>
+<li><strong>For global sends:</strong> Use Eastern as baseline; EMEA and APAC sends go through their respective BUs with local timing</li>
+</ul>
+</div>
+
+<h2 class="section-heading">Compliance</h2>
+<p>Every MMA email must comply with applicable laws. Three regulations govern our audience: <strong>CAN-SPAM</strong> (US), <strong>GDPR</strong> (EU/UK), and <strong>CASL</strong> (Canada). All require the same core behaviors — easy opt-out, accurate sender identity, physical address, and prompt honoring of unsubscribes.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Requirement</th><th>CAN-SPAM (US)</th><th>GDPR (EU/UK)</th><th>CASL (Canada)</th></tr></thead>
+<tbody>
+<tr><td><strong>Unsubscribe / opt-out</strong></td><td>Required</td><td>Required</td><td>Required</td></tr>
+<tr><td><strong>Honor opt-out within</strong></td><td>10 business days</td><td>As soon as possible</td><td>10 business days</td></tr>
+<tr><td><strong>Physical address required</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+<tr><td><strong>Consent required before sending</strong></td><td>No (opt-out model)</td><td>Yes (explicit opt-in)</td><td>Yes (express or implied)</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout callout-danger">
+<span class="callout-icon">🚫</span>
+<div><strong>The <code>%%unsubscribe%%</code> tag is non-negotiable.</strong> Every email template must include it in the footer. Pardot blocks sends that don't have an unsubscribe link — and omitting it violates all three laws above.</div>
+</div>
+<div class="callout callout-warning">
+<span class="callout-icon">⚠️</span>
+<div><strong>EMEA and APAC sends go through separate Pardot Business Units.</strong> GDPR compliance for EU contacts is managed through the EMEA BU. Never add EU or Canadian contacts to the NA BU for a send without checking with Aaron Sultan first.</div>
+</div>
+
 </div>
 </div>
 </div>
+
+<div id="section-reports" class="section-panel" style="display:none;">
+<div class="main">
+<div class="page-header">
+<div class="breadcrumb"><a href="#" onclick="showSection('home');return false;">Home</a> › Reports &amp; Dashboards</div>
+<h1>Reports <span>&amp; Dashboards</span></h1>
+<p class="subtitle">The key dashboards and reports the US team uses regularly — events tracking, member engagement, board rosters, key audience lists, and webinar data. Includes direct links to everything you need.</p>
+</div>
+<div class="content">
+
+<h2 class="section-heading">Reports vs. Dashboards</h2>
+<p>Salesforce has two distinct tools for viewing data:</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0 24px;">
+<div class="card" style="border-top:4px solid #3b82f6;">
+<h3>📊 Dashboards</h3>
+<p style="font-size:13px;margin-top:8px;">Visual summaries — charts, graphs, and metric tiles. Great for a quick status check. You go to a dashboard to understand <em>the big picture</em> without seeing individual records.</p>
+</div>
+<div class="card" style="border-top:4px solid #22c55e;">
+<h3>📋 Reports</h3>
+<p style="font-size:13px;margin-top:8px;">Tabular data — actual rows of records with filters applied. How you get a real working list: every attendee, every CMO, every board member. Exportable to Excel.</p>
+</div>
+</div>
+<div class="callout callout-tip">
+<span class="callout-icon">💡</span>
+<div><strong>When to use which:</strong> Open a dashboard when you want a status check. Open a report when you need a list to export, send to, or hand off. Most day-to-day work starts with a report.</div>
+</div>
+
+<h2 class="section-heading">Key Dashboards</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px;">
+<div class="card" style="border-top:4px solid #e94560;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Event dashboards</div>
+<h3>2026 Events</h3>
+<p style="font-size:13px;margin-top:8px;">Main events tracking dashboard for the current year — CCS, CATS, roundtables, POSSIBLE. Registration counts, attendance rates, and status breakdowns. Updated continuously as campaign data comes in.</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000009NzYf2AK/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+<div class="card" style="border-top:4px solid #3b82f6;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Membership</div>
+<h3>2026 YTD Member Engagement</h3>
+<p style="font-size:13px;margin-top:8px;">Year-to-date member engagement across NA/Global accounts. Tracks how members engage with MMA programs — events, webinars, board activity. The go-to before renewal conversations.</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01Z2J000000YxZZUA0/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+<div class="card" style="border-top:4px solid #22c55e;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Membership</div>
+<h3>Membership (NA, Global)</h3>
+<p style="font-size:13px;margin-top:8px;">Core membership health dashboard — active member counts, ecosystem breakdown, new members, renewals, at-risk accounts. Start here when someone asks "how many members do we have."</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01Z2J0000011snJUAQ/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+<div class="card" style="border-top:4px solid #f59e0b;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Membership</div>
+<h3>DAMit Dashboard</h3>
+<p style="font-size:13px;margin-top:8px;">Tracks DAMit (Decoding AI for Marketers) certification progress — registrations, completions, certifications issued. Useful during DAMit push campaigns.</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR0000091CQ92AM/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+<div class="card" style="border-top:4px solid #a855f7;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Event dashboards</div>
+<h3>2025 Webinar Registrations</h3>
+<p style="font-size:13px;margin-top:8px;">Webinar-specific dashboard covering all 2025 webinar series. Dan uses this most frequently for webinar program reporting.</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000005Lqgf2AC/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+<div class="card" style="border-top:4px solid #14b8a6;">
+<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Public Reports</div>
+<h3>Total Mailable Contacts</h3>
+<p style="font-size:13px;margin-top:8px;">Dashboard view of MMA's total mailable contact universe by ecosystem, with month-over-month trend. The snapshot tracked monthly via the engagement script.</p>
+<a href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000004DMoP2AW/view" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">Open in Salesforce ↗</a>
+</div>
+</div>
+
+<h2 class="section-heading">Key Report Folders</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Folder</th><th>Owner / Purpose</th><th>Link</th></tr></thead>
+<tbody>
+<tr><td><strong>2026 Key Audience Lists</strong></td><td>Angela Gray's folder — official 2026 mailing audiences: CMO lists, main rep lists, prospect tiers, Key Role pulls by ecosystem. Start here when you need an approved outreach audience.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00lVR00000E8vdlYAB/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open folder ↗</a></td></tr>
+<tr><td><strong>AS Events Dashboard</strong></td><td>Aaron's events reporting folder — 48 reports slicing 2026 events by status, account, title, seed list. Pre-filtered for every status (Attended, Registered, Declined, etc.). Use these instead of filtering manually.</td><td>Search "AS Events Dashboard" in SF</td></tr>
+<tr><td><strong>Webinar Reports</strong></td><td>122 reports for all webinar programs — Decoding AI, MATT Great Debates, State of Brand Marketing. Includes registrant lists, ecosystem breakdowns, UTM tracking, new member identification. Dan's primary folder.</td><td>Search "Webinar Reports" in SF</td></tr>
+<tr><td><strong>Membership Misc (Shauna)</strong></td><td>Shauna Peck's folder — 6 clean baseline reports of Active-Parent members by ecosystem. Good when you need a simple, reliable member list to hand off.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00l500000011a3XAAQ/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open folder ↗</a></td></tr>
+<tr><td><strong>AI Coalition</strong></td><td>ALTT and ALC group reports — active participant rosters by subgroup. Used by Leah and the ALTT team.</td><td>Search "AI Coalition" in SF</td></tr>
+<tr><td><strong>Public Reports</strong></td><td>The main shared folder — 1,000+ reports. Board rosters, mailable contact pulls, MATT/MFC/ALTT lists, DAMit reports, key role lists. Largest folder and most frequently used for one-off pulls.</td><td>Reports tab in SF</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 class="section-heading">Board &amp; Community Rosters</h2>
+<div class="card" style="margin-bottom:16px;">
+<p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">These are the reports to use when you need a current list of board members or think tank participants. Don't build from scratch — use these.</p>
+<div style="display:flex;flex-direction:column;gap:0;">
+<div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+<div style="font-size:20px;width:28px;text-align:center;flex-shrink:0;">📌</div>
+<div>
+<div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px;">Current boards — Jade</div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Public Reports</div>
+<div style="font-size:13px;color:#374151;">The primary board member roster — covers Global Board, NA Board, Media Board, and CDO Board. Named after Jade Bentham who maintains it. This is the one to use. <a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000002sCfl2AE/view" target="_blank" style="color:#1d4ed8;font-weight:600;">Open ↗</a></div>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+<div style="font-size:20px;width:28px;text-align:center;flex-shrink:0;">🤖</div>
+<div>
+<div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px;">Active ALTT participants</div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">AI Coalition</div>
+<div style="font-size:13px;color:#374151;">Current roster of AI Leadership Think Tank (ALTT) members. Used for ALTT invitations, updates, and targeting. <a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OHt000006vdY2MAI/view" target="_blank" style="color:#1d4ed8;font-weight:600;">Open ↗</a></div>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+<div style="font-size:20px;width:28px;text-align:center;flex-shrink:0;">📐</div>
+<div>
+<div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px;">Active MATT Participants</div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Public Reports</div>
+<div style="font-size:13px;color:#374151;">Current MATT (Marketing Attribution Think Tank) member roster. Used for MATT Great Debates invitations and program comms. <a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000005eqbJ2AQ/view" target="_blank" style="color:#1d4ed8;font-weight:600;">Open ↗</a></div>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;">
+<div style="font-size:20px;width:28px;text-align:center;flex-shrink:0;">🔮</div>
+<div>
+<div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px;">MFC and B2B — NAGL</div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Public Reports</div>
+<div style="font-size:13px;color:#374151;">Combined MFC (Marketing Futures Council / MM25) and B2B CMO Council members for NA/Global. Note: these groups are NOT excluded from standard outreach the way regular board members are. <a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000004vWP32AM/view" target="_blank" style="color:#1d4ed8;font-weight:600;">Open ↗</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<h2 class="section-heading">Database Health &amp; Key Audience Reports</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Report</th><th>Folder</th><th>What It's For</th><th>Link</th></tr></thead>
+<tbody>
+<tr><td><strong>Mailable Contacts by Month</strong></td><td>Public Reports</td><td>Monthly trend of total mailable contacts (Marketer vs SP). Historical database size view.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000002eoGH2AY/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open ↗</a></td></tr>
+<tr><td><strong>All NAGL Member Companies</strong></td><td>Public Reports</td><td>Clean account-level list of all active NA/Global member Accounts.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000003hdIw2AI/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open ↗</a></td></tr>
+<tr><td><strong>Member Contacts Synced to RASA</strong></td><td>Public Reports</td><td>Members actively synced to the RASA newsletter platform. Use for newsletter list validation.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR0000057x2I2AQ/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open ↗</a></td></tr>
+<tr><td><strong>Main 2026 Events</strong></td><td>AS Events Dashboard</td><td>Master events report — all 2026 CCS, CATS, roundtable, POSSIBLE sessions combined.</td><td><a href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000005Kgkz2AC/view" target="_blank" style="color:#1d4ed8;font-size:12px;">Open ↗</a></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout callout-warning">
+<span class="callout-icon">⚠️</span>
+<div><strong>Don't use Salesforce reports directly as email lists.</strong> Reports don't apply Pardot-specific suppression (hard bounces, global suppressions, Pardot do-not-email). Always use approved audiences from the 2026 Key Audience Lists folder or have Aaron build the list via Python before importing into Pardot.</div>
+</div>
+
+</div>
+</div>
+</div>
+
 </div><!-- /layout -->
 <script>
 function showSection(id) {
