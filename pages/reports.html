@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports &amp; Dashboards — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .badge-amber  { background: #fef3c7; color: #92400e; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    a.sf-link { display: inline-flex; align-items: center; gap: 6px; color: #1d4ed8; font-weight: 600; font-size: 13px; text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 4px 10px; }
+    a.sf-link:hover { background: #dbeafe; }
+    a.sf-link::after { content: '↗'; font-size: 11px; opacity: 0.7; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .dash-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; border-top: 4px solid var(--border); }
+    .dash-card.blue  { border-top-color: #3b82f6; }
+    .dash-card.green { border-top-color: #22c55e; }
+    .dash-card.red   { border-top-color: #ffa400; }
+    .dash-card.amber { border-top-color: #f59e0b; }
+    .dash-card.purple{ border-top-color: #a855f7; }
+    .dash-card.teal  { border-top-color: #14b8a6; }
+    .dash-card .dash-folder { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .dash-card .dash-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+    .dash-card .dash-desc { font-size: 13px; color: #374151; line-height: 1.6; margin-bottom: 12px; }
+    .report-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .report-row:last-child { border-bottom: none; }
+    .report-row .report-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+    .report-row .report-info { flex: 1; }
+    .report-row .report-info .report-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .report-row .report-info .report-folder { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+    .report-row .report-info .report-desc { font-size: 13px; color: #374151; line-height: 1.5; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html" class="active"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Reports &amp; Dashboards</div>
+      <h1>Reports <span>&amp; Dashboards</span></h1>
+      <p class="subtitle">The key dashboards and reports the US team uses regularly — events tracking, member engagement, board rosters, key audience lists, and webinar data. Includes direct links to everything you need.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">Reports vs. Dashboards — What's the Difference</h2>
+      <p>Salesforce has two distinct tools for viewing data. They're related but serve different purposes:</p>
+
+      <div class="dashboard-grid" style="margin-bottom: 28px;">
+        <div class="dash-card blue">
+          <div class="dash-title">📊 Dashboards</div>
+          <div class="dash-desc">Visual summaries — charts, graphs, and metric tiles built on top of reports. Great for a quick at-a-glance read on how something is trending. Dashboards refresh on demand but don't show individual records. You go to a dashboard to understand <em>the big picture</em>.</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Example: How many members attended events this year? What's our YTD engagement breakdown?</div>
+        </div>
+        <div class="dash-card green">
+          <div class="dash-title">📋 Reports</div>
+          <div class="dash-desc">Tabular data — actual rows of records with filters applied. Reports are how you get a real list: every attendee, every CMO contact, every board member. Exportable to Excel. Reports power dashboards, but they're also used directly as working lists.</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Example: Who attended the last CCS? Which Marketer members don't have a CMO key role set?</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>When to use which:</strong> Open a dashboard when you want a status check. Open a report when you need a list — to export, to send an email to, to hand off to someone, or to QA data. Most day-to-day work starts with a report.
+        </div>
+      </div>
+
+      <h2 class="section-heading">Key Dashboards</h2>
+      <p>These are the dashboards the US team uses actively. All links go directly to Salesforce — you must be logged in.</p>
+
+      <div class="dashboard-grid">
+
+        <div class="dash-card red">
+          <div class="dash-folder">Event dashboards</div>
+          <div class="dash-title">2026 Events</div>
+          <div class="dash-desc">The main events tracking dashboard for the current year. Covers all 2026 events — CCS, CATS, roundtables, POSSIBLE, and others. Shows registration counts, attendance rates, status breakdowns (Attended, Registered, Declined, etc.), and ecosystem splits. Updated continuously as campaign data comes in.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000009NzYf2AK/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+        <div class="dash-card blue">
+          <div class="dash-folder">Membership</div>
+          <div class="dash-title">2026 YTD Member Engagement</div>
+          <div class="dash-desc">Year-to-date member engagement across NA/Global accounts. Tracks how members are engaging with MMA programs — events, webinars, board activity, and more. The go-to dashboard for understanding whether members are active or at risk of being disengaged ahead of renewal.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01Z2J000000YxZZUA0/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+        <div class="dash-card green">
+          <div class="dash-folder">Membership</div>
+          <div class="dash-title">Membership (NA, Global)</div>
+          <div class="dash-desc">Core membership health dashboard — active member counts, ecosystem breakdown (Marketer vs SP), new members, renewals, and at-risk accounts. Good starting point if someone asks "how many members do we have" or wants a composition overview.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01Z2J0000011snJUAQ/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+        <div class="dash-card amber">
+          <div class="dash-folder">Membership</div>
+          <div class="dash-title">DAMit Dashboard</div>
+          <div class="dash-desc">Tracks DAMit (Decoding AI for Marketers) certification progress. Shows registrations, completions, certifications issued, and which members have or haven't completed the program. Useful during DAMit push campaigns and for checking certification counts.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR0000091CQ92AM/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+        <div class="dash-card purple">
+          <div class="dash-folder">Event dashboards</div>
+          <div class="dash-title">2025 Webinar Registrations</div>
+          <div class="dash-desc">Webinar-specific dashboard with registration and attendance data for all 2025 webinar series (Decoding AI, MATT Great Debates, State of Brand Marketing, etc.). Dan uses this most frequently for webinar program reporting.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000005Lqgf2AC/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+        <div class="dash-card teal">
+          <div class="dash-folder">Public Reports</div>
+          <div class="dash-title">Total Mailable Contacts</div>
+          <div class="dash-desc">A dashboard view of MMA's total mailable contact universe — broken down by ecosystem (Marketer vs SP), showing month-over-month trend. The snapshot that gets tracked monthly via the engagement script. Useful for communicating database size to leadership.</div>
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Dashboard/01ZVR000004DMoP2AW/view" target="_blank">Open in Salesforce</a>
+        </div>
+
+      </div>
+
+      <h2 class="section-heading">Key Report Folders</h2>
+      <p>Reports are organized into folders in Salesforce. These are the ones most relevant for day-to-day US team work:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Folder</th><th>Owner / Purpose</th><th>Link</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>2026 Key Audience Lists</strong></td>
+              <td>Angela Gray's folder — the official 2026 mailing audiences. Contains CMO lists, main rep lists, prospect tiers, and Key Role pulls by ecosystem. Start here when you need an approved outreach audience.</td>
+              <td><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00lVR00000E8vdlYAB/view" target="_blank">Open folder</a></td>
+            </tr>
+            <tr>
+              <td><strong>AS Events Dashboard</strong></td>
+              <td>Aaron Sultan's events reporting folder — 48 reports slicing the 2026 (and 2025) main events by every possible cut: status, account, title, seed list, ecosystem. If you need an attendee list, a declined list, or a registrant count for any CCS/CATS/roundtable — start here.</td>
+              <td><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00lVR00000E8vdlYAB/view" target="_blank">Open folder</a></td>
+            </tr>
+            <tr>
+              <td><strong>Webinar Reports</strong></td>
+              <td>122 reports for all webinar programs — Decoding AI series, MATT Great Debates, State of Brand Marketing, and others. Includes registrant lists, ecosystem breakdowns, UTM source tracking, and new member contact identification. Dan's primary reporting folder.</td>
+              <td>Search "Webinar Reports" in SF</td>
+            </tr>
+            <tr>
+              <td><strong>Membership Misc (Shauna)</strong></td>
+              <td>Shauna Peck's folder — 6 clean roster reports of Active-Parent members by ecosystem (Marketers, Agencies, Solution Providers, Associates, All). Good as a clean baseline member list when you need something simple and reliable.</td>
+              <td><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00l500000011a3XAAQ/view" target="_blank">Open folder</a></td>
+            </tr>
+            <tr>
+              <td><strong>AI Coalition</strong></td>
+              <td>Reports for the AI Leadership Think Tank (ALTT) and AI Coalition (ALC) subgroups. Contains active participant rosters by group (Content &amp; Creative, Measurement &amp; Attribution, Audience Dev &amp; Media Buying, Policy/Responsible AI). Used by Leah and the ALTT team.</td>
+              <td>Search "AI Coalition" in SF</td>
+            </tr>
+            <tr>
+              <td><strong>Public Reports</strong></td>
+              <td>The main shared folder — 1,000+ reports. Anything that doesn't have a dedicated folder lives here. Board rosters, mailable contact pulls, MATT/MFC/ALTT member lists, DAMit reports, key role lists. The largest folder and the most frequently used for one-off pulls.</td>
+              <td>Search in SF Reports tab</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Important Individual Reports</h2>
+
+      <h3 class="sub-heading">Board &amp; Community Rosters</h3>
+      <p>These are the reports you go to when you need a current list of board members, think tank participants, or community rosters. All are actively maintained.</p>
+
+      <div class="card">
+        <div class="report-row">
+          <div class="report-icon">📌</div>
+          <div class="report-info">
+            <div class="report-name">Current boards — Jade</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">The primary board member roster for the US team. Covers all active board members across Global Board, NA Board, Media Board, and CDO Board. Named after Jade Bentham who maintains it. This is the report to use when you need a board roster — don't build your own from scratch.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000002sCfl2AE/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">🤖</div>
+          <div class="report-info">
+            <div class="report-name">Active ALTT participants</div>
+            <div class="report-folder">AI Coalition</div>
+            <div class="report-desc">Current roster of all active AI Leadership Think Tank (ALTT) members. The ALTT is MMA's senior AI-focused community — this report is what gets used for ALTT invitations, updates, and tracking. Maintained in the AI Coalition folder; also has variants per subgroup (ALC).</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OHt000006vdY2MAI/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📐</div>
+          <div class="report-info">
+            <div class="report-name">Active MATT Participants</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">Current roster of MATT (Marketing Attribution Think Tank) active members. Used for MATT Great Debates invitations and program communications. There's also a "MATT Members-CURRENT" in the MATT folder — both are used, but this Public Reports version is more current.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000005eqbJ2AQ/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">🔮</div>
+          <div class="report-info">
+            <div class="report-name">MFC and B2B — NAGL</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">Combined report of MFC (Marketing Futures Council / MM25) and B2B CMO Council members for NA/Global accounts. These two groups are treated differently from standard boards in Salesforce — they are NOT excluded from outreach the way board members typically are. This report is for targeting or referencing these groups specifically.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000004vWP32AM/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Key Audience &amp; Mailing Lists</h3>
+      <p>The reports most commonly used as the basis for outreach — CMO lists, main reps, and prospect tiers. These live in Angela's <strong>2026 Key Audience Lists</strong> folder.</p>
+
+      <div class="card">
+        <div class="report-row">
+          <div class="report-icon">📣</div>
+          <div class="report-info">
+            <div class="report-name">Member CMO [Marketers NON Board]</div>
+            <div class="report-folder">2026 Key Audience Lists</div>
+            <div class="report-desc">CMO Key Role contacts at Marketer member accounts, excluding board members. The standard CCS/events invite list for senior Marketer outreach. Built using the Key Role lookup on Account — not title-text matching.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📣</div>
+          <div class="report-info">
+            <div class="report-name">Aaron NAGL Main Reps</div>
+            <div class="report-folder">2026 Key Audience Lists</div>
+            <div class="report-desc">Main Rep contacts across all NA/Global active member accounts. The primary account-level point of contact list — used for membership communications, renewal outreach, and general member comms.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📣</div>
+          <div class="report-info">
+            <div class="report-name">SP NAGL Main Reps — Account</div>
+            <div class="report-folder">2026 Key Audience Lists</div>
+            <div class="report-desc">Solution Provider equivalent of the main reps list — main contacts at Agency, Seller, Enabler, and other SP member accounts for NA/Global.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">🎯</div>
+          <div class="report-info">
+            <div class="report-name">2026 Active-Parent NA/Global Key Roles</div>
+            <div class="report-folder">2026 Key Audience Lists</div>
+            <div class="report-desc">All Key Role contacts (CMO, CEO, CRO, AI Leader, etc.) at Active-Parent NA/Global member accounts. The broadest key-role pull — used when you want all C-suite level contacts across the full membership.</div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+          <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00lVR00000E8vdlYAB/view" target="_blank">Open 2026 Key Audience Lists folder</a>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Database Health &amp; Membership</h3>
+
+      <div class="card">
+        <div class="report-row">
+          <div class="report-icon">📈</div>
+          <div class="report-info">
+            <div class="report-name">Mailable Contacts by Month</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">Monthly trend of total mailable contacts, broken down by Marketer vs Solution Provider. This is the report that powers the mailable count snapshot tracking. Use it when you need a historical view of how the database has grown or shrunk over time.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000002eoGH2AY/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">🏢</div>
+          <div class="report-info">
+            <div class="report-name">All NAGL Member Companies</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">A clean list of all active NA/Global member Accounts. Good for a quick account-level membership list, for sharing with leadership, or for cross-referencing against another list. Account-level (not contact-level).</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000003hdIw2AI/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📡</div>
+          <div class="report-info">
+            <div class="report-name">Member Contacts Synced to RASA</div>
+            <div class="report-folder">Public Reports</div>
+            <div class="report-desc">All member contacts that are actively synced to the RASA newsletter platform. Useful for validating who's on the newsletter list, checking sync health, or cross-referencing against a Pardot send list.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR0000057x2I2AQ/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Events Reports</h3>
+      <p>The <strong>AS Events Dashboard</strong> folder contains 48 reports covering every cut of the 2026 (and 2025) main events data. The most common ones:</p>
+
+      <div class="card">
+        <div class="report-row">
+          <div class="report-icon">📋</div>
+          <div class="report-info">
+            <div class="report-name">Main 2026 Events</div>
+            <div class="report-folder">AS Events Dashboard</div>
+            <div class="report-desc">The master events report for all 2026 CCS, CATS, roundtable, and POSSIBLE sessions combined. All statuses, all attendees, all campaign members in one place.</div>
+            <div style="margin-top: 8px;"><a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Report/00OVR000005Kgkz2AC/view" target="_blank">Open report</a></div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">✅</div>
+          <div class="report-info">
+            <div class="report-name">Status-sliced variants</div>
+            <div class="report-folder">AS Events Dashboard</div>
+            <div class="report-desc">The folder also contains individual reports pre-filtered by status: <strong>Attended</strong>, <strong>Registered</strong>, <strong>Declined</strong>, <strong>Invited</strong>, <strong>Verbal Yes</strong>, <strong>Tentative</strong>, <strong>Cancelled</strong>, <strong>Interested</strong>, <strong>Request Invite</strong>. Each is named "StatusName_Main 2026 Events". Use these instead of filtering manually.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📊</div>
+          <div class="report-info">
+            <div class="report-name">Grouped variants</div>
+            <div class="report-folder">AS Events Dashboard</div>
+            <div class="report-desc">Reports grouped by: <strong>Account</strong> (how many attendees per company), <strong>Title</strong> (attendee title breakdown), <strong>Seed List</strong> (which seed list they came from), <strong>Status</strong> (status summary). All prefixed "Main 2026 Events grp by ..."</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Webinar Reports</h3>
+      <p>The <strong>Webinar Reports</strong> folder (122 reports) covers all MMA webinar programs. The most recently active ones as of April 2026:</p>
+
+      <div class="card">
+        <div class="report-row">
+          <div class="report-icon">🤖</div>
+          <div class="report-info">
+            <div class="report-name">Decoding AI series reports</div>
+            <div class="report-folder">Webinar Reports</div>
+            <div class="report-desc">Multiple reports covering the Decoding AI for Marketers training series across all years (2023–2026). Sliced by: registrants, ecosystem, member status, company, title, UTM source/medium/campaign, registration date. Dan and Aaron both use these for LinkedIn targeting and outreach follow-up.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">🆕</div>
+          <div class="report-info">
+            <div class="report-name">New Member Contacts from 2026 (no DAMit)</div>
+            <div class="report-folder">Webinar Reports</div>
+            <div class="report-desc">Contacts who joined MMA's database through 2026 webinar registrations but are NOT in the DAMit certification program. Used to identify new contacts from webinar-sourced outreach for follow-up or onboarding.</div>
+          </div>
+        </div>
+        <div class="report-row">
+          <div class="report-icon">📺</div>
+          <div class="report-info">
+            <div class="report-name">2026 Webinar Dashboard (folder)</div>
+            <div class="report-folder">2026 Webinar Dashboard</div>
+            <div class="report-desc">A dedicated folder for 2026 webinar reporting. Has 1 report currently — more get added as webinars run through the year. Check here first for current-year webinar data before digging into the larger Webinar Reports folder.</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Shauna's Reports — Membership Baselines</h2>
+      <p>Shauna Peck maintains a small, clean folder called <strong>Membership Misc (Shauna)</strong> with 6 reliable baseline reports — one per ecosystem. These are simple, well-structured reports useful when you need a clean member list to hand off or reference:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Report Name</th><th>What It Contains</th></tr></thead>
+          <tbody>
+            <tr><td>Active Parent Members — ALL ECOSYSTEMS</td><td>All active-parent NA/Global member accounts, every ecosystem</td></tr>
+            <tr><td>Active Parent Members — Marketers</td><td>Active-parent Marketer accounts only</td></tr>
+            <tr><td>Active Parent Members — Sol Providers</td><td>Active-parent Solution Provider accounts (all non-Marketer)</td></tr>
+            <tr><td>Active Parent Members — Agencies</td><td>Active-parent Agency accounts only</td></tr>
+            <tr><td>Active Parent Members — Associates</td><td>Active-parent Associate accounts only</td></tr>
+            <tr><td>Active-Parent Members — Has BOARD Member</td><td>Active-parent accounts that have at least one board member contact</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a class="sf-link" href="https://mmaglobal.lightning.force.com/lightning/r/Folder/00l500000011a3XAAQ/view" target="_blank">Open Shauna's folder</a>
+
+      <h2 class="section-heading">Tips for Working with Reports</h2>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">🔍</span>
+        <div>
+          <strong>Finding a report:</strong> Go to the Reports tab in Salesforce → search by name. If you're not sure of the exact name, filter by folder. Most key reports live in Public Reports, AS Events Dashboard, or 2026 Key Audience Lists.
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">📥</span>
+        <div>
+          <strong>Exporting:</strong> From any report, click the dropdown arrow next to "Edit" → "Export" → choose Excel format. Always check the row count after export — Salesforce truncates exports over 2,000 rows unless you use the full export option.
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Don't run reports directly as email lists:</strong> Reports in Salesforce don't apply Pardot-specific suppression (hard bounces, global suppressions, Pardot do-not-email). Always run audience pulls through the proper mailable filters or use an approved audience from the 2026 Key Audience Lists folder before sending through Pardot.
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">🗂️</span>
+        <div>
+          <strong>Need a new report?</strong> Submit a request via the Salesforce request form referenced in the governance policy. Aaron Sultan can also build or modify reports — use the request process to ensure it gets tracked and built correctly.
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <div class="page-footer">
+    MMA Global Salesforce Handbook &nbsp;·&nbsp; Reports &amp; Dashboards &nbsp;·&nbsp; Last updated April 2026
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

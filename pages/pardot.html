@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pardot / Account Engagement — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    .steps-list { list-style: none; margin: 0; padding: 0; }
+    .steps-list li { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .steps-list li:last-child { border-bottom: none; }
+    .step-num-circle { background: var(--primary); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .step-num-circle.accent { background: #ffa400; }
+    .steps-list .step-content { flex: 1; }
+    .steps-list .step-content strong { display: block; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .steps-list .step-content span { font-size: 13.5px; color: #374151; line-height: 1.55; }
+    .concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 16px 0 24px; }
+    .concept-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; border-top: 4px solid #e5e7eb; }
+    .concept-card.blue  { border-top-color: #3b82f6; }
+    .concept-card.green { border-top-color: #22c55e; }
+    .concept-card.red   { border-top-color: #ffa400; }
+    .concept-card.amber { border-top-color: #f59e0b; }
+    .concept-card.purple{ border-top-color: #a855f7; }
+    .concept-card .cc-icon { font-size: 28px; margin-bottom: 10px; }
+    .concept-card .cc-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+    .concept-card .cc-desc { font-size: 13px; color: #374151; line-height: 1.6; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html" class="active"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Team Guides &rsaquo; Pardot / Email</div>
+      <h1>Pardot <span>/ Account Engagement</span></h1>
+      <p class="subtitle">MMA's email marketing platform. This guide covers how to build and send emails, manage lists, set up form handlers, and connect Pardot activity back to Salesforce — written for Jason and Dan who build and deploy MMA's email campaigns.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">What Is Pardot?</h2>
+      <p>Pardot — officially rebranded as <strong>Salesforce Marketing Cloud Account Engagement</strong> — is MMA's primary email marketing platform. Every mass email sent to members (event invitations, newsletters, webinar promotions, research alerts) goes through Pardot.</p>
+      <p>Pardot works with Salesforce contacts through a concept called <strong>Prospects</strong>. Every mailable contact in Salesforce has a corresponding Prospect record in Pardot. The two systems sync automatically and continuously.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card blue">
+          <div class="cc-icon">📋</div>
+          <div class="cc-title">Lists</div>
+          <div class="cc-desc">Groups of prospects you want to email. Can be static (manual) or dynamic (rule-based). The backbone of every send.</div>
+        </div>
+        <div class="concept-card green">
+          <div class="cc-icon">✉️</div>
+          <div class="cc-title">List Emails</div>
+          <div class="cc-desc">The actual emails you send to a list. Built from a template, sent to one or more lists at a scheduled time.</div>
+        </div>
+        <div class="concept-card amber">
+          <div class="cc-icon">🖼️</div>
+          <div class="cc-title">Templates</div>
+          <div class="cc-desc">Reusable email designs. Build once, use many times. Contain the layout, branding, and variable merge fields.</div>
+        </div>
+        <div class="concept-card purple">
+          <div class="cc-icon">📝</div>
+          <div class="cc-title">Form Handlers</div>
+          <div class="cc-desc">Connect external web forms to Pardot. When someone submits a form on MMAGlobal.com, Pardot captures it and can trigger actions.</div>
+        </div>
+        <div class="concept-card red">
+          <div class="cc-icon">⚙️</div>
+          <div class="cc-title">Automation Rules</div>
+          <div class="cc-desc">Triggered actions based on prospect criteria. "If prospect is in list X and score &gt; 50, add to list Y." Run once or repeatedly.</div>
+        </div>
+        <div class="concept-card blue">
+          <div class="cc-icon">🔄</div>
+          <div class="cc-title">Engagement Studio</div>
+          <div class="cc-desc">Visual drip-sequence builder. Send a series of emails over time with branching logic based on how prospects respond.</div>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Salesforce ↔ Pardot Sync</h2>
+      <p>Understanding the sync is critical. Changes in one system propagate to the other — but there are rules about which system "wins" when there's a conflict.</p>
+
+      <div class="card">
+        <h3>How the Sync Works</h3>
+        <ul style="margin-left: 16px;">
+          <li>Every Salesforce Contact with an email address can sync to a Pardot Prospect. Contacts missing an email address are not synced.</li>
+          <li>The sync runs continuously (near real-time). New Contacts created in Salesforce appear in Pardot within minutes.</li>
+          <li>Salesforce is the <strong>system of record</strong> for identity data (name, email, company, title). Pardot wins on engagement data (score, grade, opens, clicks).</li>
+          <li>If <code>HasOptedOutOfEmail = true</code> in Salesforce, Pardot will also suppress that prospect. The opt-out syncs both directions.</li>
+          <li>If a Pardot email hard bounces, Pardot sets <code>IsEmailBounced = true</code> in Salesforce automatically.</li>
+        </ul>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Direction</th><th>What Syncs</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SF → Pardot</strong></td><td>Contact name, email, title, company, opt-out status, account membership status</td></tr>
+            <tr><td><strong>Pardot → SF</strong></td><td>Email bounce status, engagement score (<code>pi__score__c</code>), grade (<code>pi__grade__c</code>), last activity (<code>pi__last_activity__c</code>), hard bounce flag (<code>pi__pardot_hard_bounced__c</code>)</td></tr>
+            <tr><td><strong>Both directions</strong></td><td>Opt-out status (<code>HasOptedOutOfEmail</code>) — change in either system propagates to the other</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Business Units — MMA's Pardot Setup</h3>
+      <p>MMA uses multiple Pardot <strong>Business Units (BUs)</strong> within a single Salesforce org. Each BU is a separate Pardot environment with its own lists, emails, and templates.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Business Unit</th><th>Used By</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>MMA NA (Primary)</strong></td><td>Jason, Dan — all North America and Global sends</td><td>The main BU. Where most MMA email builds and sends happen.</td></tr>
+            <tr><td><strong>EMEA</strong></td><td>Bülent Doruker</td><td>Separate BU for EMEA member communications. Managed independently in Istanbul.</td></tr>
+            <tr><td><strong>APAC</strong></td><td>Rohit Dadwal's team</td><td>Separate BU for Asia-Pacific sends.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>When running scripts</strong> that interact with Pardot (e.g., <code>outreach_seq_to_pardot_list.py</code>), the <code>PARDOT_BUSINESS_UNIT_ID</code> environment variable must be set to the correct BU. The NA BU ID is stored in the team's <code>.env</code> file.</div>
+      </div>
+
+      <h2 class="section-heading">Lists</h2>
+      <p>Lists are the foundation of Pardot sending. Every email goes to one or more lists. Understanding the different list types prevents you from accidentally emailing the wrong people.</p>
+
+      <h3 class="sub-heading">List Types</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>How It Works</th><th>When to Use</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Static List</strong></td>
+              <td>A fixed set of prospects you manually add or import. Doesn't change automatically.</td>
+              <td>One-off sends, event invitation lists, imports from CSV or Salesforce reports</td>
+            </tr>
+            <tr>
+              <td><strong>Dynamic List</strong></td>
+              <td>Automatically updates based on criteria you define (e.g., "all prospects where Account Status = Active-Parent and Region = NA"). Membership changes as records change.</td>
+              <td>Ongoing sends to rolling audiences (e.g., all mailable Marketer members)</td>
+            </tr>
+            <tr>
+              <td><strong>Suppression List</strong></td>
+              <td>A list of prospects to <em>exclude</em> from a send. Checked against the mailing list before delivery.</td>
+              <td>Excluding already-registered contacts, opt-outs, specific companies, or Outreach sequence prospects</td>
+            </tr>
+            <tr>
+              <td><strong>Public List</strong></td>
+              <td>Visible in the Email Preference Center — prospects can self-subscribe or unsubscribe from these.</td>
+              <td>Newsletter subscriptions, program-specific opt-ins</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Creating a Static List</h3>
+      <div class="card">
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Navigate to Prospects &gt; Lists</strong><span>In Pardot, go to the Lists menu under the Prospects tab.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Click "+ Add List"</strong><span>Give the list a clear, descriptive name. Follow the MMA naming convention: include the event/program name and date (e.g., <code>CCS 2026 — Round 1 Invites</code>).</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Set the list type</strong><span>Leave "Is Public" unchecked unless this list should appear in the Email Preference Center. Leave "Is CRM Visible" checked so the list appears on Prospect records in Salesforce.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">4</div>
+            <div class="step-content"><strong>Add prospects</strong><span>Use the "Add Prospects" button to search and add by email, or import a CSV. Alternatively, run a Pardot Automation Rule or use the Python script to batch-add by Salesforce Contact ID.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Creating a Dynamic List</h3>
+      <div class="card">
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Go to Prospects &gt; Lists &gt; "+ Add List"</strong><span>Check the <strong>"Dynamic List"</strong> checkbox. This reveals the criteria builder.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Set criteria</strong><span>Add rules based on Prospect fields, CRM fields (Salesforce fields), or activity. Example: <em>Prospect CRM field "Account Status" contains "Active"</em> AND <em>Prospect CRM field "Region__c" equals "NA"</em>.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Save and verify count</strong><span>Pardot will calculate the current list size. Verify the count looks right before using the list in a send. Dynamic lists update automatically as records change.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Dynamic lists don't apply MMA's full mailable definition automatically.</strong> Pardot can filter on CRM fields, but it can't replicate the full SOQL logic (active account, region, board exclusions, email bounced, opted out) in one dynamic list. For complex audience pulls, it's more reliable to build the list in Salesforce/Python, export the emails, and import to a static Pardot list. Talk to Aaron Sultan if you need a segmented pull.</div>
+      </div>
+
+      <h2 class="section-heading">Email Templates</h2>
+      <p>Templates are reusable email layouts. Jason and Dan maintain MMA's template library. A template defines the visual structure — header, body regions, footer, unsubscribe link — and uses merge fields to personalize content at send time.</p>
+
+      <h3 class="sub-heading">Creating or Editing a Template</h3>
+      <div class="card">
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Go to Content &gt; Email Templates</strong><span>Browse existing templates. MMA has templates for event invites, newsletters, webinar promos, and member communications.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Clone before editing</strong><span>Never edit an active template directly. Clone it first (Actions &gt; Copy), then edit the copy. This preserves the original for historical sends.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Use the drag-and-drop editor or HTML</strong><span>Pardot's builder lets you drag content blocks. For more control, switch to the HTML editor. MMA templates use inline CSS for email client compatibility.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">4</div>
+            <div class="step-content"><strong>Add merge fields for personalization</strong><span>Use Pardot merge syntax: <code>{{Recipient.FirstName}}</code> for first name, <code>{{Recipient.Email}}</code> for email. Variable tags are available for any Prospect field synced from Salesforce.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">5</div>
+            <div class="step-content"><strong>Send a test</strong><span>Always send a test to yourself and at least one other person before saving as final. Check rendering in Gmail, Outlook, and on mobile.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Key Merge Fields</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What You Want</th><th>Pardot Merge Tag</th></tr></thead>
+          <tbody>
+            <tr><td>Recipient's first name</td><td><code>{{Recipient.FirstName}}</code></td></tr>
+            <tr><td>Recipient's last name</td><td><code>{{Recipient.LastName}}</code></td></tr>
+            <tr><td>Recipient's full name</td><td><code>{{Recipient.Name}}</code></td></tr>
+            <tr><td>Recipient's company</td><td><code>{{Recipient.Company}}</code></td></tr>
+            <tr><td>Recipient's email address</td><td><code>{{Recipient.Email}}</code></td></tr>
+            <tr><td>Unsubscribe link (required by law)</td><td><code>%%unsubscribe%%</code></td></tr>
+            <tr><td>View-in-browser link</td><td><code>%%view_online%%</code></td></tr>
+            <tr><td>MMA sender name</td><td>Set at the email level — usually "MMA Global" or a specific team name</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div><strong>Every email must include an unsubscribe link.</strong> Use <code>%%unsubscribe%%</code> in your template footer. Pardot will block the send if this is missing — and omitting it also violates CAN-SPAM law.</div>
+      </div>
+
+      <h2 class="section-heading">Sending a List Email</h2>
+      <p>A <strong>List Email</strong> is a one-time send to one or more lists. This is the most common send type at MMA — event invitations, webinar promotions, member announcements, etc.</p>
+
+      <div class="card">
+        <h3>Step-by-Step: Send a List Email</h3>
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Go to Emails &gt; List Emails &gt; "+ Add List Email"</strong><span>This opens the email creation wizard.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Name the email</strong><span>Use a clear internal name that includes the event/program and send date. Example: <code>CCS 2026 — Round 1 Invite — 2026-04-15</code>. This name is internal only and never seen by recipients.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Select your template</strong><span>Choose the appropriate pre-built template. If you need a new design, build the template first, then come back here.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">4</div>
+            <div class="step-content"><strong>Fill in email details</strong><span>Set the <strong>Subject line</strong>, <strong>From name</strong> (e.g., "MMA Global"), and <strong>From email address</strong> (must use an MMA domain). Add a preheader text — this appears in the inbox preview after the subject line.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">5</div>
+            <div class="step-content"><strong>Add sending list(s)</strong><span>In the Recipients section, add one or more mailing lists. If sending to multiple lists, Pardot deduplicates automatically — a prospect on two lists only gets the email once.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">6</div>
+            <div class="step-content"><strong>Add suppression list(s)</strong><span>This is critical. Add any suppression lists needed — prospects already registered, contacts who should be excluded, or Outreach sequences in progress. Suppression happens before send.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">7</div>
+            <div class="step-content"><strong>Send a test</strong><span>Use the "Send Test" button. Send to yourself and ideally one other person. Review the final look in your actual email client before proceeding.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle accent">8</div>
+            <div class="step-content"><strong>Schedule or send immediately</strong><span>Choose a send time (usually business hours) or send immediately. Once sent, the email cannot be recalled — double-check everything before hitting confirm.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Always check your suppression lists before sending.</strong> If you're sending a CCS invite and some contacts are already Registered in the Salesforce campaign, you want to exclude them. The best practice is to pull the already-registered list from Salesforce and upload it as a Pardot suppression list before the send. Aaron Sultan can provide this list.</div>
+      </div>
+
+      <h2 class="section-heading">Connecting Pardot Sends to Salesforce Campaigns</h2>
+      <p>Every Pardot email send can — and should — be connected to a Salesforce Campaign. This is how email engagement (opens, clicks) flows into Salesforce as CampaignMember records, enabling reporting and engagement tracking.</p>
+
+      <div class="card">
+        <h3>How to Link a List Email to a Salesforce Campaign</h3>
+        <ol style="margin-left: 16px;">
+          <li>When creating the List Email, scroll to the <strong>Salesforce Campaign</strong> field in the email setup.</li>
+          <li>Search for and select the corresponding Salesforce Campaign (e.g., <em>CMO CEO Summit 2026_CCS 2026</em>).</li>
+          <li>Set the <strong>Member Status</strong> for each interaction type:
+            <ul style="margin-top: 6px;">
+              <li>Email opened → typically "Sent" or leave as default</li>
+              <li>Email clicked → typically "Responded" or "Invited"</li>
+            </ul>
+          </li>
+          <li>Save. When the email sends, Pardot will create or update CampaignMember records in Salesforce based on engagement.</li>
+        </ol>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Campaign connection = engagement tracking.</strong> Without linking to a Salesforce Campaign, email opens and clicks stay in Pardot only and don't appear on the Contact record or in Salesforce reports. Always link your sends to the corresponding campaign.</div>
+      </div>
+
+      <h2 class="section-heading">Form Handlers</h2>
+      <p>A <strong>Form Handler</strong> connects an external web form (on MMAGlobal.com or any landing page) to Pardot. When someone submits the form, Pardot captures the submission, creates or updates the Prospect record, and can trigger automated actions.</p>
+
+      <p>Form Handlers are different from Pardot Forms — a <em>Form</em> is hosted and served by Pardot, while a <em>Form Handler</em> captures submissions from a form you already have on your own website.</p>
+
+      <h3 class="sub-heading">Creating a Form Handler</h3>
+      <div class="card">
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Go to Content &gt; Form Handlers &gt; "+ Add Form Handler"</strong><span>Give it a descriptive name that matches the form it's connected to.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Configure field mappings</strong><span>Map the form fields to Pardot Prospect fields. For example: <em>form field "email" → Prospect field "Email"</em>, <em>"first_name" → "First Name"</em>, <em>"company" → "Company"</em>. The form field names must match exactly what the web form submits.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Set success/error locations</strong><span>The URL to redirect to after a successful submission (e.g., a "Thank You" page) and after an error.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">4</div>
+            <div class="step-content"><strong>Add Completion Actions</strong><span>Define what happens when someone submits. Common actions: add to a list, notify a user by email, add to a Salesforce Campaign, set a field value, assign to a user.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">5</div>
+            <div class="step-content"><strong>Copy the endpoint URL</strong><span>Pardot gives you a unique endpoint URL. The web developer needs to point the form's action to this URL. This is what makes submissions flow into Pardot.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Completion Actions</h3>
+      <p>Completion Actions fire immediately when a form is submitted. They are the most direct way to trigger Pardot and Salesforce updates from a form fill.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Completion Action</th><th>What It Does</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Add to List</strong></td><td>Adds the submitting prospect to a specified Pardot list</td></tr>
+            <tr><td><strong>Remove from List</strong></td><td>Removes from a list (useful for unsubscribe forms)</td></tr>
+            <tr><td><strong>Add to Salesforce Campaign</strong></td><td>Creates a CampaignMember record in Salesforce with a specified status (e.g., "Registered")</td></tr>
+            <tr><td><strong>Notify User</strong></td><td>Sends an email alert to an MMA team member (e.g., notify Jason when someone registers)</td></tr>
+            <tr><td><strong>Set Prospect Field Value</strong></td><td>Updates a field on the Prospect/Contact (e.g., set <code>Source__c = 'Web Form'</code>)</td></tr>
+            <tr><td><strong>Assign Prospect to User</strong></td><td>Assigns the prospect to a specific Salesforce user for follow-up</td></tr>
+            <tr><td><strong>Send Autoresponder Email</strong></td><td>Immediately sends a confirmation or welcome email to the submitter</td></tr>
+            <tr><td><strong>Increase Score</strong></td><td>Boosts the prospect's Pardot engagement score</td></tr>
+            <tr><td><strong>Add Tag</strong></td><td>Tags the prospect for easy filtering later</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Automation Rules</h2>
+      <p><strong>Automation Rules</strong> run on a schedule and apply bulk actions to prospects that match defined criteria. Unlike Completion Actions (which fire once on a specific event), Automation Rules continuously check your prospect database and apply actions to any matching records.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Setting</th><th>Options &amp; Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Run type</strong></td><td><strong>Repeat</strong> — runs continuously, re-evaluating prospects on an ongoing basis. <strong>Once</strong> — applies the rule to each prospect only one time.</td></tr>
+            <tr><td><strong>Criteria</strong></td><td>Any combination of Prospect fields, CRM fields, activity, list membership, score, grade, etc.</td></tr>
+            <tr><td><strong>Actions</strong></td><td>Same set as Completion Actions: add/remove from lists, add to SF Campaign, notify users, set fields, etc.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Example: Auto-Add Registered Contacts to a Suppression List</h3>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 0;"><strong>Criteria:</strong> Prospect CRM field "CampaignMember.Status" = "Registered" AND CampaignMember.CampaignId = [CCS 2026 Campaign ID]<br>
+        <strong>Action:</strong> Add to list "CCS 2026 — Already Registered (Suppress)"<br>
+        <strong>Run type:</strong> Repeat<br>
+        <strong>Effect:</strong> As people register through the event website, they're automatically added to the suppression list and won't receive future invite sends.</p>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Automation Rules can run on your entire prospect database.</strong> Before enabling a rule, always preview how many prospects match the criteria. Accidentally adding 50,000 prospects to the wrong list is hard to undo.</div>
+      </div>
+
+      <h2 class="section-heading">Engagement Studio</h2>
+      <p><strong>Engagement Studio</strong> is Pardot's visual drip-sequence builder. Use it when you want to send a series of emails over time with branching logic — for example, send a webinar reminder, wait 3 days, check if they opened it, then send a different follow-up based on whether they did or didn't.</p>
+
+      <h3 class="sub-heading">When to Use Engagement Studio vs. List Emails</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Use List Email when...</th><th>Use Engagement Studio when...</th></tr></thead>
+          <tbody>
+            <tr><td>Sending a single one-time email to a list</td><td>Sending a sequence of 2+ emails over days or weeks</td></tr>
+            <tr><td>A simple blast with no follow-up logic</td><td>You need "if they opened → do X, if they didn't → do Y" branching</td></tr>
+            <tr><td>Speed matters — setting up is faster</td><td>Nurture sequences, onboarding flows, multi-touch event promotion</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Building an Engagement Studio Program</h3>
+      <div class="card">
+        <ul class="steps-list">
+          <li>
+            <div class="step-num-circle">1</div>
+            <div class="step-content"><strong>Go to Automation &gt; Engagement Studio &gt; "+ Add Program"</strong><span>Name the program clearly. Set the recipient list(s) and any suppression lists upfront.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">2</div>
+            <div class="step-content"><strong>Build the flow</strong><span>Drag-and-drop elements: <strong>Send Email</strong> (pick a template), <strong>Wait</strong> (pause X days), <strong>Trigger</strong> (did they open? click? visit a page?), <strong>Action</strong> (add to list, update a field, notify a user).</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">3</div>
+            <div class="step-content"><strong>Test the program</strong><span>Use the "Test" tab to walk through the flow with a test prospect and verify each branch fires correctly.</span></div>
+          </li>
+          <li>
+            <div class="step-num-circle">4</div>
+            <div class="step-content"><strong>Start the program</strong><span>Once live, prospects on the recipient list begin moving through the sequence. New prospects added to the list enter the sequence at the beginning.</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <h2 class="section-heading">Reporting &amp; Tracking</h2>
+      <p>After sending, Pardot tracks opens, clicks, unsubscribes, and bounces. Here's where to find what you need.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What You Want to See</th><th>Where to Find It in Pardot</th></tr></thead>
+          <tbody>
+            <tr><td>Open rate, click rate, bounce rate for a specific send</td><td>Emails &gt; List Emails → click the email name → Reports tab</td></tr>
+            <tr><td>Who clicked a specific link</td><td>Email report &gt; Clicks section &gt; expand the link</td></tr>
+            <tr><td>Who unsubscribed from a send</td><td>Email report &gt; Opt-Outs section</td></tr>
+            <tr><td>Overall prospect engagement score history</td><td>Prospects &gt; search the prospect &gt; Activities tab</td></tr>
+            <tr><td>List size over time</td><td>Prospects &gt; Lists &gt; click the list → Stats</td></tr>
+            <tr><td>Engagement data in Salesforce</td><td>Contact record → Pardot section → shows score, grade, last activity; or CampaignMember status if linked</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">MMA-Specific Conventions</h2>
+      <p>A few naming and process conventions the team follows to keep Pardot organized.</p>
+
+      <div class="card">
+        <h3>Naming Convention — Lists</h3>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 8px;"><strong>Format:</strong> <code>[Program/Event] — [Purpose] — [YYYY-MM-DD if dated]</code></p>
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><code>CCS 2026 — Round 1 Invites</code></li>
+          <li><code>CCS 2026 — Already Registered (Suppress)</code></li>
+          <li><code>POSSIBLE 2026 — All Attendees</code></li>
+          <li><code>Webinar — Mailable Marketer Members — Dynamic</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Naming Convention — List Emails</h3>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 8px;"><strong>Format:</strong> <code>[Program] — [Send Description] — [YYYY-MM-DD]</code></p>
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><code>CCS 2026 — Round 1 Invite — 2026-04-15</code></li>
+          <li><code>CCS 2026 — Reminder #1 — 2026-05-01</code></li>
+          <li><code>Member Newsletter — April 2026</code></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>MMA Standard — Pardot Asset Naming</h3>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 10px;"><strong>Naming consistency is critical</strong> — Pardot reports filter by name, so inconsistent naming breaks reporting. MMA uses a standardized naming format across all Pardot assets.</p>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 6px;"><strong>Email Format:</strong> <code>YYYYMMDD_Region_Type_Audience_Description</code></p>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 6px;"><strong>Example:</strong> <code>20260415_NA_InviteEmail_MarketerMembers_CCS2026</code></p>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 6px;"><strong>Campaign Format:</strong> <code>Region_Type_Date_Description</code></p>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 0;"><strong>Regions:</strong> <code>NA</code> &nbsp;·&nbsp; <code>EMEA</code> &nbsp;·&nbsp; <code>APAC</code> &nbsp;·&nbsp; <code>Global</code><br><strong>Types:</strong> <code>InviteEmail</code> &nbsp;·&nbsp; <code>Newsletter</code> &nbsp;·&nbsp; <code>Webinar</code> &nbsp;·&nbsp; <code>Reminder</code> &nbsp;·&nbsp; <code>Announcement</code><br>When in doubt, check with your Pardot admin before naming a new asset.</p>
+      </div>
+
+      <div class="card">
+        <h3>Pre-Send Checklist</h3>
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li>Subject line reviewed and approved</li>
+          <li>Test email sent to Jason, Dan, and Aaron Sultan</li>
+          <li>Mailing list count verified (does the number look right?)</li>
+          <li>Suppression lists added (already-registered, opted-out sequences)</li>
+          <li>Linked to correct Salesforce Campaign</li>
+          <li>Send time confirmed (target: Tuesday–Thursday, 9–11am Eastern)</li>
+          <li>Unsubscribe link present in footer</li>
+          <li>All merge fields test-render correctly (no blank first names)</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>When in doubt, ask Aaron Sultan for the audience list.</strong> For any send where the audience is derived from Salesforce data (member type, event attendance, campaign history), Aaron can build the list in Python and provide a clean CSV to import into Pardot rather than attempting to replicate the Salesforce filters manually in a dynamic list.</div>
+      </div>
+
+      <h2 class="section-heading">List Scoring, Rule Groups &amp; Segmentation Rules</h2>
+      <p>Beyond basic list types, Pardot has a built-in <strong>scoring system</strong> and advanced criteria-building tools. Understanding these makes you a much more precise sender.</p>
+
+      <h3 class="sub-heading">Prospect Scoring</h3>
+      <p>Every prospect in Pardot has a <strong>score</strong> that increases as they engage with MMA's content. Higher score = more engaged contact.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Points</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Email click</td><td><strong>+3 pts</strong></td><td>Any link click in a Pardot-sent email</td></tr>
+            <tr><td>File / content access</td><td><strong>+3 pts</strong></td><td>Accessing a Pardot-tracked file download or landing page</td></tr>
+            <tr><td>Form submission</td><td><strong>+10 pts</strong></td><td>Submitting a Pardot form or form handler</td></tr>
+            <tr><td>Email open</td><td>+1 pt</td><td>Less reliable due to Apple/Gmail image blocking — clicks are a stronger signal</td></tr>
+            <tr><td>Page visit</td><td>+1 pt</td><td>Visiting a Pardot-tracked landing page</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Scoring categories are scoped to folders.</strong> Rather than relying on the global score alone, Pardot's scoring <em>categories</em> let you track engagement per initiative — e.g., a "CCS 2026" scoring category that only tallies activity from CCS-related email and form assets. This is more useful than the global score when evaluating event-specific engagement or comparing across programs.</div>
+      </div>
+
+      <h3 class="sub-heading">Rule Groups in Dynamic Lists</h3>
+      <p>When building dynamic list criteria, Pardot uses <strong>AND logic within a rule group</strong> and <strong>OR logic between groups</strong>. This lets you build complex "this AND that, OR this other combination" audiences without splitting into multiple lists.</p>
+
+      <div class="card">
+        <h3>Example: Multi-Condition Dynamic List</h3>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 8px;"><strong>Goal:</strong> All mailable NA Marketer members, OR any board member who is also a Marketer</p>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 4px;"><strong>Rule Group 1 (AND logic inside the group):</strong></p>
+        <ul style="margin-left: 20px; font-size: 14px; margin-bottom: 8px;">
+          <li>Account Status = Active-Parent</li>
+          <li>Primary Ecosystem = Marketer</li>
+          <li>Region = NA</li>
+        </ul>
+        <p style="font-size: 14px; color: #374151; margin-bottom: 4px;"><strong>Rule Group 2 (OR from Group 1 — AND logic inside):</strong></p>
+        <ul style="margin-left: 20px; font-size: 14px;">
+          <li>Is Board Member = true</li>
+          <li>Primary Ecosystem = Marketer</li>
+        </ul>
+        <p style="font-size: 14px; color: #374151; margin-top: 10px; margin-bottom: 0;"><em>Result: Any prospect who satisfies Group 1 OR Group 2 is included.</em></p>
+      </div>
+
+      <h3 class="sub-heading">Segmentation Rules</h3>
+      <p><strong>Segmentation Rules</strong> are similar to Automation Rules, but they run <em>only once</em>. Use them when you want to perform a one-time bulk action on a defined segment — for example, adding all contacts who clicked a specific link in a past email to a new list. Once run, they don't re-evaluate new prospects. Segmentation Rules are useful for historical cleanup and one-time list population.</p>
+
+      <h2 class="section-heading">Disengaged Contacts &amp; Deliverability</h2>
+      <p>One of the most important operational concepts in Pardot: <strong>disengaged contacts</strong> — prospects who haven't interacted with an email in 6 or more months — require careful handling to protect MMA's sender reputation and overall email deliverability.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Prospect Status</th><th>Definition</th><th>Risk if Ignored</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Engaged</strong></td><td>Has opened, clicked, or otherwise interacted with a Pardot email within the last 6 months</td><td>Low — safe to email through the normal Pardot environment</td></tr>
+            <tr><td><strong>Unengaged</strong></td><td>No email engagement activity for 6+ months</td><td>High — mass-emailing unengaged contacts can tank MMA's sender reputation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div><strong>Do not mass-email large lists of unengaged contacts from MMA's main Pardot.</strong> ISPs interpret sending to many disengaged contacts as a signal that you're emailing people who don't want your mail. This drives up spam complaints, damages MMA's sender reputation score, and can cause <em>all</em> future emails — even to engaged contacts — to land in spam or get blocked. Screen your lists for engagement before large sends.</div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Audit list engagement before every large send.</strong> Before sending to a list of 5,000+ contacts, check when those prospects last engaged. Pardot's prospect list view can be filtered by last activity date. If a significant portion of your list hasn't engaged in 6+ months, consider a smaller re-engagement send first rather than blasting the full list.</div>
+      </div>
+
+      <h2 class="section-heading">Email Best Practices</h2>
+      <p>Apply these best practices to every MMA email campaign, regardless of audience size.</p>
+
+      <h3 class="sub-heading">Subject Lines</h3>
+      <div class="card">
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><strong>50–65 characters is the sweet spot</strong> — displays fully in most desktop and mobile clients without truncation</li>
+          <li><strong>Front-load the key message</strong> — the most important word should come first, not last, since mobile clients truncate early</li>
+          <li><strong>Personalize when possible</strong> — adding the recipient's first name or company can lift open rates</li>
+          <li><strong>Avoid spam-trigger words</strong> — FREE, URGENT, CLICK NOW, excessive ALL CAPS, multiple exclamation points (!!!)</li>
+          <li><strong>Test before committing</strong> — when Pardot allows A/B testing, test one variable at a time (emoji vs. no emoji, question vs. statement)</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Pre-Header Text</h3>
+      <p>The pre-header is the preview snippet that appears after the subject line in most inboxes. It should <em>complement</em> the subject — not repeat it. Keep it under 100 characters. If you leave it blank, email clients pull the first visible line of your email body (which is often the unsubscribe link or an image alt tag).</p>
+
+      <h3 class="sub-heading">Content Length</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Email Type</th><th>Target Word Count</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Event invite / cold outreach</strong></td><td>100–150 words</td><td>Get to the point. Busy executives won't scroll through a wall of text.</td></tr>
+            <tr><td><strong>Newsletter / member update</strong></td><td>250–300 words</td><td>Subscribers expect more content — still keep it scannable with headers and bullets.</td></tr>
+            <tr><td><strong>Reminder / follow-up</strong></td><td>50–100 words</td><td>Shorter is better for reminders — just the CTA and key details.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Responsive Design (Mobile-First)</h3>
+      <div class="card">
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><strong>Single-column layout</strong> — multi-column side-by-side designs break on mobile and should be avoided</li>
+          <li><strong>Minimum 14px font size</strong> for body text — anything smaller is hard to read without zooming on a phone</li>
+          <li><strong>CTA buttons at least 44px tall</strong> — needs to be thumb-friendly on touchscreens</li>
+          <li><strong>Images under 200kb</strong> — large images load slowly on mobile data; always include descriptive alt text in case images are blocked</li>
+          <li><strong>Never send an email that's only images</strong> — spam filters will block it, and contacts with image loading off will see nothing</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Calls to Action (CTAs)</h3>
+      <div class="card">
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><strong>One primary CTA above the fold</strong> — visible without scrolling; this is the action you most want them to take</li>
+          <li><strong>One secondary CTA in the body</strong> — reinforces the action for readers who scroll down</li>
+          <li><strong>Use styled button elements</strong>, not plain text links, for the primary CTA — they're more visible, more clickable, and easier to track</li>
+          <li><strong>Action-oriented CTA text</strong> — "Register Now", "View the Report", "Save Your Seat" (not just "Click Here" or "Learn More")</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Segmentation &amp; Personalization</h3>
+      <div class="card">
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><strong>Segment before you send</strong> — a Marketer member and a Solution Provider should receive tailored messaging, not the same generic blast; the same event appeals differently to each ecosystem</li>
+          <li><strong>Use variable tags</strong> for personalization: <code>{{Recipient.FirstName}}</code>, <code>{{Recipient.Company}}</code>, etc.</li>
+          <li><strong>Always test merge fields</strong> — send a test to an account with known field values to confirm tags populate correctly before the live send</li>
+          <li><strong>Set fallback values</strong> — if a contact has no first name on file, the fallback should be something graceful like "Hi there" rather than a blank space</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-heading">Completion Actions</h3>
+      <p>Completion Actions fire automatically when a prospect takes a specific action (clicks a link, opens an email, submits a form). They're one of the most useful Pardot tools for post-send automation.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trigger</th><th>Common Completion Actions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Email click</strong></td><td>Add to list, add to Salesforce Campaign (with status "Responded"), change a field value, notify a user</td></tr>
+            <tr><td><strong>Email open</strong></td><td>Add to list, increase score — less reliable as a trigger since opens are often miscounted</td></tr>
+            <tr><td><strong>Form submission</strong></td><td>Add to list, add to SF Campaign (with status "Registered"), send autoresponder, set field values</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Campaigns are managed in Salesforce, not Pardot Classic.</strong> When using Completion Actions to add a prospect to a Salesforce Campaign, always make sure the Campaign already exists in Salesforce (create it there first). Pardot completion actions reference Salesforce Campaign IDs — they don't create campaigns on their own.</div>
+      </div>
+
+      <h3 class="sub-heading">Send Timing</h3>
+      <div class="card">
+        <ul style="margin-left: 16px; font-size: 14px;">
+          <li><strong>Best days:</strong> Tuesday, Wednesday, Thursday</li>
+          <li><strong>Best time:</strong> 9–11am Eastern — catches East Coast at the start of the workday while still being early enough on the West Coast</li>
+          <li><strong>Avoid:</strong> Mondays (post-weekend inbox overload), Fridays (people checking out early), major US holidays and holiday windows</li>
+          <li><strong>Global sends:</strong> NA BU uses Eastern as the baseline; EMEA and APAC sends go through their respective BUs with locally appropriate timing managed by those teams</li>
+        </ul>
+      </div>
+
+      <h2 class="section-heading">Compliance</h2>
+      <p>Every email MMA sends must comply with applicable email marketing laws. Three regulations govern MMA's audience: <strong>CAN-SPAM</strong> (US), <strong>GDPR</strong> (EU/UK), and <strong>CASL</strong> (Canada). All three require the same core behaviors — an easy opt-out, accurate sender identity, physical address, and prompt honoring of unsubscribes.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card blue">
+          <div class="cc-icon">🇺🇸</div>
+          <div class="cc-title">CAN-SPAM (US)</div>
+          <div class="cc-desc">Requires a clear unsubscribe mechanism, physical mailing address, non-deceptive subject lines, and accurate From/Reply-To addresses. Honor opt-out requests within 10 business days.</div>
+        </div>
+        <div class="concept-card blue">
+          <div class="cc-icon">🇪🇺</div>
+          <div class="cc-title">GDPR (EU/UK)</div>
+          <div class="cc-desc">Requires legitimate interest or explicit opt-in consent to email EU/UK contacts. Must honor right-to-erasure requests. MMA's EMEA Pardot BU is separate partly for GDPR compliance — EU contacts should route through EMEA.</div>
+        </div>
+        <div class="concept-card blue">
+          <div class="cc-icon">🇨🇦</div>
+          <div class="cc-title">CASL (Canada)</div>
+          <div class="cc-desc">Stricter than CAN-SPAM. Requires express or implied consent. Implied consent expires (typically 2 years from last transaction). Canadian contacts require extra care — when in doubt, don't send through the NA BU.</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Requirement</th><th>CAN-SPAM</th><th>GDPR</th><th>CASL</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Unsubscribe / opt-out</strong></td><td>Required</td><td>Required</td><td>Required</td></tr>
+            <tr><td><strong>Honor opt-out within</strong></td><td>10 business days</td><td>As soon as possible</td><td>10 business days</td></tr>
+            <tr><td><strong>Physical address required</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td><strong>Accurate From / Reply-To</strong></td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td><strong>Consent required before sending</strong></td><td>No (opt-out model)</td><td>Yes (opt-in)</td><td>Yes (express or implied)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div><strong>The <code>%%unsubscribe%%</code> tag is non-negotiable.</strong> Every email template must include it in the footer. Pardot blocks sends that don't have an unsubscribe link — and omitting it violates all three laws above. If you're building a new template, add the unsubscribe link from the very start.</div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>EMEA and APAC sends go through separate Pardot Business Units.</strong> GDPR compliance for EU contacts and CASL compliance for Canadian contacts is managed through separate BUs with their own consent frameworks. Never add EU or Canadian contacts to the NA BU for a send without checking with Aaron Sultan first.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Pardot / Account Engagement — Last updated April 2026 — Questions? Contact Aaron Sultan, Jason, or Dan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

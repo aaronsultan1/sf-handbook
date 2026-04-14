@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Reference — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    pre { background: #1a1a2e; color: #a5f3fc; padding: 16px; border-radius: 8px; font-family: 'Menlo', 'Consolas', monospace; font-size: 13px; overflow-x: auto; margin: 12px 0; line-height: 1.7; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+
+    /* HOW-TO cards */
+    .howto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 20px; margin-bottom: 24px; }
+    .howto-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .howto-card-header { background: var(--primary); color: white; padding: 14px 18px; display: flex; align-items: center; gap: 10px; }
+    .howto-card-header .icon { font-size: 18px; }
+    .howto-card-header h3 { font-size: 14px; font-weight: 700; }
+    .howto-card-body { padding: 16px 18px; }
+    .howto-steps { list-style: none; margin: 0; padding: 0; }
+    .howto-steps li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13.5px; line-height: 1.5; color: #374151; border-bottom: 1px solid var(--border); }
+    .howto-steps li:last-child { border-bottom: none; }
+    .step-n { background: #ffa400; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+    /* Status reference */
+    .status-ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 24px; }
+    .status-ref-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .status-ref-card h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 12px; }
+    .status-list { list-style: none; margin: 0; padding: 0; }
+    .status-list li { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; color: #374151; border-bottom: 1px solid var(--border); }
+    .status-list li:last-child { border-bottom: none; }
+
+    /* Naming cheat sheet */
+    .naming-cheat { background: #1a1a2e; border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px; }
+    .naming-cheat h3 { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .naming-formula { font-family: 'Menlo', 'Consolas', monospace; font-size: 18px; color: #fbbf24; margin-bottom: 20px; letter-spacing: 0.03em; }
+    .naming-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .naming-table th { color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; }
+    .naming-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); vertical-align: top; }
+    .naming-table tr:last-child td { border-bottom: none; }
+    .naming-table code { background: rgba(255,255,255,0.1); color: #a5f3fc; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    .naming-examples { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+    .naming-examples h4 { font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .naming-example { font-family: 'Menlo', 'Consolas', monospace; font-size: 13px; color: #a5f3fc; margin-bottom: 6px; }
+    .naming-example span { color: rgba(255,255,255,0.4); }
+
+    /* Contacts quick ref */
+    .sf-help-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .sf-help-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .sf-help-card .region { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 6px; }
+    .sf-help-card .name { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .sf-help-card .title { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
+    .sf-help-card .topics { font-size: 13px; color: #374151; line-height: 1.6; }
+
+    .dos-donts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .dos { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 20px; }
+    .donts { background: #fff1f2; border: 1px solid #fca5a5; border-radius: 12px; padding: 20px; }
+    .dos h3 { color: #166534; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .donts h3 { color: #991b1b; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .dos ul, .donts ul { margin-left: 16px; }
+    .dos li, .donts li { font-size: 13.5px; color: #374151; line-height: 1.65; }
+
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 900px) {
+      .howto-grid { grid-template-columns: 1fr; }
+      .dos-donts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main, .page-footer { margin-left: 0; }
+      .page-header, .content { padding: 24px 20px; }
+    }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html" class="active"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Quick Reference</div>
+      <h1>Quick <span>Reference</span></h1>
+      <p class="subtitle">Common tasks, status values, naming shortcuts, and key contacts — all in one place. Bookmark this page for day-to-day Salesforce work.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">How Do I...</h2>
+      <div class="howto-grid">
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">🔍</span>
+            <h3>Find if a company is a member</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Search for the company name in the Salesforce global search bar</li>
+              <li><span class="step-n">2</span>Open the Account record</li>
+              <li><span class="step-n">3</span>Look at the <code>Status__c</code> field — any value starting with "Active" = member</li>
+              <li><span class="step-n">4</span>Check <code>Next_Renewal_Date__c</code> to see when they renew</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">👤</span>
+            <h3>Find all contacts at a company</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Search for the company name in global search</li>
+              <li><span class="step-n">2</span>Open the Account record</li>
+              <li><span class="step-n">3</span>Scroll down to the "Contacts" related list</li>
+              <li><span class="step-n">4</span>All contacts at that company are listed there</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">📣</span>
+            <h3>Create a new campaign for an event</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Go to Campaigns tab → click "New"</li>
+              <li><span class="step-n">2</span>Name: follow <code>REGION_TYPECODE_YYYYMMDD_EventName</code></li>
+              <li><span class="step-n">3</span>Set Type (Webinar, Forum/Event, etc.) and Status (Planning or Active)</li>
+              <li><span class="step-n">4</span>Fill in Start/End Date, Region__c, Event_Name__c</li>
+              <li><span class="step-n">5</span>If it's a session under a larger event, set the ParentId</li>
+              <li><span class="step-n">6</span>Save — the campaign is ready for members to be added</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">➕</span>
+            <h3>Add someone to a campaign</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Open the Campaign record</li>
+              <li><span class="step-n">2</span>Scroll to "Campaign Members" related list</li>
+              <li><span class="step-n">3</span>Click "Add Members" and search by name or email</li>
+              <li><span class="step-n">4</span>Set Status: <em>Registered</em> (pre-event) or <em>Attended</em> (post-event)</li>
+              <li><span class="step-n">5</span>Click Add / Save</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">🔄</span>
+            <h3>Move a contact to a different account</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Open the Contact record</li>
+              <li><span class="step-n">2</span>Click Edit (or the pencil icon next to Account Name)</li>
+              <li><span class="step-n">3</span>Search for and select the correct Account</li>
+              <li><span class="step-n">4</span>Save — the contact now inherits the new account's membership status</li>
+              <li><span class="step-n">5</span>Verify <code>Account_Status__c</code> and <code>Is_Member__c</code> updated correctly</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">💼</span>
+            <h3>Create an Opportunity for a renewal</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Navigate to the Account record for the member company</li>
+              <li><span class="step-n">2</span>Scroll to "Opportunities" related list → click "New Opportunity"</li>
+              <li><span class="step-n">3</span>Name: <em>"2026 [Region] Membership Renewal_CompanyName"</em></li>
+              <li><span class="step-n">4</span>Type: <em>Membership - Renewal</em>; Stage: <em>Prospecting</em></li>
+              <li><span class="step-n">5</span>Set Close Date (expected renewal date) and Amount</li>
+              <li><span class="step-n">6</span>Advance stages as the deal progresses</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">🏗️</span>
+            <h3>Build a mailable contact list (US/Global)</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>Go to Reports → Create a Contacts report</li>
+              <li><span class="step-n">2</span>Filter: <code>Account.Status__c LIKE 'Active%'</code></li>
+              <li><span class="step-n">3</span>Filter: <code>Account.Region__c IN ('NA', 'Global')</code></li>
+              <li><span class="step-n">4</span>Filter: <code>HasOptedOutOfEmail = false</code></li>
+              <li><span class="step-n">5</span>Filter: <code>IsEmailBounced = false</code></li>
+              <li><span class="step-n">6</span>Filter: <code>Email != null</code></li>
+              <li><span class="step-n">7</span>Filter: <code>Is_Board_Member__c = false</code> AND <code>Current_B2B_CMO_Council_member__c = false</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howto-card">
+          <div class="howto-card-header">
+            <span class="icon">🆕</span>
+            <h3>Add a new contact to Salesforce</h3>
+          </div>
+          <div class="howto-card-body">
+            <ul class="howto-steps">
+              <li><span class="step-n">1</span>First, search for them — they may already exist</li>
+              <li><span class="step-n">2</span>Go to Contacts tab → click "New"</li>
+              <li><span class="step-n">3</span>Fill in: First Name, Last Name, Email, Title</li>
+              <li><span class="step-n">4</span>Account Name: link to their company Account (required)</li>
+              <li><span class="step-n">5</span>If their company isn't in SF, create the Account first</li>
+              <li><span class="step-n">6</span>Review the duplicate warning before saving</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <h2 class="section-heading">Status Values at a Glance</h2>
+      <div class="status-ref-grid">
+
+        <div class="status-ref-card">
+          <h3>Account Status (Status__c)</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-green">Active-Parent</span> Main membership holder</li>
+            <li><span class="badge badge-green">Active-Subsidiary</span> Covered under parent</li>
+            <li><span class="badge badge-blue">Active-Subsidiary (irrelevant)</span> Covered, low engagement</li>
+            <li><span class="badge badge-purple" style="background:#f3e8ff;color:#6b21a8;">Active-Local Council</span> APAC local member</li>
+            <li><span class="badge badge-yellow">Pending</span> Deal in progress</li>
+            <li><span class="badge badge-red">Inactive/Cancelled</span> Former member</li>
+            <li><span class="badge badge-gray">Non-Member</span> No membership</li>
+          </ul>
+        </div>
+
+        <div class="status-ref-card">
+          <h3>Campaign Status</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-blue">Planning</span> Being set up — not yet live</li>
+            <li><span class="badge badge-green">Active</span> Open for registrations</li>
+            <li><span class="badge badge-gray">Completed</span> Event is over</li>
+            <li><span class="badge badge-red">Aborted</span> Cancelled</li>
+          </ul>
+        </div>
+
+        <div class="status-ref-card">
+          <h3>Lead Status</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-blue">New</span> Just arrived, not reviewed</li>
+            <li><span class="badge badge-yellow">Working</span> Being reviewed</li>
+            <li><span class="badge badge-green">Qualified</span> Confirmed good lead</li>
+            <li><span class="badge badge-gray">Unqualified</span> Not a fit (spam, student, etc.)</li>
+            <li><span class="badge badge-gray">Converted</span> Now a Contact — done</li>
+          </ul>
+        </div>
+
+        <div class="status-ref-card">
+          <h3>Opportunity Stage (simplified)</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-gray">Prospecting</span> Identified, not yet contacted</li>
+            <li><span class="badge badge-blue">Qualified</span> Interest confirmed</li>
+            <li><span class="badge badge-yellow">Negotiation/Review</span> Terms being discussed</li>
+            <li><span class="badge badge-orange">Commitments</span> Verbal/written agreement</li>
+            <li><span class="badge badge-orange">Invoice Sent</span> Awaiting payment</li>
+            <li><span class="badge badge-green">Closed Won</span> Payment received!</li>
+            <li><span class="badge badge-red">Closed Lost</span> Deal fell through</li>
+          </ul>
+        </div>
+
+        <div class="status-ref-card">
+          <h3>Campaign Member Status — Engaged</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-green">Attended</span> Confirmed attendee</li>
+            <li><span class="badge badge-green">Checked In</span> Checked in at event</li>
+            <li><span class="badge badge-green">Paid-Attended</span> Paid and attended</li>
+            <li><span class="badge badge-green">Watched / On-Demand</span> Watched recording</li>
+            <li><span class="badge badge-green">Downloaded</span> Downloaded content</li>
+            <li><span class="badge badge-green">Responded</span> Completed survey</li>
+          </ul>
+        </div>
+
+        <div class="status-ref-card">
+          <h3>Campaign Member Status — Not Engaged</h3>
+          <ul class="status-list">
+            <li><span class="badge badge-blue">Registered</span> Signed up, attendance unknown</li>
+            <li><span class="badge badge-yellow">Invited</span> Outreach sent only</li>
+            <li><span class="badge badge-yellow">Sent</span> Email sent to them</li>
+            <li><span class="badge badge-red">No Show</span> Registered, didn't attend</li>
+            <li><span class="badge badge-red">Cancel</span> Cancelled their registration</li>
+            <li><span class="badge badge-red">Declined</span> Said no</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <h2 class="section-heading">Campaign Naming Cheat Sheet</h2>
+      <div class="naming-cheat">
+        <h3>Format</h3>
+        <div class="naming-formula">REGION _ TYPECODE _ YYYYMMDD _ EventName</div>
+        <table class="naming-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>REGION</strong></td>
+              <td>
+                <code>ALL</code> (global) &nbsp;|&nbsp;
+                <code>NAM</code> (North America) &nbsp;|&nbsp;
+                <code>APAC</code> &nbsp;|&nbsp;
+                <code>EMEA</code> &nbsp;|&nbsp;
+                <code>LATAM</code>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>TYPECODE</strong></td>
+              <td>
+                <code>Wbnr</code> (Webinar) &nbsp;|&nbsp;
+                <code>Wbs</code> (Workshop/Session) &nbsp;|&nbsp;
+                <code>Eml</code> (Email) &nbsp;|&nbsp;
+                <code>Tsh</code> (Thought Leadership)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>YYYYMMDD</strong></td>
+              <td>Date of the event. Example: <code>20260429</code> = April 29, 2026</td>
+            </tr>
+            <tr>
+              <td><strong>EventName</strong></td>
+              <td>CamelCase, no spaces. Keep concise. For sub-events, put parent name first: <code>POSSIBLE2026_SessionName</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="naming-examples">
+          <h4>Examples</h4>
+          <div class="naming-example">ALL_Wbnr_20260408_TheStateOfMarketingAnalytics</div>
+          <div class="naming-example">APAC_Wbs_20260408_MMAIndonesiaDataInsights</div>
+          <div class="naming-example">NAM_Eml_20260408_SMARTIES2026</div>
+          <div class="naming-example">ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</div>
+          <div class="naming-example">EMEA_Wbs_20260915_DMEXCO2026_Roundtable</div>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Key Fields Quick Reference</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What You Want to Know</th><th>Object</th><th>Field Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Is this company a member?</td><td>Account</td><td><code>Status__c</code></td><td>Must start with "Active" to be a member</td></tr>
+            <tr><td>When does their membership renew?</td><td>Account</td><td><code>Next_Renewal_Date__c</code></td><td>Date field</td></tr>
+            <tr><td>What type of company is this?</td><td>Account</td><td><code>Primary_Ecosystem__c</code></td><td>Marketer, Agency, Enabler, etc.</td></tr>
+            <tr><td>Which region is this account in?</td><td>Account</td><td><code>Region__c</code></td><td>NA, Global, APAC, EMEA, LATAM</td></tr>
+            <tr><td>Who is the MMA contact for this account?</td><td>Account</td><td><code>Main_Rep__c</code></td><td>MMA staff member</td></tr>
+            <tr><td>What country is this company in?</td><td>Account</td><td><code>MKTG_Country__c</code></td><td>Use this — NOT Country__c</td></tr>
+            <tr><td>Has this person opted out of email?</td><td>Contact</td><td><code>HasOptedOutOfEmail</code></td><td>True = do not email</td></tr>
+            <tr><td>Is this person's email bounced?</td><td>Contact</td><td><code>IsEmailBounced</code></td><td>True = email is invalid</td></tr>
+            <tr><td>Is this person a board member?</td><td>Contact</td><td><code>Is_Board_Member__c</code></td><td>Covers all boards except B2B CMO Council</td></tr>
+            <tr><td>Does this person have a website login?</td><td>Contact</td><td><code>Has_website_login__c</code></td><td>"Yes" = has MMAGlobal.com account</td></tr>
+            <tr><td>Which form did this lead submit?</td><td>Lead</td><td><code>Web_To_Lead_Forms__c</code></td><td>Form name</td></tr>
+            <tr><td>Where did this lead come from (marketing)?</td><td>Lead</td><td><code>UTM_Source_Copy__c</code></td><td>Email, Google, LinkedIn, etc.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Dos and Don'ts</h2>
+      <div class="dos-donts">
+        <div class="dos">
+          <h3>✅ Do This</h3>
+          <ul>
+            <li>Follow the campaign naming convention every time</li>
+            <li>Check Account Status__c (not contact) to verify membership</li>
+            <li>Use <code>MKTG_Country__c</code> for country filtering on Accounts</li>
+            <li>Filter for <code>Region__c IN ('NA','Global')</code> for US reports</li>
+            <li>Exclude board members and opted-out contacts from mass outreach</li>
+            <li>Create a new Opportunity for each year's renewal</li>
+            <li>Keep the Next_Steps__c field updated on Opportunities</li>
+            <li>Search for a person before creating a new Contact (check for duplicates)</li>
+            <li>Contact Aaron Sultan if you have questions about leads or data quality</li>
+          </ul>
+        </div>
+        <div class="donts">
+          <h3>🚫 Don't Do This</h3>
+          <ul>
+            <li>Don't manually convert leads — the daily auto-script handles it</li>
+            <li>Don't edit or move contacts on the UNKNWN account manually</li>
+            <li>Don't use <code>Country__c</code> for country filtering — use <code>MKTG_Country__c</code></li>
+            <li>Don't create a campaign without following the naming convention</li>
+            <li>Don't email contacts where HasOptedOutOfEmail = true</li>
+            <li>Don't create a Contact without linking it to an Account</li>
+            <li>Don't amend a prior year's Closed Won Opportunity — create a new one</li>
+            <li>Don't assume a contact is a member — always check the Account record</li>
+            <li>Don't forget the B2B CMO Council field — it's not in Is_Board_Member__c</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Who to Contact for Salesforce Help</h2>
+      <div class="sf-help-grid">
+
+        <div class="sf-help-card">
+          <div class="region">US / Global</div>
+          <div class="name">Aaron Sultan</div>
+          <div class="title">Sales &amp; Membership Enablement Manager</div>
+          <div class="topics"><strong>Ask about:</strong> Leads, contact data, campaigns, Pardot lists, data quality, auto-conversion scripts, anything about how SF data works at MMA</div>
+        </div>
+
+        <div class="sf-help-card">
+          <div class="region">EMEA / EU / MEA</div>
+          <div class="name">Bülent Doruker</div>
+          <div class="title">CRM Director — Istanbul</div>
+          <div class="topics"><strong>Ask about:</strong> EMEA Opportunities, CRM automation for EMEA, Pardot for European markets, EMEA data quality</div>
+        </div>
+
+        <div class="sf-help-card">
+          <div class="region">APAC</div>
+          <div class="name">Rohit Dadwal</div>
+          <div class="title">Managing Director APAC — Singapore</div>
+          <div class="topics"><strong>Ask about:</strong> APAC Opportunities, Local Council membership data, APAC campaigns and events</div>
+        </div>
+
+        <div class="sf-help-card">
+          <div class="region">LATAM</div>
+          <div class="name">Fabiano Destri Lobo</div>
+          <div class="title">LATAM Lead</div>
+          <div class="topics"><strong>Ask about:</strong> LATAM Opportunities, sponsorship deals, Latin American member accounts</div>
+        </div>
+
+        <div class="sf-help-card">
+          <div class="region">MEA (Africa)</div>
+          <div class="name">Sarah Utermark</div>
+          <div class="title">South Africa — Johannesburg</div>
+          <div class="topics"><strong>Ask about:</strong> MEA membership, South African accounts, MEA event campaigns</div>
+        </div>
+
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>New to Salesforce entirely?</strong> Salesforce has free training at <strong>Trailhead (trailhead.salesforce.com)</strong> — the "Salesforce Platform Basics" and "CRM Essentials" trails are excellent starting points. Then come back to this handbook to understand MMA's specific setup.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Quick Reference — Last updated April 2026 — Primary contact: Aaron Sultan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

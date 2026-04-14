@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accounts — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111;
+      --primary-light: #16213e;
+      --accent: #0f3460;
+      --accent-bright: #ffa400;
+      --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111;
+      --text-muted: #6b6c6c;
+      --border: #e7e8e8;
+      --bg: #f7f8f8;
+      --card-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+
+    .main { margin-left: var(--sidebar-width); }
+
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+
+    .content { padding: 40px 32px; max-width: 1100px; }
+
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong  { font-weight: 700; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    .table-wrap-title { font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 16px 16px 0; text-transform: uppercase; letter-spacing: 0.07em; }
+
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .status-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .status-item .status-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .status-item .status-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    .ecosystem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .eco-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .eco-item .eco-name { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .eco-item .eco-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .eco-item.eco-marketer { border-left: 4px solid #ffa400; }
+    .eco-item.eco-sp { border-left: 4px solid #0f3460; }
+    .eco-split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .eco-side { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .eco-side-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+    .eco-side-label.label-m { color: #ffa400; }
+    .eco-side-label.label-sp { color: #0f3460; }
+    .eco-side h4 { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+    .eco-side p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .eco-side .eco-count { display: inline-block; font-size: 12px; font-weight: 600; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; margin-top: 10px; color: var(--text-muted); }
+    .eco-examples { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 8px; line-height: 1.5; }
+    .sp-types { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .sp-type-row { font-size: 12px; color: #374151; }
+
+    ul { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main, .page-footer { margin-left: 0; }
+      .page-header, .content { padding: 24px 20px; }
+    }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html" class="active"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Core Objects &rsaquo; Accounts</div>
+      <h1>Accounts <span>(Companies)</span></h1>
+      <p class="subtitle">An Account represents a company. Every Contact, Opportunity, and Campaign interaction eventually ties back to an Account. Understanding Account structure is foundational to using Salesforce at MMA.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">What Is an Account?</h2>
+      <p>In Salesforce, an <strong>Account</strong> is a company — a brand, agency, tech platform, media company, or any organization that has a relationship with MMA. Every person (Contact) must belong to an Account. Every membership renewal (Opportunity) is tied to an Account. If you want to know whether a company is a member, you look at their Account record.</p>
+      <p>MMA has thousands of Accounts ranging from active global member corporations to non-member companies that have simply attended an event or expressed interest in the past.</p>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Membership lives on the Account, not the Contact.</strong> When you want to know if someone is a member, look at their Account's <code>Status__c</code> field — not the Contact directly. The Contact's membership-related fields are just mirrors of the Account.</div>
+      </div>
+
+      <h2 class="section-heading">Membership Status</h2>
+      <p>The most important field on an Account is <code>Status__c</code>. This is the primary membership filter used across all MMA reports, scripts, and data exports.</p>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>The golden rule:</strong> To find all members, filter <code>Status__c LIKE 'Active%'</code>. Any Status__c value beginning with "Active" means the company is a current member.</div>
+      </div>
+
+      <h3 class="sub-heading">Status__c Values Explained</h3>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-green">Active-Parent</span></div>
+          <div class="status-desc">The main (parent) membership. This company holds the primary membership record. Most global and national members fall here.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-green">Active-Subsidiary</span></div>
+          <div class="status-desc">A subsidiary or child company covered under a parent company's membership. They get member benefits through the parent.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-blue">Active-Subsidiary (irrelevant)</span></div>
+          <div class="status-desc">Covered under a parent, but classified as "irrelevant" — typically too small or inactive to be meaningfully engaged. Still technically active.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-purple">Active-Local Council</span></div>
+          <div class="status-desc">Member of a regional Local Council (common in APAC). These accounts are active but tracked separately from global memberships.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-yellow">Pending</span></div>
+          <div class="status-desc">Membership is in process — a deal is likely in the Opportunity pipeline, but not yet closed/paid.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-red">Inactive/Cancelled</span></div>
+          <div class="status-desc">Was once a member but their membership has lapsed or was cancelled. Important to track for win-back efforts.</div>
+        </div>
+        <div class="status-item">
+          <div class="status-name"><span class="badge badge-gray">Non-Member</span></div>
+          <div class="status-desc">Has never been a member, or the account was created for tracking purposes only. No active membership relationship.</div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Supporting Membership Fields</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field</th><th>API Name</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Account Type</strong></td>
+              <td><code>Account_Type__c</code></td>
+              <td>Broader category: <em>Corporate Membership</em>, <em>Academic Membership</em>, <em>Local Membership</em>, or <em>Non-Member</em></td>
+            </tr>
+            <tr>
+              <td><strong>Membership Type</strong></td>
+              <td><code>Membership_Type__c</code></td>
+              <td>Tier of membership: <em>Global</em>, <em>Regional</em>, <em>Local Council</em>, <em>Strategic Partner</em>, or <em>Non-Member</em></td>
+            </tr>
+            <tr>
+              <td><strong>Next Renewal Date</strong></td>
+              <td><code>Next_Renewal_Date__c</code></td>
+              <td>Date when this company's membership is next due for renewal</td>
+            </tr>
+            <tr>
+              <td><strong>Last Renewal Date</strong></td>
+              <td><code>Last_Renewal_Date__c</code></td>
+              <td>Date of most recent renewal payment</td>
+            </tr>
+            <tr>
+              <td><strong>Current Dues</strong></td>
+              <td><code>Current_dues__c</code></td>
+              <td>Dollar amount of current membership dues</td>
+            </tr>
+            <tr>
+              <td><strong>2026 Dues Charged</strong></td>
+              <td><code>X2026_Dues_Charged__c</code></td>
+              <td>Dues charged for 2026 (year-specific tracking field)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Account Hierarchy: Parent &amp; Child Accounts</h2>
+      <p>Large companies often have multiple Salesforce records — a parent company and one or more subsidiary accounts. This is called an Account Hierarchy.</p>
+
+      <div class="card">
+        <h3>Example: A Large Holding Company</h3>
+        <p style="margin-bottom:10px;">Imagine a major holding company like a global advertising group. In Salesforce it might look like:</p>
+        <ul>
+          <li><strong>Parent Account:</strong> "GlobalAdGroup Inc." — Status: <span class="badge badge-green">Active-Parent</span> — holds the membership</li>
+          <li><strong>Child Account A:</strong> "GlobalAdGroup Agency NYC" — Status: <span class="badge badge-green">Active-Subsidiary</span> — covered under parent</li>
+          <li><strong>Child Account B:</strong> "GlobalAdGroup Media Buying" — Status: <span class="badge badge-blue">Active-Subsidiary (irrelevant)</span> — covered but not engaged</li>
+        </ul>
+        <p style="margin-top:10px;">Contacts at any of these three accounts have member access, but the primary membership relationship is managed at the parent level.</p>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Tip:</strong> When looking at a contact's membership, always check if their account is a subsidiary. If so, navigate up to the parent account to see the full membership details, renewal date, and dues.</div>
+      </div>
+
+      <h2 class="section-heading">Region</h2>
+      <p>Every Account has a <code>Region__c</code> field that determines which MMA regional team manages the relationship and which data exports/reports include the account.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Region Value</th><th>Covers</th><th>Key MMA Team</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="badge badge-blue">NA</span></td><td>United States, Canada</td><td>Aaron Sultan, Amanda Hyland, Greg Stuart</td></tr>
+            <tr><td><span class="badge badge-gray">Global</span></td><td>Multi-region or globally scoped members</td><td>Greg Stuart, US/Global team</td></tr>
+            <tr><td><span class="badge badge-green">APAC</span></td><td>Asia-Pacific (Singapore, Indonesia, India, Vietnam, Sri Lanka, etc.)</td><td>Rohit Dadwal and APAC team</td></tr>
+            <tr><td><span class="badge badge-purple">EMEA</span></td><td>Europe, Middle East, Africa (Turkey, Germany, EU countries)</td><td>Melis Ertem, Elvin Altun, Bülent Doruker</td></tr>
+            <tr><td><span class="badge badge-yellow">LATAM</span></td><td>Latin America (Argentina, Brazil, etc.)</td><td>Fabiano Destri Lobo, Thais Schauff</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Report scoping:</strong> Default MMA reports and data exports filter for <code>Region__c IN ('NA', 'Global')</code>. Regional data (APAC, EMEA, LATAM) is separate. If you're running a global analysis, make sure to either remove the region filter or adjust it explicitly.</div>
+      </div>
+
+      <h2 class="section-heading">Ecosystem (Industry Type)</h2>
+      <p>The <code>Primary_Ecosystem__c</code> field on Account classifies what type of company a member is within the marketing and media industry. It drives segmentation for outreach, reporting, and membership composition analysis. As of 2026, MMA has <strong>1,016 active member accounts</strong> across all ecosystems.</p>
+
+      <div class="callout callout-tip" style="margin-top: 20px;">
+        <span class="callout-icon">🧭</span>
+        <div>
+          <strong>The most important segmentation in Salesforce:</strong> Every active member account is either a <strong>Marketer</strong> or a <strong>Solution Provider</strong>. That two-way split is the foundation for almost all audience segmentation at MMA — used in reports, mailable counts, outreach campaigns, and board/council targeting. Everything else flows from understanding this distinction.
+        </div>
+      </div>
+
+      <h3 class="sub-heading" style="margin-top: 28px;">The Core Divide: Marketer vs. Solution Provider</h3>
+
+      <div class="eco-split">
+        <div class="eco-side">
+          <div class="eco-side-label label-m">Single ecosystem value</div>
+          <h4>Marketer</h4>
+          <p>A company whose marketing team is an <em>internal function</em> — they spend money on advertising and media to promote their own brand, products, or services to consumers. They are the ones <strong>buying</strong> the marketing ecosystem's outputs.</p>
+          <p class="eco-examples">Ford, Coca-Cola, Bank of America, Marriott, Walmart, American Express, GEICO, Eli Lilly, L'Oreal, Unilever, Mastercard, The Home Depot, Heineken, Verizon</p>
+          <span class="eco-count">297 active accounts</span>
+        </div>
+        <div class="eco-side">
+          <div class="eco-side-label label-sp">Every other ecosystem value</div>
+          <h4>Solution Provider</h4>
+          <p>Any company that <em>sells</em> something into the marketing process — services, technology, media inventory, data, or research. They exist to help marketers do their jobs, or to profit from marketers' spending.</p>
+          <div class="sp-types">
+            <div class="sp-type-row">📣 <strong>Agency</strong> — media, creative, PR, research agencies</div>
+            <div class="sp-type-row">📺 <strong>Seller</strong> — platforms, publishers, media that sell ad space</div>
+            <div class="sp-type-row">⚙️ <strong>Enabler</strong> — ad tech, mar tech, data, measurement tools</div>
+            <div class="sp-type-row">📡 <strong>Carrier/Operator</strong> — telecom/mobile network operators</div>
+            <div class="sp-type-row">🔬 <strong>Associate</strong> — research institutes, trade orgs, consultancies</div>
+          </div>
+          <span class="eco-count">526 active accounts</span>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">🔑</span>
+        <div>
+          <strong>The quick test:</strong> Ask — "Does this company have a marketing department that <em>spends</em> money on advertising to sell its own products?" If yes → <strong>Marketer</strong>. If they're selling services, technology, or inventory that helps other companies market → <strong>Solution Provider</strong>.
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Ecosystem Values — Definitions &amp; Examples</h3>
+
+      <div class="ecosystem-grid">
+        <div class="eco-item eco-marketer">
+          <div class="eco-name">Marketer</div>
+          <div class="eco-desc">Brands and advertisers. Their marketing team is internal — they buy media and run campaigns to sell their own products or services. Spans retail, CPG, financial services, healthcare, auto, hospitality, and more. The largest single ecosystem in MMA's membership.</div>
+        </div>
+        <div class="eco-item eco-sp">
+          <div class="eco-name">Agency</div>
+          <div class="eco-desc">Companies that manage marketing on behalf of brands. Includes media agencies (GroupM, Publicis, IPG Mediabrands, Omnicom), creative agencies, PR firms (Weber Shandwick), research/measurement firms, and strategy consultancies that run marketing practices. They plan, buy, and execute on behalf of clients.</div>
+        </div>
+        <div class="eco-item eco-sp">
+          <div class="eco-name">Seller</div>
+          <div class="eco-desc">Companies that own and sell media inventory or ad space. Includes social/digital platforms (Google, Meta, TikTok, LinkedIn, Pinterest, Snap, Reddit), streaming services (Netflix, Hulu, Spotify, Disney+), traditional broadcasters (ESPN, NBCUniversal), and retail media networks (Amazon Ads, Walmart Connect, CVS Media Exchange). They monetize audiences.</div>
+        </div>
+        <div class="eco-item eco-sp">
+          <div class="eco-name">Enabler</div>
+          <div class="eco-desc">Technology and data companies that power the marketing infrastructure. Includes ad tech platforms (The Trade Desk, AppsFlyer), measurement &amp; verification (DoubleVerify, Integral Ad Science, Nielsen), identity/data (LiveRamp, TransUnion, Amperity), and marketing software (Adobe). They build the tools marketers and sellers use.</div>
+        </div>
+        <div class="eco-item eco-sp">
+          <div class="eco-name">Carrier/Operator</div>
+          <div class="eco-desc">Telecom network operators whose infrastructure underpins mobile marketing. Currently one active member globally: MTN (EMEA). Historically more relevant when SMS and carrier-based mobile was a primary channel.</div>
+        </div>
+        <div class="eco-item eco-sp">
+          <div class="eco-name">Associate</div>
+          <div class="eco-desc">Non-commercial affiliated members — research institutes, trade associations, academic-adjacent organizations. Examples: The Advertising Research Foundation (ARF), Marketing Science Institute, Analytic Partners. Not typical commercial members but formally affiliated with MMA.</div>
+        </div>
+        <div class="eco-item">
+          <div class="eco-name">Academic Institution</div>
+          <div class="eco-desc">Universities and research institutions with an academic membership type. Rare in active count — most appear in specific regional markets.</div>
+        </div>
+        <div class="eco-item">
+          <div class="eco-name">Holding (for holding accounts only)</div>
+          <div class="eco-desc">Reserved exclusively for Holding Pattern and similar internal-use accounts. Should never appear on a real company record. If you see this on a normal Account, flag it.</div>
+        </div>
+        <div class="eco-item">
+          <div class="eco-name">Start Up</div>
+          <div class="eco-desc">Early-stage companies in the marketing/media/technology space, typically in a startup membership tier. Rare in the current active member count.</div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Edge Cases &amp; Nuances</h3>
+      <p style="margin-bottom: 16px;">The ecosystem field was assigned manually by people who understood each company's primary role. A few patterns worth knowing:</p>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>Same company, different ecosystem depending on the entity</h3>
+        <p style="margin-top: 10px; font-size: 14px; line-height: 1.7;"><strong>Walmart</strong> (the retailer) = <span style="color:#ffa400;font-weight:700;">Marketer</span> — they advertise to consumers to drive store traffic. <strong>Walmart Connect</strong> = <span style="color:#0f3460;font-weight:700;">Seller</span> — they sell ad inventory to brands on the Walmart platform. Two separate Account records, two different ecosystems, both correct.</p>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.7;"><strong>Google</strong> (global) = <span style="color:#0f3460;font-weight:700;">Seller</span>. <strong>Google India Private Limited</strong> = <span style="color:#0f3460;font-weight:700;">Enabler</span>. Different legal entities, different primary functions in that market.</p>
+        <p style="margin-top: 8px; font-size: 14px; line-height: 1.7;"><strong>AT&amp;T</strong> and <strong>Verizon</strong> = <span style="color:#ffa400;font-weight:700;">Marketer</span> — even though they're telecoms, they're members because of their marketing function (spending billions on advertising), not their carrier function.</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <h3>Kantar appears as both Agency and Enabler</h3>
+        <p style="margin-top: 10px; font-size: 14px; line-height: 1.7;">Different Kantar entities do different things. Kantar Argentina, Kantar Vietnam = <span style="color:#0f3460;font-weight:700;">Agency</span> (they provide research services to brands). Kantar (global), Kantar Germany = <span style="color:#0f3460;font-weight:700;">Enabler</span> (they provide measurement and data products). When you see Kantar, check the specific Account record.</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 20px;">
+        <h3>SOQL segmentation shorthand</h3>
+        <p style="margin-top: 10px; font-size: 13px; color: var(--text-muted);">Marketer only:</p>
+        <p style="font-family: monospace; background:#f1f5f9; padding: 10px 12px; border-radius: 6px; font-size: 13px; margin-top: 4px;">Primary_Ecosystem__c = 'Marketer'</p>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">Solution Provider (all non-Marketer, excluding Academic and Holding):</p>
+        <p style="font-family: monospace; background:#f1f5f9; padding: 10px 12px; border-radius: 6px; font-size: 13px; margin-top: 4px;">Primary_Ecosystem__c IN ('Agency', 'Seller', 'Enabler', 'Carrier/Operator', 'Associate', 'Start Up')</p>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">Ecosystem breakdown of active members (2026):</p>
+        <table style="margin-top: 8px; font-size: 13px; width: 100%; border-collapse: collapse;">
+          <thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px; text-align:left; font-weight:600;">Ecosystem</th><th style="padding:6px 10px; text-align:left; font-weight:600;">Type</th><th style="padding:6px 10px; text-align:right; font-weight:600;">Active Accounts</th></tr></thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Marketer</td><td style="padding:6px 10px;color:#ffa400;font-weight:600;">Marketer</td><td style="padding:6px 10px;text-align:right;">297</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Enabler</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">200</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Agency</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">182</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Seller</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">132</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Associate</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">11</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Carrier/Operator</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">1</td></tr>
+            <tr style="border-top:1px solid var(--border); background:#f9fafb;"><td style="padding:6px 10px; font-weight:700;">Total (categorized)</td><td style="padding:6px 10px;"></td><td style="padding:6px 10px;text-align:right;font-weight:700;">823</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 10px; font-size: 12px; color: var(--text-muted);">⚠️ ~193 active accounts currently have no ecosystem value set — mostly legacy accounts from MMAF (France) and older APAC/China records. These were members before the ecosystem field was standardized and haven't been retroactively categorized.</p>
+      </div>
+
+      <h2 class="section-heading">Key Account Fields Reference</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field Label</th><th>API Name</th><th>What It Tells You</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Status</strong></td>
+              <td><code>Status__c</code></td>
+              <td>PRIMARY membership filter. Active% = member.</td>
+            </tr>
+            <tr>
+              <td><strong>Account Type</strong></td>
+              <td><code>Account_Type__c</code></td>
+              <td>Corporate, Academic, Local, or Non-Member category</td>
+            </tr>
+            <tr>
+              <td><strong>Membership Type</strong></td>
+              <td><code>Membership_Type__c</code></td>
+              <td>Global, Regional, Local Council, Strategic Partner, or Non-Member tier</td>
+            </tr>
+            <tr>
+              <td><strong>Primary Ecosystem</strong></td>
+              <td><code>Primary_Ecosystem__c</code></td>
+              <td>Industry/company type (Marketer, Agency, Enabler, etc.)</td>
+            </tr>
+            <tr>
+              <td><strong>Region</strong></td>
+              <td><code>Region__c</code></td>
+              <td>NA, Global, APAC, EMEA, or LATAM</td>
+            </tr>
+            <tr>
+              <td><strong>Main Rep</strong></td>
+              <td><code>Main_Rep__c</code></td>
+              <td>The MMA staff member who owns this account relationship</td>
+            </tr>
+            <tr>
+              <td><strong>Secondary Rep</strong></td>
+              <td><code>Secondary_Rep__c</code></td>
+              <td>Backup MMA contact for this account</td>
+            </tr>
+            <tr>
+              <td><strong>Main Rep Email</strong></td>
+              <td><code>Main_Rep_Email__c</code></td>
+              <td>Email address of the Main Rep</td>
+            </tr>
+            <tr>
+              <td><strong>Country</strong></td>
+              <td><code>MKTG_Country__c</code></td>
+              <td>Country of the account. <strong>Note:</strong> Use this field — NOT <code>Country__c</code></td>
+            </tr>
+            <tr>
+              <td><strong>Any Board or MM25</strong></td>
+              <td><code>Any_Board_or_MM25__c</code></td>
+              <td>Catch-all flag: true if any contact at this company is on a board. Does NOT include B2B CMO Council.</td>
+            </tr>
+            <tr>
+              <td><strong>Next Renewal Date</strong></td>
+              <td><code>Next_Renewal_Date__c</code></td>
+              <td>When this account's membership next renews</td>
+            </tr>
+            <tr>
+              <td><strong>Last Renewal Date</strong></td>
+              <td><code>Last_Renewal_Date__c</code></td>
+              <td>Date of last renewal payment</td>
+            </tr>
+            <tr>
+              <td><strong>Current Dues</strong></td>
+              <td><code>Current_dues__c</code></td>
+              <td>Annual membership dues amount</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Key Roles — Leadership Lookups</h2>
+
+      <p style="margin-bottom: 18px;">MMA tracks named executives at each member account using dedicated <strong>Key Role fields</strong> on the Account object. Each field is a lookup that points directly to a Contact record — verified and maintained by Shauna. These fields are the authoritative way to identify CMOs, CEOs, and other C-suite contacts at member companies.</p>
+
+      <div class="callout callout-info" style="margin-bottom: 20px;">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Use Key Roles, not Title text, for members.</strong> Filtering by <code>Contact.Title LIKE '%CMO%'</code> is unreliable — titles vary wildly in free-text. For active member accounts, <code>Account.CMO__c</code> is the verified, Shauna-maintained source of truth. Title-based filtering is the fallback for <em>non-member/prospect</em> accounts where Key Roles may not be populated.
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Field API Name</th>
+              <th>Label</th>
+              <th>Last Updated Field</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>CMO__c</code></td>
+              <td>CMO</td>
+              <td><code>CMO_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>CEO__c</code></td>
+              <td>CEO</td>
+              <td><code>CEO_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Chief_Revenue_Officer__c</code></td>
+              <td>Chief Revenue Officer</td>
+              <td><code>CRO_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>AI_Leader__c</code></td>
+              <td>AI Leader</td>
+              <td><code>AI_Leader_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Chief_Data_Officer__c</code></td>
+              <td>Marketing Data &amp; Analytics Leader</td>
+              <td><code>Chief_Data_Officer_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Head_of_Mobile__c</code></td>
+              <td>Chief Digital Officer</td>
+              <td><code>Head_of_Mobile_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Chief_Strategy_Officer__c</code></td>
+              <td>Chief Strategy Officer</td>
+              <td><code>Chief_Strategy_Officer_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Chief_Growth_Officer__c</code></td>
+              <td>Learning &amp; Development Lead</td>
+              <td><code>Chief_Growth_Officer_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Chief_Customer_Officer__c</code></td>
+              <td>Customer Experience Leader</td>
+              <td><code>Chief_Customer_Officer_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Head_of_Client_Services__c</code></td>
+              <td>Brand Marketing Leader</td>
+              <td><code>Head_of_Client_Services_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>Head_of_Media__c</code></td>
+              <td>Media Investment Leader</td>
+              <td><code>Head_of_Media_last_updated__c</code></td>
+            </tr>
+            <tr>
+              <td><code>CMO_Email__c</code></td>
+              <td>CMO Email (string copy)</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">How to Pull CMOs for a Member Segment (Python — 2-step pattern)</h3>
+      <p style="margin-bottom: 10px;">SOQL can't filter Contact mailable criteria through a Key Role relationship traversal in a single query. Use this two-step approach:</p>
+      <pre style="background:#1e1e2e; color:#cdd6f4; padding:20px; border-radius:8px; font-size:12.5px; line-height:1.6; overflow-x:auto; margin-bottom:20px;"><code><span style="color:#89b4fa"># Step 1 — get active Marketer accounts with CMO populated</span>
+accounts = sf.query("""
+    SELECT Id, Name, CMO__c, CMO__r.FirstName, CMO__r.LastName, CMO__r.Email
+    FROM Account
+    WHERE Status__c LIKE 'Active%'
+      AND Region__c IN ('NA', 'Global')
+      AND Primary_Ecosystem__c = 'Marketer'
+      AND CMO__c != null
+""")
+
+<span style="color:#89b4fa"># Step 2 — apply mailable + board exclusion to those Contact IDs</span>
+cmo_ids = [a['CMO__c'] for a in accounts['records']]
+ids_str = "'" + "','".join(cmo_ids) + "'"
+contacts = sf.query(f"""
+    SELECT Id, FirstName, LastName, Email, Title, Account.Name
+    FROM Contact
+    WHERE Id IN ({ids_str})
+      AND Email != null
+      AND HasOptedOutOfEmail = false
+      AND IsEmailBounced = false
+      AND Is_Board_Member__c = false
+      AND Current_B2B_CMO_Council_member__c = false
+""")</code></pre>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Board members can hold Key Roles.</strong> A contact listed as the CMO in <code>CMO__c</code> may also be a board member. For invite-based programs (e.g., CCS) where board members should be excluded, apply the standard board exclusion in Step 2. For all-CMO mailings where board members are OK to include, omit those filters — your choice depends on the use case.
+        </div>
+      </div>
+
+      <h2 class="section-heading">Special Accounts to Know</h2>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div>
+          <strong>UNKNWN Account</strong> — This is a system placeholder. Leads and contacts that can't be matched to a real company are temporarily placed here. Do NOT manually move contacts to or from this account. The daily automation script manages this queue. Talk to Aaron Sultan if you see a contact here that should be matched to a real account.
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Admin Holding Account</strong> — An internal bucket for contacts that failed matching during lead conversion. Similar to UNKNWN — contacts here are awaiting cleanup and re-assignment to their correct company account. Do not use this account for real data entry.
+        </div>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div>
+          <strong>Holding for Non-Accounts</strong> — A legacy workaround account that should no longer be used. Before MMA had a dedicated Salesforce admin, when a contact changed jobs and their new company didn't exist in Salesforce yet, they were placed here rather than creating a proper Account record. That practice is now obsolete. If you see contacts in this account, do not move them without flagging to Aaron Sultan first — they need to be matched to a real Account or have one created. <strong>Never add new contacts here.</strong>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">👔</span>
+        <div>
+          <strong>Holding Pattern</strong> — An active, intentional account for contacts who are between jobs. When a known contact (particularly a senior marketer or executive MMA tracks) leaves their company but hasn't yet announced a new role, they're moved here rather than deleted. This preserves their engagement history and keeps them visible so MMA can re-engage quickly when they land somewhere new. Contacts in Holding Pattern are there <em>on purpose</em> — do not remove or re-assign them without checking with Aaron Sultan. When the person joins a new company, move them to that company's Account.
+        </div>
+      </div>
+
+      <h2 class="section-heading">How to Find Member Accounts</h2>
+      <p>When building a list view or report of member companies, always filter on <code>Status__c</code>:</p>
+
+      <div class="card">
+        <h3>SOQL Filter for Active Members</h3>
+        <p style="font-family: monospace; background:#f1f5f9; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px;">WHERE Status__c LIKE 'Active%'</p>
+        <p style="margin-top: 10px;">This catches all four Active status values: Active-Parent, Active-Subsidiary, Active-Subsidiary (irrelevant), and Active-Local Council.</p>
+      </div>
+
+      <div class="card">
+        <h3>SOQL Filter for NA/Global Members Only</h3>
+        <p style="font-family: monospace; background:#f1f5f9; padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 10px;">WHERE Status__c LIKE 'Active%' AND Region__c IN ('NA', 'Global')</p>
+        <p style="margin-top: 10px;">This is the standard scope for US-team reports and mass outreach lists.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Accounts — Last updated April 2026 — Questions? Contact Aaron Sultan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

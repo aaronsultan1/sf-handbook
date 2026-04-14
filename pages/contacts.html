@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacts — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    .mailable-checklist { list-style: none; margin: 0; padding: 0; }
+    .mailable-checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.5; color: #374151; }
+    .mailable-checklist li:last-child { border-bottom: none; }
+    .check { font-size: 16px; flex-shrink: 0; }
+    .board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 16px 0; }
+    .board-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .board-item .board-name { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .board-item .board-field { font-family: monospace; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .board-item .board-note { font-size: 12px; color: #374151; line-height: 1.5; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html" class="active"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Core Objects &rsaquo; Contacts</div>
+      <h1>Contacts <span>(People)</span></h1>
+      <p class="subtitle">A Contact is a specific person at a company. Understanding how contacts are structured — including membership inheritance, mailable criteria, and board flags — is essential for all outreach and reporting work.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">What Is a Contact?</h2>
+      <p>In Salesforce, a <strong>Contact</strong> is an individual person — an executive, marketer, account manager, or any employee at a member or non-member company. Every Contact must be linked to an Account (their company). Contacts without an Account cannot exist in the standard Salesforce data model.</p>
+      <p>Contacts are the primary audience for MMA's email outreach, event invitations, and membership communications. Understanding which contacts are "mailable" is one of the most common tasks in Salesforce.</p>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Remember:</strong> A contact's membership status comes from their Account. If you want to know if someone is a member, look at <code>Account.Status__c</code> — or at the Contact's <code>Account_Status__c</code> field, which mirrors it.</div>
+      </div>
+
+      <h2 class="section-heading">Key Contact Fields</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Field Label</th><th>API Name</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>First Name</strong></td><td><code>FirstName</code></td><td>Contact's first name</td></tr>
+            <tr><td><strong>Last Name</strong></td><td><code>LastName</code></td><td>Contact's last name</td></tr>
+            <tr><td><strong>Email</strong></td><td><code>Email</code></td><td>Primary email address — required for outreach</td></tr>
+            <tr><td><strong>Title</strong></td><td><code>Title</code></td><td>Job title at their company</td></tr>
+            <tr><td><strong>Phone</strong></td><td><code>Phone</code></td><td>Direct phone number</td></tr>
+            <tr><td><strong>Account Name</strong></td><td><code>Account.Name</code> / <code>AccountId</code></td><td>The company this person belongs to — ALWAYS required</td></tr>
+            <tr><td><strong>Is Member</strong></td><td><code>Is_Member__c</code></td><td>Checkbox — mirrors whether their Account is Active. True = member.</td></tr>
+            <tr><td><strong>Account Status</strong></td><td><code>Account_Status__c</code></td><td>Mirror of the Account's <code>Status__c</code> field</td></tr>
+            <tr><td><strong>Has Website Login</strong></td><td><code>Has_website_login__c</code></td><td>Picklist — "Yes" means they have an MMAGlobal.com login</td></tr>
+            <tr><td><strong>Total Website Logins</strong></td><td><code>Total_website_logins__c</code></td><td>Lifetime count of website logins</td></tr>
+            <tr><td><strong>Last Website Login</strong></td><td><code>Last_website_login__c</code></td><td>Date of most recent MMAGlobal.com login</td></tr>
+            <tr><td><strong>Opted Out of Email</strong></td><td><code>HasOptedOutOfEmail</code></td><td>True = they have unsubscribed. Do NOT email opted-out contacts.</td></tr>
+            <tr><td><strong>Email Bounced</strong></td><td><code>IsEmailBounced</code></td><td>True = their email address is invalid/bounced. Remove from outreach.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">What Makes a Contact "Mailable"?</h2>
+      <p>When building lists for email campaigns or event invitations, a contact must meet all of the following criteria to be included. This is often called the "mailable" definition at MMA.</p>
+
+      <div class="card">
+        <h3>Mailable Criteria Checklist</h3>
+        <ul class="mailable-checklist">
+          <li><span class="check">✅</span><div><strong>Active Account:</strong> Their Account's <code>Status__c</code> must start with "Active" (Active-Parent, Active-Subsidiary, Active-Local Council, etc.)</div></li>
+          <li><span class="check">✅</span><div><strong>NA or Global Region:</strong> Their Account's <code>Region__c</code> must be <code>NA</code> or <code>Global</code> (for US/Global outreach — regional teams have their own lists)</div></li>
+          <li><span class="check">✅</span><div><strong>Has an Email Address:</strong> The <code>Email</code> field must not be blank</div></li>
+          <li><span class="check">✅</span><div><strong>Not Opted Out:</strong> <code>HasOptedOutOfEmail</code> must be <code>false</code></div></li>
+          <li><span class="check">✅</span><div><strong>Not Bounced:</strong> <code>IsEmailBounced</code> must be <code>false</code></div></li>
+          <li><span class="check">✅</span><div><strong>Not a Board Member:</strong> <code>Is_Board_Member__c = false</code> AND <code>Current_B2B_CMO_Council_member__c = false</code> (board members get separate, custom outreach)</div></li>
+        </ul>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>All six conditions must be true simultaneously.</strong> A contact who has an active account but has opted out of email should never receive mass outreach. Missing any one of these filters can result in emailing people who shouldn't receive the message.</div>
+      </div>
+
+      <h2 class="section-heading">Board Member Flags</h2>
+      <p>Board membership is tracked at the Contact level. MMA has several boards, and each has its own field. This matters for outreach — board members typically receive personal, individually crafted communications rather than mass emails.</p>
+
+      <div class="board-grid">
+        <div class="board-item">
+          <div class="board-name">Is Board Member (catch-all)</div>
+          <div class="board-field"><code>Is_Board_Member__c</code></div>
+          <div class="board-note">True if the contact is on ANY of the following boards: Global, NA, Media, CDO, APAC, EMEA, LATAM, or MFC (Marketing Futures Council / MM25). Use this for quick filtering.</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">Global Board</div>
+          <div class="board-field"><code>Current_Global_Board_member__c</code></div>
+          <div class="board-note">Member of MMA's Global Board of Directors</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">NA Board</div>
+          <div class="board-field"><code>Current_NA_Board_member__c</code></div>
+          <div class="board-note">Member of the North America Board</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">Media Board</div>
+          <div class="board-field"><code>Current_Media_board_member__c</code></div>
+          <div class="board-note">Member of the Media Board</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">CDO Board</div>
+          <div class="board-field"><code>Current_CDO_Board_member__c</code></div>
+          <div class="board-note">Member of the Chief Data Officer Board</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">MFC / MM25 Board</div>
+          <div class="board-field"><code>Current_MM25_Board_member__c</code></div>
+          <div class="board-note">Member of the Marketing Futures Council (MFC) or MM25. Also included in <code>Is_Board_Member__c</code>. Typically still included in mass outreach.</div>
+        </div>
+        <div class="board-item">
+          <div class="board-name">B2B CMO Council</div>
+          <div class="board-field"><code>Current_B2B_CMO_Council_member__c</code></div>
+          <div class="board-note">Member of the B2B CMO Council. <strong>NOT included</strong> in <code>Is_Board_Member__c</code> — must be checked separately. Usually still included in outreach.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Practical rule for mass outreach exclusions:</strong> Exclude contacts where <code>Is_Board_Member__c = true</code> OR <code>Current_B2B_CMO_Council_member__c = true</code>. This catches all board members across all categories. MFC/MM25 members and B2B CMO Council members are usually still included in routine communications — check with Aaron Sultan if you're unsure.
+        </div>
+      </div>
+
+      <h2 class="section-heading">Website Login Tracking</h2>
+      <p>MMA tracks whether contacts have logged into <strong>MMAGlobal.com</strong> — the member portal. This helps identify engaged vs. inactive members.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>What It Means</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>Has_website_login__c = 'Yes'</code></td>
+              <td>This contact has an MMAGlobal.com account and has logged in at least once</td>
+            </tr>
+            <tr>
+              <td><code>Total_website_logins__c</code></td>
+              <td>How many times they've logged in total (lifetime). Higher = more engaged.</td>
+            </tr>
+            <tr>
+              <td><code>Last_website_login__c</code></td>
+              <td>Date of most recent login. If it's more than 6+ months ago, they may be disengaged.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">How to Search for a Contact</h2>
+      <ol style="margin-left:20px;">
+        <li>Use the <strong>global search bar</strong> at the top of Salesforce. Type the person's name or email address.</li>
+        <li>Salesforce will show matches across all objects — click the result under "Contacts."</li>
+        <li>If searching by email domain (e.g., all contacts at Nike), go to Contacts list views and filter by <code>Email contains 'nike.com'</code>.</li>
+        <li>For large searches, use <strong>Reports</strong> — navigate to Reports, create or open a "Contacts" report, and apply filters.</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Searching by company:</strong> The fastest way to find all contacts at a company is to open the Account record, then scroll to the "Contacts" related list at the bottom of the page. This shows every contact linked to that account.</div>
+      </div>
+
+      <h2 class="section-heading">What to Do If a Contact Is on the Wrong Account</h2>
+      <p>Sometimes a contact ends up on the wrong Account — for example, they appear under "UNKNWN" or an old company they no longer work for. Here's how to handle it:</p>
+
+      <div class="card">
+        <h3>Steps to Reassign a Contact</h3>
+        <ol style="margin-left: 16px;">
+          <li>Open the Contact record.</li>
+          <li>Click <strong>Edit</strong> (or the edit pencil on the Account Name field).</li>
+          <li>In the "Account Name" field, search for and select the correct company Account.</li>
+          <li>Save the record. The contact will now appear under the correct account and inherit that account's membership status.</li>
+          <li>Verify that the contact's <code>Account_Status__c</code> and <code>Is_Member__c</code> fields updated correctly after saving.</li>
+        </ol>
+      </div>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div><strong>Do not move contacts off the UNKNWN account without checking with Aaron Sultan first.</strong> The UNKNWN account is part of the lead conversion pipeline. Moving contacts out of it manually can interfere with automated cleanup scripts.</div>
+      </div>
+
+      <h2 class="section-heading">Pardot / Account Engagement — Deliverability Fields</h2>
+      <p>Pardot (now called <strong>Account Engagement</strong>) syncs bidirectionally with Salesforce. It writes bounce and opt-out signals back to Contact fields. Understanding which fields are authoritative — and which are Pardot-specific convenience fields — is important for accurate segmentation.</p>
+
+      <h3 class="sub-heading">Canonical Mailable Filters (use these)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Email Opt Out</strong></td><td><code>HasOptedOutOfEmail</code></td><td>Standard Salesforce field. Set when a contact unsubscribes via Pardot or is manually opted out. <strong>This is the field used in the mailable definition.</strong></td></tr>
+            <tr><td><strong>Is Email Bounced</strong></td><td><code>IsEmailBounced</code></td><td>Standard Salesforce field. Set to true when Pardot records a hard bounce. <strong>Use this — not the Pardot-specific hard bounce field — for list filtering.</strong></td></tr>
+            <tr><td><strong>Email Bounced Date</strong></td><td><code>EmailBouncedDate</code></td><td>When the bounce occurred. Useful for auditing stale contacts or researching when an address went bad.</td></tr>
+            <tr><td><strong>Email Bounced Reason</strong></td><td><code>EmailBouncedReason</code></td><td>The bounce error string (e.g., "550 5.1.1 The email account does not exist"). Useful for diagnosing bad addresses.</td></tr>
+            <tr><td><strong>Last Bounce Research</strong></td><td><code>Last_bounce_research__c</code></td><td>Date field — tracks when someone last attempted to verify or correct a bounced email address.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Pardot-Specific Sync Fields (reference only)</h3>
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>These fields are written by Pardot and are useful for understanding the Pardot state of a contact, but <strong>do not substitute them for the canonical SF fields above</strong> when building SOQL filters or Python scripts. Use <code>IsEmailBounced</code> and <code>HasOptedOutOfEmail</code> as your primary deliverability gates.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Account Engagement Hard Bounced</strong></td><td><code>pi__pardot_hard_bounced__c</code></td><td>Pardot's own hard bounce flag. Should align with <code>IsEmailBounced</code> but is Pardot-managed — do not use as primary filter.</td></tr>
+            <tr><td><strong>Pardot Do Not Email</strong></td><td><code>Pardot_Do_Not_Email__c</code></td><td>Set by Pardot when a contact is suppressed from Account Engagement sends. May not always align with <code>HasOptedOutOfEmail</code>.</td></tr>
+            <tr><td><strong>Pardot Global Suppression</strong></td><td><code>Pardot_global_suppression__c</code></td><td>Contact is on a global suppression list in Pardot — will not receive any Pardot emails regardless of other settings.</td></tr>
+            <tr><td><strong>Pardot Mailable</strong></td><td><code>Pardot_mailable__c</code></td><td>Convenience rollup field computed by Pardot. Indicates the contact can receive Pardot sends. <strong>Do not use as the primary mailable filter</strong> — it doesn't account for account-level membership, region, or board status.</td></tr>
+            <tr><td><strong>Deleted in Pardot</strong></td><td><code>Deleted_in_Pardot__c</code></td><td>The prospect record was deleted from Pardot. The SF Contact still exists but Pardot no longer has them.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Granular Opt-Out Fields</h3>
+      <p>Beyond the global opt-out, MMA tracks category-specific opt-outs that let contacts unsubscribe from particular types of communications without opting out entirely.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Promotions Opt-Out</strong></td><td><code>Promotions_opt_out__c</code></td><td>Opted out of promotional/marketing emails specifically</td></tr>
+            <tr><td><strong>Surveys Opt-Out</strong></td><td><code>Surveys_opt_out__c</code></td><td>Opted out of survey and research invitations</td></tr>
+            <tr><td><strong>Mobile Video Forum Opt-Out</strong></td><td><code>Mobile_Video_Forum_opt_out__c</code></td><td>Opted out of Mobile Video Forum specific communications</td></tr>
+            <tr><td><strong>Opt-Out Date</strong></td><td><code>Opt_out_date__c</code></td><td>Date when the contact globally opted out — useful for reporting on opt-out trends</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">DAMit Certification</h2>
+      <p><strong>DAMit</strong> (Data-Driven Advertising &amp; Marketing Intelligence Test) is MMA's annual marketing certification program. Contacts who pass earn a DAMit Certificate for that year. This is tracked in Salesforce with per-year boolean fields on the Contact object.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>What It Means</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DAMit Certificate 2025</strong></td><td><code>DAMit_Certificate_2025__c</code></td><td>True = contact earned the DAMit certification in 2025</td></tr>
+            <tr><td><strong>DAMit Certificate 2026</strong></td><td><code>DAMit_Certificate_2026__c</code></td><td>True = contact earned the DAMit certification in 2026</td></tr>
+            <tr><td><strong>DAMit Certificate 2027</strong></td><td><code>DAMit_Certificate_2027__c</code></td><td>True = contact earned the DAMit certification in 2027</td></tr>
+            <tr><td><strong>DAMit Certificate 2028</strong></td><td><code>DAMit_Certificate_2028__c</code></td><td>True = contact earned the DAMit certification in 2028</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>A new field is added each year as the program runs. To find all contacts who have <em>ever</em> been certified, filter for any year field being true. To find contacts certified in the current year, filter on the current year's field only.</div>
+      </div>
+
+      <h2 class="section-heading">Newsletter Engagement — RASA &amp; DATT</h2>
+      <p>MMA uses two newsletter/content delivery systems — <strong>RASA</strong> and <strong>DATT</strong> — that sync engagement data back to Salesforce. These fields track email opens, clicks, content preferences, and engagement scores at the contact level. They are supplemental engagement signals, not substitutes for the mailable definition.</p>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>These fields are still being refined.</strong> RASA and DATT engagement data is actively integrated and evolving. Use them as directional signals for engagement — do not use them as hard filters for campaign suppression without checking with Aaron Sultan.</div>
+      </div>
+
+      <h3 class="sub-heading">RASA — AI Newsletter Engagement</h3>
+      <p>RASA is an AI-powered newsletter personalization platform that delivers curated content to contacts. Engagement and preference data syncs back to Salesforce.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Rasa Newsletter</strong></td><td><code>RasaNewsletter__c</code></td><td>True = contact is subscribed to the main MMA RASA newsletter</td></tr>
+            <tr><td><strong>Rasa Newsletter DATT</strong></td><td><code>RasaNewsletterDATT__c</code></td><td>True = contact is subscribed to the DATT edition of the RASA newsletter</td></tr>
+            <tr><td><strong>Engagement Level</strong></td><td><code>rasa_engagement__c</code></td><td>Numeric engagement score from RASA — higher = more engaged with newsletter content</td></tr>
+            <tr><td><strong>Engagement Update</strong></td><td><code>rasa_engagement_update__c</code></td><td>Datetime when the engagement score was last recalculated</td></tr>
+            <tr><td><strong>Categories</strong></td><td><code>rasa_categories__c</code></td><td>Content categories this contact engages with (set by RASA based on reading behavior)</td></tr>
+            <tr><td><strong>Topics</strong></td><td><code>rasa_topics__c</code></td><td>Specific topics this contact has shown interest in</td></tr>
+            <tr><td><strong>Last Open</strong></td><td><code>rasa_last_open__c</code></td><td>Most recent newsletter open via RASA</td></tr>
+            <tr><td><strong>Last Click</strong></td><td><code>rasa_last_click__c</code></td><td>Most recent article click via RASA</td></tr>
+            <tr><td><strong>Last Article Click</strong></td><td><code>rasa_last_article_click__c</code></td><td>Most recent click on a specific article</td></tr>
+            <tr><td><strong>Open Count</strong></td><td><code>rasa_unique_open__c</code></td><td>Total unique opens tracked by RASA</td></tr>
+            <tr><td><strong>Click Count</strong></td><td><code>rasa_unique_click__c</code></td><td>Total unique clicks tracked by RASA</td></tr>
+            <tr><td><strong>Last Delivery</strong></td><td><code>rasa_last_deliver__c</code></td><td>Most recent newsletter delivery to this contact</td></tr>
+            <tr><td><strong>Last Delivery Status</strong></td><td><code>rasa_delivery_status__c</code></td><td>Status of the most recent RASA delivery (delivered, bounced, etc.)</td></tr>
+            <tr><td><strong>Rasa Opted Out</strong></td><td><code>rasa_opted_out__c</code></td><td>True = contact has opted out of RASA newsletters</td></tr>
+            <tr><td><strong>Rasa Opted Out DATT</strong></td><td><code>rasa_opted_out_DATT__c</code></td><td>True = contact has opted out of the DATT edition specifically</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">DATT — Data Analytics &amp; Technology Newsletter</h3>
+      <p>DATT is MMA's Data Analytics &amp; Technology newsletter. Engagement metrics from DATT also sync to Salesforce, in parallel with RASA.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DATT Engagement Level</strong></td><td><code>DATT_Engagement_Level__c</code></td><td>Engagement score for DATT newsletter activity</td></tr>
+            <tr><td><strong>DATT Engagement Update</strong></td><td><code>DATT_Engagement_Update__c</code></td><td>When the DATT engagement score was last updated</td></tr>
+            <tr><td><strong>DATT Click Count</strong></td><td><code>DATT_Click_Count__c</code></td><td>Total clicks on DATT newsletter content</td></tr>
+            <tr><td><strong>DATT Open Count</strong></td><td><code>DATT_Open_Count__c</code></td><td>Total opens of DATT newsletter issues</td></tr>
+            <tr><td><strong>DATT Last Click</strong></td><td><code>DATT_Last_Click__c</code></td><td>Most recent click in DATT</td></tr>
+            <tr><td><strong>DATT Last Open</strong></td><td><code>DATT_Last_Open__c</code></td><td>Most recent open of a DATT issue</td></tr>
+            <tr><td><strong>DATT Last Article Click</strong></td><td><code>DATT_Last_Article_Click__c</code></td><td>Most recent article-level click in DATT</td></tr>
+            <tr><td><strong>DATT Last Delivery</strong></td><td><code>DATT_Last_Delivery__c</code></td><td>Most recent DATT newsletter sent to this contact</td></tr>
+            <tr><td><strong>DATT Last Delivery Status</strong></td><td><code>DATT_Last_Delivery_Status__c</code></td><td>Status of the most recent DATT delivery</td></tr>
+            <tr><td><strong>DATT Topics</strong></td><td><code>DATT_Topics__c</code></td><td>Topics this contact engages with in DATT content</td></tr>
+            <tr><td><strong>DATT Categories</strong></td><td><code>DATT_Categories__c</code></td><td>Content categories from DATT activity</td></tr>
+            <tr><td><strong>Clicked DATT</strong></td><td><code>Clicked_DATT__c</code></td><td>Tracks whether/how this contact has clicked in DATT</td></tr>
+            <tr><td><strong>Reg DATT</strong></td><td><code>Reg_DATT__c</code></td><td>Picklist — registration status for DATT newsletter</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Creating a New Contact</h2>
+      <p>If you need to add someone to Salesforce who doesn't exist yet:</p>
+
+      <ol style="margin-left:20px;">
+        <li>First <strong>search</strong> for them — they may already exist as a Lead or under a different account.</li>
+        <li>Navigate to the <strong>Contacts tab</strong> and click <strong>New</strong>.</li>
+        <li>Fill in: First Name, Last Name, Email, Title, and — critically — the <strong>Account Name</strong> (their company).</li>
+        <li>If their company doesn't exist as an Account yet, you'll need to create the Account first, then create the Contact linked to it.</li>
+        <li>Do NOT create a contact without linking it to an Account.</li>
+      </ol>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Check for duplicates before creating.</strong> Salesforce may warn you about potential duplicate contacts. Always review the duplicate alert — if the person already exists, edit their existing record rather than creating a second one.</div>
+      </div>
+
+      <h2 class="section-heading">Contact Type</h2>
+      <p>The <strong>Contact Type</strong> field (<code>Contact_Type_1__c</code>) marks contacts who hold a named formal role at their member account — the billing rep, the main membership contact, a board director, a council member. These are the people Shauna and the membership team specifically place and maintain. <strong>Never bulk-move, merge, or auto-process contacts where this field is set.</strong></p>
+
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div><strong>Contact Type = protected record.</strong> Any contact with <code>Contact_Type_1__c</code> populated must be excluded from bulk automation, data migrations, list imports, and cleanup scripts. These contacts have intentional placements. Combined with <code>Is_Board_Member__c</code>, they form MMA's "do not auto-touch" set.</div>
+      </div>
+
+      <h3 class="sub-heading">Account Rep Values</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contact Type Value</th><th>What It Means</th><th>Account-Level Mirror</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Main Rep</strong></td><td>Primary MMA membership contact at the account</td><td><code>Main_Rep__c</code> on Account</td></tr>
+            <tr><td><strong>Secondary Rep</strong></td><td>Secondary membership contact</td><td><code>Secondary_Rep__c</code> on Account</td></tr>
+            <tr><td><strong>Billing Contact</strong></td><td>Finance/AP contact for dues billing — receives invoices</td><td>—</td></tr>
+            <tr><td><strong>LATAM Rep</strong></td><td>Regional rep for the Latin America chapter</td><td>—</td></tr>
+            <tr><td><strong>EMEA Rep</strong></td><td>Regional rep for the EMEA chapter</td><td>—</td></tr>
+            <tr><td><strong>APAC Rep</strong></td><td>Regional rep for the APAC chapter</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Board &amp; Council Values</h3>
+      <p>All BOD (Board of Directors) values track the contact's role across MMA's global and regional boards. Council values track community think tank membership.</p>
+      <div class="card">
+        <h3>BOD Values</h3>
+        <p style="font-size:14px;color:#374151;line-height:1.8;">
+          <code>BOD Global</code> &nbsp;·&nbsp; <code>BOD NA</code> &nbsp;·&nbsp; <code>BOD Media</code> &nbsp;·&nbsp; <code>BOD CDO</code> &nbsp;·&nbsp; <code>BOD APAC</code> &nbsp;·&nbsp; <code>BOD EMEA</code> &nbsp;·&nbsp; <code>BOD LATAM</code> &nbsp;·&nbsp; <code>BOD MENA</code><br>
+          <code>BOD Argentina</code> &nbsp;·&nbsp; <code>BOD Brazil</code> &nbsp;·&nbsp; <code>BOD China</code> &nbsp;·&nbsp; <code>BOD Germany</code> &nbsp;·&nbsp; <code>BOD India</code> &nbsp;·&nbsp; <code>BOD Indonesia</code><br>
+          <code>BOD Mexico</code> &nbsp;·&nbsp; <code>BOD South Africa</code> &nbsp;·&nbsp; <code>BOD Thailand</code> &nbsp;·&nbsp; <code>BOD Turkey</code> &nbsp;·&nbsp; <code>BOD Vietnam</code>
+        </p>
+      </div>
+      <div class="card">
+        <h3>Council Values</h3>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;flex:1;min-width:200px;">
+            <div style="font-size:13px;font-weight:700;color:#14532d;margin-bottom:4px;">MFC</div>
+            <div style="font-size:13px;color:#374151;">Marketing Futures Council member</div>
+          </div>
+          <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:12px 16px;flex:1;min-width:200px;">
+            <div style="font-size:13px;font-weight:700;color:#1e3a8a;margin-bottom:4px;">B2B CMO Council</div>
+            <div style="font-size:13px;color:#374151;">B2B CMO Council member</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub-heading">Contact Type vs. Is_Board_Member__c</h3>
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>These two fields are not the same and don't fully overlap.</strong> <code>Is_Board_Member__c</code> catches most board roles but does NOT capture Billing Contact, Main Rep, Secondary Rep, or country-level BODs. <code>Contact_Type_1__c</code> captures all of those, but you still need <code>Is_Board_Member__c</code> for the catch-all. For any exclusion in automation, always filter on BOTH.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contact Type Value</th><th>Also in Is_Board_Member__c?</th></tr></thead>
+          <tbody>
+            <tr><td>Main Rep, Billing Contact, Secondary Rep, Regional Reps</td><td>No — <code>Contact_Type_1__c</code> only</td></tr>
+            <tr><td>BOD Global, BOD NA, BOD Media, BOD CDO, BOD APAC, BOD EMEA, BOD LATAM</td><td>Yes — covered by <code>Is_Board_Member__c</code></td></tr>
+            <tr><td>Country BODs (Argentina, Brazil, China, etc.)</td><td>No — <code>Contact_Type_1__c</code> only</td></tr>
+            <tr><td>MFC</td><td>Yes — included in <code>Is_Board_Member__c</code> catch-all</td></tr>
+            <tr><td>B2B CMO Council</td><td>No — separate field <code>Current_B2B_CMO_Council_member__c</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Standard exclusion pattern for bulk scripts:</strong><br><code>AND Is_Board_Member__c = false AND Contact_Type_1__c = null</code><br>Use this in every SOQL query that performs bulk contact operations. It's the safe floor for automation.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Contacts — Last updated April 2026 — Questions? Contact Aaron Sultan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leads — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    .pipeline-flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 20px 0; }
+    .pipeline-step { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--primary); flex-shrink: 0; }
+    .pipeline-arrow { font-size: 18px; color: var(--text-muted); margin: 0 8px; }
+    .flow-diagram { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-step { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .flow-content { flex: 1; }
+    .flow-content strong { font-size: 14px; display: block; margin-bottom: 4px; color: var(--primary); }
+    .flow-content p { font-size: 13px; margin: 0; color: #374151; line-height: 1.55; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html" class="active"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Core Objects &rsaquo; Leads</div>
+      <h1>Leads <span>(Inbound Inquiries)</span></h1>
+      <p class="subtitle">Leads are people who have submitted a web form or been added to Salesforce but haven't yet been matched to a company. MMA has an automated daily conversion process — understanding how it works will save you from creating data problems.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <div class="callout callout-danger">
+        <span class="callout-icon">🚫</span>
+        <div>
+          <strong>Do NOT manually convert leads.</strong> MMA runs a daily automated lead conversion script (<code>lead_convert_prep.py</code>). If you manually convert a lead, you may create duplicate contacts, miss critical field mappings, or break the automation logic. Always coordinate with Aaron Sultan before touching leads.
+        </div>
+      </div>
+
+      <h2 class="section-heading">What Is a Lead?</h2>
+      <p>In Salesforce, a <strong>Lead</strong> is an unconfirmed person — someone who has shown interest in MMA but hasn't been verified and matched to a company Account yet. Leads are a temporary state. The end goal is always to <em>convert</em> a lead into a Contact linked to the correct Account.</p>
+
+      <p>Think of leads as the "waiting room" of Salesforce. When someone fills out a form on MMAGlobal.com, registers for a webinar, or is imported from an event list, they typically start as a Lead. Once Salesforce (or the automation script) identifies their company, the lead is promoted to a full Contact.</p>
+
+      <h2 class="section-heading">Where Do Leads Come From?</h2>
+      <p>Leads arrive in Salesforce through several channels, tracked in the <code>LeadSource</code> field:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Lead Source</th><th>How It Gets Into SF</th><th>Common Examples</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Web Forms</strong></td>
+              <td>Salesforce Web-to-Lead forms on MMAGlobal.com push directly to SF</td>
+              <td>POSSIBLE conference registrations, "Contact Us" submissions, research download forms</td>
+            </tr>
+            <tr>
+              <td><strong>Webinar Registrations</strong></td>
+              <td>Webinar platform (Zoom, GoTo) registrations synced to SF campaigns; new registrants become leads</td>
+              <td>MMA webinar sign-ups from non-members or new contacts</td>
+            </tr>
+            <tr>
+              <td><strong>Event Sign-Ups</strong></td>
+              <td>Event registration lists imported after events</td>
+              <td>Attendees from POSSIBLE, Smarties, or other conferences who aren't in SF yet</td>
+            </tr>
+            <tr>
+              <td><strong>Manually Added</strong></td>
+              <td>A team member creates a lead directly in Salesforce</td>
+              <td>Business card scans, referral introductions, trade show contacts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Custom Lead Fields From Forms</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Web Form Name</strong></td><td><code>Web_To_Lead_Forms__c</code></td><td>Which form on the website the person submitted</td></tr>
+            <tr><td><strong>Primary Ecosystem</strong></td><td><code>Primary_Ecosystem__c</code></td><td>What type of company they work for (pre-filled from form dropdowns)</td></tr>
+            <tr><td><strong>Global Market</strong></td><td><code>Global_Market__c</code></td><td>Their geographic market/region</td></tr>
+            <tr><td><strong>Comments / Questions</strong></td><td><code>Comments_or_Questions__c</code></td><td>Free-text field from the form — often contains their reason for submitting</td></tr>
+            <tr><td><strong>UTM Source</strong></td><td><code>UTM_Source_Copy__c</code></td><td>Marketing attribution — where did the person come from? (e.g., email, Google, LinkedIn)</td></tr>
+            <tr><td><strong>UTM Campaign</strong></td><td><code>UTM_Campaign_Copy__c</code></td><td>Which specific campaign drove the form submission</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Lead Status Values</h2>
+      <p>Every Lead has a <code>Status</code> field that tracks where it is in the review process.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>Meaning</th><th>What's Next</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-blue">New</span></td>
+              <td>Just arrived in Salesforce — not yet reviewed by anyone</td>
+              <td>Daily script will attempt auto-conversion. If no match, stays as New.</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">Working</span></td>
+              <td>Someone is actively reviewing or attempting to identify/contact this lead</td>
+              <td>Update notes, try to identify company, prep for conversion</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">Qualified</span></td>
+              <td>Lead has been reviewed and is a legitimate prospect worth pursuing</td>
+              <td>Conversion to Contact is imminent; or auto-conversion handles it</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-gray">Unqualified</span></td>
+              <td>Lead is not a fit for MMA — spam, irrelevant industry, student, etc.</td>
+              <td>Mark as Unqualified and leave — do not convert</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-gray">Converted</span></td>
+              <td>Lead has been successfully converted to a Contact (and linked to an Account)</td>
+              <td>Conversion complete. The lead record is archived — the person now lives as a Contact.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">The Daily Auto-Conversion Process</h2>
+      <p>MMA runs a Python script called <code>lead_convert_prep.py</code> every morning. This script is the right way to handle lead conversion at scale. Here's how it works:</p>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <strong>Script runs each morning</strong>
+            <p>The automation queries all leads with Status = <em>New</em> or <em>Working</em> and reviews them for conversion eligibility.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <strong>Company matching</strong>
+            <p>The script compares the lead's Company Name and Email Domain against existing Salesforce Accounts. It looks for exact or close matches.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <strong>Match found → Convert</strong>
+            <p>If a matching Account is found, the lead is automatically converted to a Contact on that Account. All fields are mapped. Status becomes <em>Converted</em>.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-content">
+            <strong>No match found → Lead stays</strong>
+            <p>If no matching Account is found, the lead remains unconverted. It stays in the leads queue until a match can be made manually or the company is added to SF.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <div class="flow-content">
+            <strong>Persistent non-matches → Holding accounts</strong>
+            <p>Leads that can't be matched over time may be placed on the <em>UNKNWN</em> or <em>Admin</em> holding account for manual review and cleanup.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Why the automation matters:</strong> The auto-conversion script handles field mapping, duplicate detection, and campaign member updating all at once. Manual conversions bypass these safeguards and can create inconsistent or duplicate data. Trust the script.</div>
+      </div>
+
+      <h2 class="section-heading">What You Can Do With Leads</h2>
+      <p>Even though you shouldn't convert leads manually, there are things you CAN do:</p>
+
+      <ul>
+        <li><strong>View leads</strong> — Open the Leads tab to see incoming inquiries. You can read their details, form responses, and UTM data.</li>
+        <li><strong>Update the Status</strong> — If you've reviewed a lead and confirmed it's spam or unqualified, you can set Status to <em>Unqualified</em>.</li>
+        <li><strong>Add notes</strong> — Use the Notes &amp; Attachments or Activity sections to log context about a lead.</li>
+        <li><strong>Report on leads</strong> — Run reports on leads by source, form type, or date to understand where inquiries are coming from.</li>
+        <li><strong>Flag for manual review</strong> — If a lead is from a high-value company and hasn't auto-converted, flag it for Aaron Sultan to review.</li>
+      </ul>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Spotting a high-value lead:</strong> Check the lead's Company Name and Title. If the company is a well-known brand and the title is VP or above — and the lead hasn't been converted in a few days — it's worth flagging for follow-up.</div>
+      </div>
+
+      <h2 class="section-heading">Leads vs. Contacts: Key Differences</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dimension</th><th>Lead</th><th>Contact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Account relationship</strong></td>
+              <td>None — not linked to any account</td>
+              <td>Always linked to an Account</td>
+            </tr>
+            <tr>
+              <td><strong>Membership status</strong></td>
+              <td>Unknown — leads have no membership</td>
+              <td>Inherits membership from Account</td>
+            </tr>
+            <tr>
+              <td><strong>Can receive Pardot emails?</strong></td>
+              <td>Limited — leads can be in campaigns but Pardot email is Contact-based</td>
+              <td>Yes, fully</td>
+            </tr>
+            <tr>
+              <td><strong>Campaign membership</strong></td>
+              <td>Can be campaign members as Leads</td>
+              <td>Can be campaign members as Contacts</td>
+            </tr>
+            <tr>
+              <td><strong>Who manages them?</strong></td>
+              <td>Managed by Aaron Sultan / auto-script</td>
+              <td>Managed by relevant regional team</td>
+            </tr>
+            <tr>
+              <td><strong>End state</strong></td>
+              <td>Gets converted to Contact (or marked Unqualified)</td>
+              <td>Permanent record in Salesforce</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Leads — Last updated April 2026 — Questions about leads? Contact Aaron Sultan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

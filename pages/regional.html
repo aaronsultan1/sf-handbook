@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regional Guide — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 20px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+
+    /* Regional profile cards */
+    .region-profile {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 32px;
+      background: var(--card-bg);
+    }
+    .region-header {
+      padding: 20px 24px;
+      color: white;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .region-header.us    { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+    .region-header.apac  { background: linear-gradient(135deg, #15803d, #22c55e); }
+    .region-header.emea  { background: linear-gradient(135deg, #6b21a8, #a855f7); }
+    .region-header.latam { background: linear-gradient(135deg, #92400e, #f59e0b); }
+    .region-header.mea   { background: linear-gradient(135deg, #881337, #ffa400); }
+    .region-flag { font-size: 36px; }
+    .region-header-text h3 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .region-header-text p { font-size: 13px; opacity: 0.85; line-height: 1.4; margin: 0; }
+    .region-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .region-section h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .region-section ul { margin: 0 0 0 16px; }
+    .region-section li { font-size: 13.5px; line-height: 1.65; }
+    .workflow-steps { list-style: none; margin: 0; padding: 0; }
+    .workflow-steps li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13.5px; line-height: 1.5; color: #374151; }
+    .step-num { background: var(--primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .step-num.blue   { background: #3b82f6; }
+    .step-num.green  { background: #22c55e; }
+    .step-num.purple { background: #a855f7; }
+    .step-num.amber  { background: #f59e0b; }
+    .step-num.red    { background: #ffa400; }
+    .people-list { font-size: 13.5px; line-height: 1.7; color: #374151; }
+    .people-list .person { margin-bottom: 6px; }
+    .people-list .person strong { color: var(--primary); }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main, .page-footer { margin-left: 0; }
+      .page-header, .content { padding: 24px 20px; }
+      .region-body { grid-template-columns: 1fr; }
+    }
+
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html" class="active"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Team Guides &rsaquo; Regional Guide</div>
+      <h1>Regional <span>Guide</span></h1>
+      <p class="subtitle">MMA operates across five regions, each with different Salesforce workflows, primary objects, and key contacts. This guide helps you understand how your region uses Salesforce — and how to collaborate with other regions.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">At a Glance: Regions Compared</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Primary Objects</th>
+              <th>Main Use Case</th>
+              <th>Pardot?</th>
+              <th>SF CRM Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-blue">US / Global</span></td>
+              <td>Accounts, Contacts, Leads, Campaigns</td>
+              <td>Contact management, event/webinar campaigns, lead routing, Pardot email lists</td>
+              <td>Yes — heavy</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC</span></td>
+              <td>Opportunities, Accounts, Campaigns</td>
+              <td>Local Council renewals, event sponsorships, APAC-specific campaigns</td>
+              <td>Limited</td>
+              <td>Rohit Dadwal</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA / MEA / EU</span></td>
+              <td>Opportunities, Accounts, Campaigns</td>
+              <td>EMEA membership renewals, sponsorships, Pardot for email</td>
+              <td>Yes — moderate</td>
+              <td>Bülent Doruker</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM</span></td>
+              <td>Opportunities, Accounts</td>
+              <td>Large sponsorship deals, event revenue tracking</td>
+              <td>Limited</td>
+              <td>Fabiano Destri Lobo</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-red">MEA (Africa)</span></td>
+              <td>Opportunities, Accounts</td>
+              <td>MEA membership and events</td>
+              <td>Limited</td>
+              <td>Sarah Utermark</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Detailed Regional Profiles</h2>
+
+      <!-- US / GLOBAL -->
+      <div class="region-profile">
+        <div class="region-header us">
+          <div class="region-flag">🇺🇸</div>
+          <div class="region-header-text">
+            <h3>US / Global Team</h3>
+            <p>America/New_York timezone &bull; Manages the core MMA membership base, all NA/Global campaigns, Pardot email lists, and lead conversion automation</p>
+          </div>
+        </div>
+        <div class="region-body">
+          <div class="region-section">
+            <h4>Key People</h4>
+            <div class="people-list">
+              <div class="person"><strong>Aaron Sultan</strong> — Sales &amp; Membership Enablement Manager; Salesforce admin, leads automation, CRM data quality</div>
+              <div class="person"><strong>Amanda Hyland</strong> — AVP Brand Membership; member relationship management</div>
+              <div class="person"><strong>Greg Stuart</strong> — CEO; global/NA membership conversations at executive level</div>
+              <div class="person"><strong>Shauna Peck</strong> — Membership Project Coordinator</div>
+              <div class="person"><strong>Erin Disney, Denise Champion, Alec Foster</strong> — US team members</div>
+              <div class="person"><strong>Jason Chase, Kevin Granath</strong> — US team</div>
+            </div>
+          </div>
+          <div class="region-section">
+            <h4>Typical Workflow</h4>
+            <ul class="workflow-steps">
+              <li><span class="step-num blue">1</span>Lead arrives from form or event → enters SF as Lead</li>
+              <li><span class="step-num blue">2</span>Daily auto-convert script runs → Lead becomes Contact on correct Account</li>
+              <li><span class="step-num blue">3</span>Contact added to Pardot list for member communications</li>
+              <li><span class="step-num blue">4</span>Campaign created for upcoming event → Contacts invited</li>
+              <li><span class="step-num blue">5</span>Post-event: attendance logged as Campaign Member statuses</li>
+              <li><span class="step-num blue">6</span>Renewal season: Account renewal dates flagged → Account team reaches out</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Primary Objects Used</h4>
+            <ul>
+              <li><strong>Accounts</strong> — track membership status, renewal dates</li>
+              <li><strong>Contacts</strong> — main list management and outreach</li>
+              <li><strong>Leads</strong> — intake from web forms; do not touch manually</li>
+              <li><strong>Campaigns</strong> — all events/webinars with naming convention</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Pardot Usage</h4>
+            <ul>
+              <li>US/Global team is the primary Pardot user</li>
+              <li>Pardot lists built from Salesforce Contact segments (Active, NA/Global, mailable)</li>
+              <li>Email opt-outs sync between Pardot and SF automatically</li>
+              <li>Campaign data in SF feeds Pardot engagement tracking</li>
+            </ul>
+          </div>
+          <div class="region-section" style="grid-column: span 2;">
+            <h4>Notes &amp; Gotchas</h4>
+            <ul>
+              <li>Default reports filter Region IN ('NA','Global') — adjust when needed</li>
+              <li>The UNKNWN and Admin accounts are US-team managed — do not edit them</li>
+              <li>Board member exclusions (Is_Board_Member__c) are most relevant to US outreach</li>
+              <li>Aaron Sultan is the go-to for all SF data questions, lead conversion, and custom scripts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- APAC -->
+      <div class="region-profile">
+        <div class="region-header apac">
+          <div class="region-flag">🌏</div>
+          <div class="region-header-text">
+            <h3>APAC — Asia-Pacific</h3>
+            <p>Singapore, Indonesia, India, Vietnam, Sri Lanka &bull; Heavy Opportunity usage for Local Council renewals and event sponsorships</p>
+          </div>
+        </div>
+        <div class="region-body">
+          <div class="region-section">
+            <h4>Key People</h4>
+            <div class="people-list">
+              <div class="person"><strong>Rohit Dadwal</strong> — Managing Director APAC (Singapore); primary APAC SF user</div>
+              <div class="person"><strong>Nam Nguyen</strong> — APAC Projects Coordinator (Vietnam)</div>
+              <div class="person"><strong>Shanti Tolani</strong> — Country Head (Indonesia)</div>
+              <div class="person"><strong>Rudrashish Nag</strong> — Sri Lanka</div>
+              <div class="person"><strong>Prerana Shukla</strong> — Manager Marketing &amp; Events (India)</div>
+              <div class="person"><strong>Que My Vo</strong> — Head of Partnership (Vietnam)</div>
+            </div>
+          </div>
+          <div class="region-section">
+            <h4>Typical Workflow</h4>
+            <ul class="workflow-steps">
+              <li><span class="step-num green">1</span>Renewal season begins → Create Opportunity (Type: Membership - Renewal) at Prospecting</li>
+              <li><span class="step-num green">2</span>Reach out to member → Log notes in Opportunity</li>
+              <li><span class="step-num green">3</span>Agreement reached → Advance to Commitments or Term Sheet Sent</li>
+              <li><span class="step-num green">4</span>Invoice sent → Move to Invoice Sent (Renewal Notification)</li>
+              <li><span class="step-num green">5</span>Payment received → Closed Won; update Account Status</li>
+              <li><span class="step-num green">6</span>Create Campaign for APAC events (Smarties, IMPACT, Innovate)</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Key Events &amp; Campaigns</h4>
+            <ul>
+              <li>Indonesia: Smarties Unplugged</li>
+              <li>India: IMPACT events</li>
+              <li>Vietnam: MMA Innovate</li>
+              <li>APAC-specific summits and roundtables</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>APAC-Specific SF Fields</h4>
+            <ul>
+              <li><code>APAC_Membership_Type__c</code> — type of APAC membership (Local Council, etc.)</li>
+              <li><code>APAC_Sponsorships__c</code> — APAC sponsorship details on Opportunity</li>
+              <li>Status__c: <em>Active-Local Council</em> is common for APAC members</li>
+              <li>Membership_Type__c: <em>Local Council</em> or <em>Regional</em></li>
+            </ul>
+          </div>
+          <div class="region-section" style="grid-column: span 2;">
+            <h4>Notes</h4>
+            <ul>
+              <li>APAC data is filtered separately from NA/Global reports — they have their own list views</li>
+              <li>Rohit Dadwal is the first point of contact for APAC SF questions</li>
+              <li>Opportunity naming: "2026 APAC Local Council Renewal_CompanyName" is the standard</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMEA -->
+      <div class="region-profile">
+        <div class="region-header emea">
+          <div class="region-flag">🌍</div>
+          <div class="region-header-text">
+            <h3>EMEA / MEA / EU</h3>
+            <p>Turkey, Germany, EU countries, Middle East &bull; Membership renewals, sponsorships, Pardot integration for email</p>
+          </div>
+        </div>
+        <div class="region-body">
+          <div class="region-section">
+            <h4>Key People</h4>
+            <div class="people-list">
+              <div class="person"><strong>Bülent Doruker</strong> — CRM Director (Istanbul); manages CRM automation for EMEA</div>
+              <div class="person"><strong>Melis Ertem</strong> — Turkey / MEA</div>
+              <div class="person"><strong>Elvin Altun</strong> — Germany / EU</div>
+              <div class="person"><strong>Zeynep Albora</strong> — Turkey/EMEA</div>
+              <div class="person"><strong>Serkan Karaman</strong> — Turkey/EMEA</div>
+            </div>
+          </div>
+          <div class="region-section">
+            <h4>Typical Workflow</h4>
+            <ul class="workflow-steps">
+              <li><span class="step-num purple">1</span>Create Opportunity (Membership - Renewal or Sponsorship)</li>
+              <li><span class="step-num purple">2</span>Manage negotiation — update stages as deal progresses</li>
+              <li><span class="step-num purple">3</span>Contract/invoice sent → advance stages accordingly</li>
+              <li><span class="step-num purple">4</span>Payment received → Closed Won</li>
+              <li><span class="step-num purple">5</span>Update Account Status and renewal dates</li>
+              <li><span class="step-num purple">6</span>Bülent manages CRM automation for region-wide processes</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Key Events &amp; Deals</h4>
+            <ul>
+              <li>DMEXCO (Germany) — major sponsorship</li>
+              <li>Germany CMO Lunches</li>
+              <li>Turkey Strategic Memberships</li>
+              <li>EU country memberships (multiple markets)</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Pardot / Email Notes</h4>
+            <ul>
+              <li>EMEA uses Pardot for regional member email campaigns</li>
+              <li>Contacts must exist in SF before Pardot can reach them</li>
+              <li>Opt-out syncs between Pardot and SF automatically</li>
+              <li>Bülent coordinates Pardot list management for EMEA</li>
+            </ul>
+          </div>
+          <div class="region-section" style="grid-column: span 2;">
+            <h4>Notes</h4>
+            <ul>
+              <li>Bülent Doruker is the regional SF/CRM expert for EMEA — contact him for automation questions</li>
+              <li>EMEA, MEA (Middle East/Africa), and EU are all managed under the same regional team but tracked as distinct sub-regions in Account data</li>
+              <li>Opportunity naming: "2026 EMEA Sponsorship_DMEXCO_CompanyName" or "2026 Turkey Strategic Membership_CompanyName"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- LATAM -->
+      <div class="region-profile">
+        <div class="region-header latam">
+          <div class="region-flag">🌎</div>
+          <div class="region-header-text">
+            <h3>LATAM — Latin America</h3>
+            <p>Argentina, Brazil, and broader Latin America &bull; Large sponsorship deals, event revenue — often the highest-value individual Opportunities in the MMA pipeline</p>
+          </div>
+        </div>
+        <div class="region-body">
+          <div class="region-section">
+            <h4>Key People</h4>
+            <div class="people-list">
+              <div class="person"><strong>Fabiano Destri Lobo</strong> — LATAM lead</div>
+              <div class="person"><strong>Thais Schauff</strong> — LATAM team</div>
+            </div>
+          </div>
+          <div class="region-section">
+            <h4>Typical Workflow</h4>
+            <ul class="workflow-steps">
+              <li><span class="step-num amber">1</span>Identify sponsorship or membership opportunity</li>
+              <li><span class="step-num amber">2</span>Create Opportunity (Type: Sponsorship or New Membership)</li>
+              <li><span class="step-num amber">3</span>Long negotiation cycle — update stages regularly</li>
+              <li><span class="step-num amber">4</span>Contract and invoice sent</li>
+              <li><span class="step-num amber">5</span>Payment received → Closed Won</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Key Deals (Examples)</h4>
+            <ul>
+              <li>Mercado Libre — $170,000 sponsorship</li>
+              <li>ICBC Argentina</li>
+              <li>Play Digital / MODO</li>
+              <li>Regional event sponsorships</li>
+            </ul>
+          </div>
+          <div class="region-section">
+            <h4>Notes</h4>
+            <ul>
+              <li>LATAM Opportunities tend to be larger in dollar value than other regions</li>
+              <li>Pardot usage is limited — LATAM email is managed more manually</li>
+              <li>LATAM accounts use Region__c = 'LATAM'</li>
+              <li>Deals are complex and multi-step — keep Next_Steps__c updated</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEA (Africa) -->
+      <div class="region-profile">
+        <div class="region-header mea">
+          <div class="region-flag">🌍</div>
+          <div class="region-header-text">
+            <h3>MEA — Africa (South Africa focus)</h3>
+            <p>South Africa, Johannesburg timezone &bull; MEA membership and events</p>
+          </div>
+        </div>
+        <div class="region-body">
+          <div class="region-section">
+            <h4>Key People</h4>
+            <div class="people-list">
+              <div class="person"><strong>Sarah Utermark</strong> — South Africa, Johannesburg timezone</div>
+              <div class="person"><strong>Mpho Dlamini</strong> — MEA team</div>
+            </div>
+          </div>
+          <div class="region-section">
+            <h4>SF Usage</h4>
+            <ul>
+              <li>Opportunities for MEA membership renewals and events</li>
+              <li>Account management for South African member companies</li>
+              <li>Works closely with EMEA/MEA grouping in Salesforce</li>
+              <li>MEA contacts included under EMEA region umbrella in some reports</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="section-heading">Regional Board of Directors Fields</h2>
+      <p>In addition to the global board flags covered on the <a href="contacts.html">Contacts page</a>, Salesforce tracks country-level board membership for each region. These fields are maintained by the respective regional CRM leads and are important for EMEA (Bülent Doruker) and APAC (Rohit Dadwal) communications.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Contact Field</th>
+              <th>Who Maintains</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-purple">EMEA — Turkey</span></td>
+              <td><code>Current_BOD_Turkey_member__c</code></td>
+              <td>Bülent Doruker / Melis Ertem</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA — Germany</span></td>
+              <td><code>Current_BOD_Germany_member__c</code></td>
+              <td>Bülent Doruker / Elvin Altun</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA — Europe (General)</span></td>
+              <td><code>Current_BOD_Europe_member__c</code></td>
+              <td>Bülent Doruker</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA — UK</span></td>
+              <td><code>Current_BOD_UK_member__c</code></td>
+              <td>Bülent Doruker</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA — MENA</span></td>
+              <td><code>Current_BOD_MENA_member__c</code></td>
+              <td>Bülent Doruker</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-red">MEA — South Africa</span></td>
+              <td><code>Current_South_Africa_Board_member__c</code></td>
+              <td>Sarah Utermark</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC — India</span></td>
+              <td><code>Current_BOD_India_member__c</code></td>
+              <td>Rohit Dadwal / Prerana Shukla</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC — Indonesia</span></td>
+              <td><code>Current_BOD_Indonesia_member__c</code></td>
+              <td>Rohit Dadwal</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC — Vietnam</span></td>
+              <td><code>Current_BOD_Vietnam_member__c</code></td>
+              <td>Rohit Dadwal / Que My Vo</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC — China</span></td>
+              <td><code>Current_BOD_China_member__c</code></td>
+              <td>Rohit Dadwal</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM — Brazil</span></td>
+              <td><code>Current_BOD_Brazil_member__c</code></td>
+              <td>Fabiano Destri Lobo</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM — Argentina</span></td>
+              <td><code>Current_BOD_Argentina_member__c</code></td>
+              <td>Fabiano Destri Lobo</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM — Mexico</span></td>
+              <td><code>Current_BOD_Mexico_member__c</code></td>
+              <td>Fabiano Destri Lobo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>For regional mailings:</strong> When sending communications to a regional board audience, use the country-level field for that region rather than <code>Is_Board_Member__c</code>, which only covers the global boards. For example, to invite Turkey BOD members to a Turkey-specific event: filter on <code>Current_BOD_Turkey_member__c = true</code>.</div>
+      </div>
+
+      <h2 class="section-heading">Regional Preference Center Fields</h2>
+      <p>Each region has its own Preference Center where contacts can manage what types of MMA communications they receive. These preferences sync from Pardot back to Salesforce. There are three preference categories per region.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Programs &amp; Events</th>
+              <th>Research &amp; Insights</th>
+              <th>Smarties Awards</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-blue">NA / Global</span></td>
+              <td><code>Preference_Ctr_Programs_NA__c</code></td>
+              <td><code>Preference_Ctr_Research_NA__c</code></td>
+              <td><code>Preference_Ctr_Smarties_NA__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA</span></td>
+              <td><code>Preference_Ctr_Programs_EMEA__c</code></td>
+              <td><code>Preference_Ctr_Research_EMEA__c</code></td>
+              <td><code>Preference_Ctr_Smarties_EMEA__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC</span></td>
+              <td><code>Preference_Ctr_Programs_APAC__c</code></td>
+              <td><code>Preference_Ctr_Research_APAC__c</code></td>
+              <td><code>Preference_Ctr_Smarties_APAC__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM</span></td>
+              <td><code>Preference_Ctr_Programs_LATAM__c</code></td>
+              <td><code>Preference_Ctr_Research_LATAM__c</code></td>
+              <td><code>Preference_Ctr_Smarties_LATAM__c</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>When building a regional audience for a Pardot email, always filter on the relevant Preference Center field to respect opt-in choices. For example, to send EMEA event invitations: include contacts where <code>Preference_Ctr_Programs_EMEA__c = true</code> (or not opted out, depending on your org's field implementation). Bülent manages the EMEA Preference Center in Salesforce; Aaron Sultan manages NA/Global.</p>
+
+      <h2 class="section-heading">Cross-Region Collaboration</h2>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Global campaigns:</strong> For global events like POSSIBLE that span regions, the campaign's Region__c is set to <code>Global</code> and the name prefix is <code>ALL</code>. Each region may also create their own sub-campaigns if needed for regional tracking.</div>
+      </div>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Don't filter out regional data unintentionally.</strong> If you're working on a global analysis and filtering on Region__c, make sure to include all relevant regions. The US team's default filter of Region IN ('NA','Global') will miss APAC, EMEA, and LATAM data.</div>
+      </div>
+
+      <h3 class="sub-heading">Who to Contact for SF Help</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question / Issue</th><th>Who to Ask</th><th>Region</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Leads, contact data, US/Global campaigns, Pardot lists, data quality</td>
+              <td><strong>Aaron Sultan</strong></td>
+              <td><span class="badge badge-blue">US / Global</span></td>
+            </tr>
+            <tr>
+              <td>EMEA/EU/MEA Opportunities, CRM automation, Pardot for EMEA</td>
+              <td><strong>Bülent Doruker</strong></td>
+              <td><span class="badge badge-purple">EMEA</span></td>
+            </tr>
+            <tr>
+              <td>APAC Opportunities, Local Council data, APAC campaigns</td>
+              <td><strong>Rohit Dadwal</strong></td>
+              <td><span class="badge badge-green">APAC</span></td>
+            </tr>
+            <tr>
+              <td>LATAM deals and Opportunities</td>
+              <td><strong>Fabiano Destri Lobo</strong></td>
+              <td><span class="badge badge-yellow">LATAM</span></td>
+            </tr>
+            <tr>
+              <td>MEA (Africa) membership and accounts</td>
+              <td><strong>Sarah Utermark</strong></td>
+              <td><span class="badge badge-red">MEA</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Regional Guide — Last updated April 2026
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

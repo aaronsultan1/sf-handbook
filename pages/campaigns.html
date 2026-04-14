@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campaigns — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    pre { background: #f1f5f9; color: #0f172a; padding: 16px; border-radius: 8px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; overflow-x: auto; margin: 12px 0; line-height: 1.7; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    .naming-box { background: #1a1a2e; color: #a5f3fc; padding: 20px 24px; border-radius: 10px; font-family: 'Menlo', 'Consolas', monospace; font-size: 14px; margin: 16px 0; line-height: 2; }
+    .naming-box .token { color: #fbbf24; }
+    .naming-box .separator { color: rgba(255,255,255,0.3); }
+    .status-group { margin-bottom: 24px; }
+    .status-group-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .status-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .status-chip { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+    .chip-green  { background: #dcfce7; color: #166534; }
+    .chip-gray   { background: #f3f4f6; color: #374151; }
+    .chip-yellow { background: #fef9c3; color: #854d0e; }
+    .chip-red    { background: #fee2e2; color: #991b1b; }
+    .chip-blue   { background: #dbeafe; color: #1e40af; }
+    .chip-purple { background: #f3e8ff; color: #6b21a8; }
+    .flow-diagram { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+    .flow-step { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .flow-step:last-child { border-bottom: none; }
+    .flow-num { background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .flow-content { flex: 1; }
+    .flow-content strong { font-size: 14px; display: block; margin-bottom: 4px; color: var(--primary); }
+    .flow-content p { font-size: 13px; margin: 0; color: #374151; line-height: 1.55; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html" class="active"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Core Objects &rsaquo; Campaigns</div>
+      <h1>Campaigns <span>(Events &amp; Webinars)</span></h1>
+      <p class="subtitle">Every MMA event, webinar, email blast, and content piece should have a Campaign record in Salesforce. Campaigns track who engaged, who attended, and how they found out about us. The naming convention is critical — automation depends on it.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">What Is a Campaign?</h2>
+      <p>In Salesforce, a <strong>Campaign</strong> is a record that represents any organized MMA activity — an event, a webinar, an email send, a survey, or a content download. Campaigns are how MMA tracks engagement: who registered, who attended, who downloaded something, who was just invited.</p>
+      <p>Every time someone interacts with a Campaign (registers for a webinar, attends an event, downloads a report), they become a <strong>Campaign Member</strong> — a link between that person (Contact or Lead) and that Campaign.</p>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>The naming convention is not optional.</strong> MMA's automation scripts that sync campaign data to Pardot, Outreach, and internal reports parse campaign names to identify region, type, and date. An incorrectly named campaign can break reporting or fail to sync. Always follow the <code>REGION_TYPECODE_YYYYMMDD_EventName</code> format.</div>
+      </div>
+
+      <h2 class="section-heading">Campaign Naming Convention</h2>
+      <p>All campaigns follow this format:</p>
+
+      <div class="naming-box">
+        <span class="token">REGION</span><span class="separator">_</span><span class="token">TYPECODE</span><span class="separator">_</span><span class="token">YYYYMMDD</span><span class="separator">_</span><span class="token">EventName</span>
+      </div>
+
+      <h3 class="sub-heading">Region Codes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>ALL</code></td><td>Global / all regions</td></tr>
+            <tr><td><code>NAM</code></td><td>North America</td></tr>
+            <tr><td><code>APAC</code></td><td>Asia-Pacific</td></tr>
+            <tr><td><code>EMEA</code></td><td>Europe, Middle East &amp; Africa</td></tr>
+            <tr><td><code>LATAM</code></td><td>Latin America</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Type Codes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Event Type</th></tr></thead>
+          <tbody>
+            <tr><td><code>Wbnr</code></td><td>Webinar (virtual)</td></tr>
+            <tr><td><code>Wbs</code></td><td>Workshop or Session (in-person or hybrid)</td></tr>
+            <tr><td><code>Eml</code></td><td>Email campaign / outreach</td></tr>
+            <tr><td><code>Tsh</code></td><td>Thought leadership or special content</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">Real Examples</h3>
+      <div class="card">
+        <pre>ALL_Wbnr_20260408_TheStateOfMarketingAnalytics
+APAC_Wbs_20260408_MMAIndonesiaDataInsights
+NAM_Eml_20260408_SMARTIES2026
+ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</pre>
+        <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">Note: The event name portion uses CamelCase (no spaces). For multi-word events with sub-events (like POSSIBLE sessions), the parent event name comes first.</p>
+      </div>
+
+      <h2 class="section-heading">Campaign Types</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Used For</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Forum/Event</strong></td><td>In-person events, summits, roundtables</td></tr>
+            <tr><td><strong>Webinar</strong></td><td>Virtual webinars</td></tr>
+            <tr><td><strong>Possible</strong></td><td>POSSIBLE conference sessions</td></tr>
+            <tr><td><strong>Breakfast</strong></td><td>Breakfast events</td></tr>
+            <tr><td><strong>Regional Event</strong></td><td>Regional member events</td></tr>
+            <tr><td><strong>Working Group</strong></td><td>Council / working group meetings</td></tr>
+            <tr><td><strong>CCS</strong></td><td>CEO/CMO Summit</td></tr>
+            <tr><td><strong>Mobile Smart Dinner</strong></td><td>Dinner events</td></tr>
+            <tr><td><strong>Survey</strong></td><td>Research surveys</td></tr>
+            <tr><td><strong>Document</strong></td><td>Content/research downloads</td></tr>
+            <tr><td><strong>Email</strong></td><td>Email outreach campaigns</td></tr>
+            <tr><td><strong>Conference</strong></td><td>Large conferences</td></tr>
+            <tr><td><strong>Event</strong></td><td>Generic event (use when no other type fits)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Key Campaign Fields</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Required?</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Name</strong></td>
+              <td><code>Name</code></td>
+              <td><span class="badge badge-red">Required</span></td>
+              <td>Must follow naming convention: <code>REGION_TYPECODE_YYYYMMDD_EventName</code></td>
+            </tr>
+            <tr>
+              <td><strong>Type</strong></td>
+              <td><code>Type</code></td>
+              <td><span class="badge badge-red">Required</span></td>
+              <td>Select from the campaign type picklist above</td>
+            </tr>
+            <tr>
+              <td><strong>Status</strong></td>
+              <td><code>Status</code></td>
+              <td><span class="badge badge-red">Required</span></td>
+              <td><em>Planning</em> → <em>Active</em> → <em>Completed</em> or <em>Aborted</em></td>
+            </tr>
+            <tr>
+              <td><strong>Start Date</strong></td>
+              <td><code>StartDate</code></td>
+              <td><span class="badge badge-yellow">Recommended</span></td>
+              <td>Event start date</td>
+            </tr>
+            <tr>
+              <td><strong>End Date</strong></td>
+              <td><code>EndDate</code></td>
+              <td><span class="badge badge-yellow">Recommended</span></td>
+              <td>Event end date</td>
+            </tr>
+            <tr>
+              <td><strong>Region</strong></td>
+              <td><code>Region__c</code></td>
+              <td><span class="badge badge-yellow">Recommended</span></td>
+              <td>The campaign's region (must match the naming prefix)</td>
+            </tr>
+            <tr>
+              <td><strong>Event Name</strong></td>
+              <td><code>Event_Name__c</code></td>
+              <td><span class="badge badge-yellow">Recommended</span></td>
+              <td>Plain-language name (e.g., "State of Marketing Analytics Webinar")</td>
+            </tr>
+            <tr>
+              <td><strong>Public URL</strong></td>
+              <td><code>Event_Pub_URL__c</code></td>
+              <td><span class="badge badge-gray">Optional</span></td>
+              <td>The public event registration or info URL</td>
+            </tr>
+            <tr>
+              <td><strong>Event Location</strong></td>
+              <td><code>Event_Location__c</code></td>
+              <td><span class="badge badge-gray">Optional</span></td>
+              <td>Physical address or "Virtual" for online events</td>
+            </tr>
+            <tr>
+              <td><strong>Members Only</strong></td>
+              <td><code>Members_only__c</code></td>
+              <td><span class="badge badge-gray">Optional</span></td>
+              <td>Check if this event is exclusively for MMA members</td>
+            </tr>
+            <tr>
+              <td><strong>Parent Campaign</strong></td>
+              <td><code>ParentId</code></td>
+              <td><span class="badge badge-gray">If applicable</span></td>
+              <td>Link to the parent campaign if this is a session or sub-event</td>
+            </tr>
+            <tr>
+              <td><strong>Description</strong></td>
+              <td><code>Description</code></td>
+              <td><span class="badge badge-gray">Optional</span></td>
+              <td>Brief description of the event/campaign purpose</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Campaign Hierarchy (Parent &amp; Child Campaigns)</h2>
+      <p>Large events like POSSIBLE often have a parent campaign record and many child campaign records for individual sessions. This hierarchy allows MMA to track both overall event attendance and session-level engagement.</p>
+
+      <div class="card">
+        <h3>Example: POSSIBLE 2026</h3>
+        <p style="margin-bottom:12px;"><strong>Parent Campaign:</strong> <code>POSSIBLE2026_registration</code> — tracks all registrants</p>
+        <ul>
+          <li><strong>Child Campaign 1:</strong> <code>ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</code></li>
+          <li><strong>Child Campaign 2:</strong> <code>ALL_Wbs_20260429_POSSIBLE2026_KeynoteSpeaker</code></li>
+          <li><strong>Child Campaign 3:</strong> <code>ALL_Wbs_20260429_POSSIBLE2026_WorkshopAI</code></li>
+        </ul>
+        <p style="margin-top:12px;">Each child campaign has its own Campaign Members list. The parent campaign's member count rolls up from all children.</p>
+      </div>
+
+      <h2 class="section-heading">Campaign Member Statuses</h2>
+      <p>When a Contact or Lead is added to a Campaign, they become a Campaign Member with a Status. The status tells you what their relationship to the campaign is — did they attend? Just register? Were they invited but didn't show?</p>
+
+      <div class="status-group">
+        <div class="status-group-label">Confirmed Engagement (attended / watched / completed)</div>
+        <div class="status-chips">
+          <span class="status-chip chip-green">Attended</span>
+          <span class="status-chip chip-green">Checked In</span>
+          <span class="status-chip chip-green">Paid-Attended</span>
+          <span class="status-chip chip-green">Attended - MMA Staff</span>
+          <span class="status-chip chip-green">On-Demand</span>
+          <span class="status-chip chip-green">Watched</span>
+          <span class="status-chip chip-green">Viewed</span>
+          <span class="status-chip chip-green">Downloaded</span>
+          <span class="status-chip chip-green">Responded</span>
+          <span class="status-chip chip-green">Received Submission</span>
+          <span class="status-chip chip-green">Certified</span>
+        </div>
+      </div>
+
+      <div class="status-group">
+        <div class="status-group-label">Registered / Relationship</div>
+        <div class="status-chips">
+          <span class="status-chip chip-blue">Registered</span>
+          <span class="status-chip chip-purple">Sponsor</span>
+          <span class="status-chip chip-purple">Speaker</span>
+        </div>
+      </div>
+
+      <div class="status-group">
+        <div class="status-group-label">Outreach Only (not confirmed engagement)</div>
+        <div class="status-chips">
+          <span class="status-chip chip-yellow">Invited</span>
+          <span class="status-chip chip-yellow">Sent</span>
+        </div>
+      </div>
+
+      <div class="status-group">
+        <div class="status-group-label">Did Not Engage</div>
+        <div class="status-chips">
+          <span class="status-chip chip-red">No Show</span>
+          <span class="status-chip chip-red">Cancel</span>
+          <span class="status-chip chip-red">Declined</span>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Status matters for reporting.</strong> When generating attendance reports, filter Campaign Members by statuses in the "Confirmed Engagement" group. Statuses like <em>Invited</em> and <em>Sent</em> indicate outreach was done, not that someone attended.</div>
+      </div>
+
+      <h2 class="section-heading">How to Add Someone to a Campaign</h2>
+
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-content">
+            <strong>Open the Campaign record</strong>
+            <p>Navigate to the Campaigns tab and find the event you want to add someone to. You can search by the campaign name.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-content">
+            <strong>Scroll to the Campaign Members related list</strong>
+            <p>On the campaign record page, scroll down to find the "Campaign Members" related list. You may need to expand it.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-content">
+            <strong>Click "Add Members"</strong>
+            <p>Click the "Add Members" button. A search window will open. Search by name or email to find the Contact (or Lead) you want to add.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-content">
+            <strong>Set the Status</strong>
+            <p>Select the appropriate Campaign Member Status. For pre-event additions: use <em>Registered</em>. For post-event additions: use <em>Attended</em>, <em>Checked In</em>, or the relevant status.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">5</div>
+          <div class="flow-content">
+            <strong>Save</strong>
+            <p>Click Add/Save. The person is now a Campaign Member. They will appear in campaign reports and Pardot can use this data for segmentation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Adding many people at once:</strong> For large events with 50+ attendees, use the "Import" feature from the Campaign Members related list, or coordinate with Aaron Sultan to bulk-import via a data upload. Manual one-by-one additions work fine for small lists (under 20 people).</div>
+      </div>
+
+      <h2 class="section-heading">Campaign Status Lifecycle</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>When to Use</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-blue">Planning</span></td><td>Campaign has been created but the event isn't promoted yet. Still being set up.</td></tr>
+            <tr><td><span class="badge badge-green">Active</span></td><td>Event is live — invitations are sent, registrations are open. Members should be added now.</td></tr>
+            <tr><td><span class="badge badge-gray">Completed</span></td><td>Event is over. Final attendance has been logged. No new members should be added.</td></tr>
+            <tr><td><span class="badge badge-red">Aborted</span></td><td>Event was cancelled or didn't happen. No further action needed.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Campaigns — Last updated April 2026 — Questions? Contact Aaron Sultan
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>

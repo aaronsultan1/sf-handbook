@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunities — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+    /* Pipeline visual */
+    .pipeline-container { overflow-x: auto; margin: 20px 0; }
+    .pipeline { display: flex; min-width: 700px; }
+    .pipeline-stage { flex: 1; text-align: center; position: relative; }
+    .stage-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0 3px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .stage-box.won  { background: #dcfce7; border-color: #86efac; color: #166534; }
+    .stage-box.lost { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+    .stage-box.active { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+    .pipeline-arrow-between { display: flex; align-items: center; color: var(--text-muted); font-size: 16px; }
+    .region-card { border-left: 4px solid var(--primary); border-radius: 12px; background: var(--card-bg); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 24px; margin-bottom: 20px; }
+    .region-card.apac  { border-left-color: #22c55e; }
+    .region-card.emea  { border-left-color: #a855f7; }
+    .region-card.latam { border-left-color: #f59e0b; }
+    .region-card.us    { border-left-color: #3b82f6; }
+    .region-card h3 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .region-card p { font-size: 14px; margin-bottom: 8px; }
+    .region-card ul { margin: 6px 0 0 18px; }
+    .region-card li { font-size: 13.5px; }
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } }
+  </style>
+
+  <style id="search-styles">
+    .search-wrap {
+      position: sticky; top: 0; z-index: 90;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: var(--text-muted);
+      font-size: 15px; pointer-events: none;
+    }
+    #handbook-search {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #handbook-search:focus {
+      border-color: var(--accent-bright);
+      box-shadow: 0 0 0 3px rgba(255,164,0,.15);
+      background: #fff;
+    }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 18px; line-height: 1; padding: 2px 4px;
+      border-radius: 4px; transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+    #no-results {
+      display: none; text-align: center;
+      padding: 60px 20px; color: var(--text-muted); font-size: 15px;
+    }
+    #no-results .nr-icon { font-size: 36px; margin-bottom: 12px; }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html" class="active"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Core Objects &rsaquo; Opportunities</div>
+      <h1>Opportunities <span>(Deals &amp; Renewals)</span></h1>
+      <p class="subtitle">Opportunities track every membership renewal, sponsorship deal, and potential new member. Regional teams — especially APAC, EMEA, and LATAM — depend heavily on Opportunities to manage their pipelines and revenue.</p>
+    </div>
+    <!-- SEARCH BAR -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+
+      <div id="no-results">
+        <div class="nr-icon">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+      <h2 class="section-heading">What Is an Opportunity?</h2>
+      <p>An <strong>Opportunity</strong> in Salesforce represents a potential or confirmed deal between MMA and a company. At MMA, the three main types of deals tracked as Opportunities are:</p>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:16px; margin-bottom:24px;">
+        <div class="card" style="margin-bottom:0; border-top: 3px solid #3b82f6;">
+          <h3>Membership Renewal</h3>
+          <p style="font-size:14px; margin-bottom:0;">When an existing member renews their annual membership. This is the most common type — every member account generates a renewal Opportunity each year.</p>
+        </div>
+        <div class="card" style="margin-bottom:0; border-top: 3px solid #22c55e;">
+          <h3>Sponsorship</h3>
+          <p style="font-size:14px; margin-bottom:0;">A company sponsoring an MMA event, conference, or program. Common in APAC, EMEA, and LATAM — often large multi-thousand dollar deals.</p>
+        </div>
+        <div class="card" style="margin-bottom:0; border-top: 3px solid #a855f7;">
+          <h3>New Membership</h3>
+          <p style="font-size:14px; margin-bottom:0;">A prospective company that's never been a member before is considering joining MMA. Less common, but tracked through the same pipeline.</p>
+        </div>
+      </div>
+
+      <h2 class="section-heading">The Opportunity Pipeline (Stages)</h2>
+      <p>Every Opportunity moves through a series of stages from initial interest to payment received. This is the pipeline that sales and membership teams use to track deal progress.</p>
+
+      <div class="pipeline-container">
+        <div class="pipeline">
+          <div class="pipeline-stage"><div class="stage-box">Prospecting</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box">Qualified</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box">Negotiation / Review</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box active">Commitments: Verbal / Written</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box">Term Sheet Sent</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box">Contract Sent</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box">Invoice Sent</div></div>
+          <div class="pipeline-arrow-between">→</div>
+          <div class="pipeline-stage"><div class="stage-box won">Closed Won (Payment Received)</div></div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div>There is also an <strong>Invoice Sent (Renewal Notification)</strong> stage — used specifically for membership renewals when the renewal invoice is sent but payment hasn't been received yet. And <strong>Closed Lost</strong> is used when a deal falls through.</div>
+      </div>
+
+      <h3 class="sub-heading">Stage Descriptions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Stage</th><th>Meaning</th><th>Who Acts Next</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Prospecting</strong></td>
+              <td>Initial identification — we think this company might renew or be a sponsor, but no conversation has happened yet</td>
+              <td>MMA rep reaches out</td>
+            </tr>
+            <tr>
+              <td><strong>Qualified</strong></td>
+              <td>Confirmed that this deal is real and worth pursuing — the company has expressed interest</td>
+              <td>MMA rep qualifies the deal details</td>
+            </tr>
+            <tr>
+              <td><strong>Negotiation/Review</strong></td>
+              <td>Both sides are discussing terms, pricing, and scope</td>
+              <td>Back-and-forth negotiation</td>
+            </tr>
+            <tr>
+              <td><strong>Commitments: Verbal/Written</strong></td>
+              <td>The company has agreed to the deal verbally or in writing — not yet formal contract</td>
+              <td>Prepare contract/term sheet</td>
+            </tr>
+            <tr>
+              <td><strong>Term Sheet Sent</strong></td>
+              <td>A term sheet has been sent to the company for review</td>
+              <td>Company reviews and signs</td>
+            </tr>
+            <tr>
+              <td><strong>Contract Sent</strong></td>
+              <td>Full contract has been sent</td>
+              <td>Company reviews and countersigns</td>
+            </tr>
+            <tr>
+              <td><strong>Invoice Sent</strong></td>
+              <td>Invoice has been sent; awaiting payment</td>
+              <td>Company processes payment</td>
+            </tr>
+            <tr>
+              <td><strong>Invoice Sent (Renewal Notification)</strong></td>
+              <td>Renewal-specific: renewal notice/invoice sent, payment pending</td>
+              <td>Company processes payment</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">Closed Won (Payment Received)</span></td>
+              <td>Payment received — the deal is complete. Account Status should update to Active.</td>
+              <td>Update Account, log the win</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-red">Closed Lost</span></td>
+              <td>Deal fell through — company didn't renew or declined the sponsorship</td>
+              <td>Log reason, consider follow-up strategy</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Key Opportunity Fields</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Opportunity Name</strong></td><td><code>Name</code></td><td>Use format: <em>"2026 APAC Local Council Renewal_CompanyName"</em> or <em>"2026 DMEXCO Sponsorship_CompanyName"</em></td></tr>
+            <tr><td><strong>Account</strong></td><td><code>AccountId</code></td><td>The company this deal is with — required</td></tr>
+            <tr><td><strong>Stage</strong></td><td><code>StageName</code></td><td>Current position in the pipeline — update as deal progresses</td></tr>
+            <tr><td><strong>Close Date</strong></td><td><code>CloseDate</code></td><td>Expected date the deal will close (payment received or lost)</td></tr>
+            <tr><td><strong>Amount</strong></td><td><code>Amount</code></td><td>Deal value in USD</td></tr>
+            <tr><td><strong>Type</strong></td><td><code>Type</code></td><td>Membership - Renewal, Sponsorship, or New Membership</td></tr>
+            <tr><td><strong>Region</strong></td><td><code>Region__c</code></td><td>The region this deal belongs to (NA, APAC, EMEA, LATAM)</td></tr>
+            <tr><td><strong>Renewal Date</strong></td><td><code>Renewal_Date__c</code></td><td>For renewals: the date the membership renews</td></tr>
+            <tr><td><strong>Why They Purchased</strong></td><td><code>Why_they_purchased_membership__c</code></td><td>Notes on why the member joined or renewed — useful for retention</td></tr>
+            <tr><td><strong>Next Steps</strong></td><td><code>Next_steps__c</code></td><td>What's the next action to advance this deal?</td></tr>
+            <tr><td><strong>Contact</strong></td><td><code>Contact__c</code></td><td>The primary contact at the company for this deal</td></tr>
+            <tr><td><strong>APAC Membership Type</strong></td><td><code>APAC_Membership_Type__c</code></td><td>APAC-specific: type of APAC membership (Local Council, etc.)</td></tr>
+            <tr><td><strong>APAC Sponsorships</strong></td><td><code>APAC_Sponsorships__c</code></td><td>APAC-specific sponsorship details</td></tr>
+            <tr><td><strong>Record Type</strong></td><td><code>Record_Type_Name__c</code></td><td>The Salesforce record type for this opportunity</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="section-heading">Naming Conventions for Opportunities</h2>
+      <p>Good naming makes it easy to find opportunities in reports and list views. Use this pattern:</p>
+
+      <div class="card">
+        <h3>Format</h3>
+        <p style="font-family:monospace; background:#f1f5f9; padding:12px; border-radius:6px; font-size:13px; margin:10px 0;">
+          {Year} {Region} {Type}_{CompanyName}
+        </p>
+        <h3 style="margin-top:16px;">Examples</h3>
+        <p style="font-family:monospace; background:#f1f5f9; padding:12px; border-radius:6px; font-size:13px; margin:10px 0; line-height:2;">
+          2026 APAC Local Council Renewal_PT Telkom Indonesia<br>
+          2026 EMEA Sponsorship_DMEXCO_CompanyName<br>
+          2026 NA Membership Renewal_CompanyName<br>
+          2026 LATAM Sponsorship_MercadoLibre
+        </p>
+      </div>
+
+      <h2 class="section-heading">Who Uses Opportunities by Region</h2>
+
+      <div class="region-card apac">
+        <h3>APAC — Rohit Dadwal &amp; Team (Singapore, Indonesia, India, Vietnam, Sri Lanka)</h3>
+        <p>APAC uses Opportunities <strong>very heavily</strong> — it's the primary tool for managing the Local Council membership renewals and event sponsorships across the region.</p>
+        <p><strong>Typical APAC workflow:</strong></p>
+        <ul>
+          <li>Create Opportunity at <em>Prospecting</em> stage when renewal season begins</li>
+          <li>Advance through stages as conversations happen</li>
+          <li>Send renewal invoice → move to <em>Invoice Sent (Renewal Notification)</em></li>
+          <li>Payment received → move to <em>Closed Won</em></li>
+          <li>Update Account's Status__c to Active if needed</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Key examples:</strong> Indonesia Smarties Unplugged, India IMPACT events, Vietnam Innovate event sponsorships</p>
+      </div>
+
+      <div class="region-card emea">
+        <h3>EMEA / MEA / EU — Melis Ertem, Elvin Altun, Bülent Doruker (CRM Director)</h3>
+        <p>EMEA uses Opportunities for <strong>membership renewals and event sponsorships</strong> across Turkey, Germany, EU, and MEA markets. Bülent Doruker in Istanbul manages CRM automation for the region.</p>
+        <p><strong>Typical EMEA workflow:</strong></p>
+        <ul>
+          <li>Create renewal or sponsorship Opportunity</li>
+          <li>Manage through negotiation stages</li>
+          <li>Contract and invoice sent</li>
+          <li>Close as Won or Lost with notes</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Key examples:</strong> DMEXCO sponsorships, Germany CMO Lunches, Turkey Strategic Memberships</p>
+      </div>
+
+      <div class="region-card latam">
+        <h3>LATAM — Fabiano Destri Lobo &amp; Thais Schauff</h3>
+        <p>LATAM manages <strong>large sponsorship deals</strong> — often the highest-value individual Opportunities in the entire MMA pipeline. These deals can range from tens of thousands to over $170,000.</p>
+        <p><strong>Key examples:</strong> Mercado Libre ($170k), ICBC Argentina, Play Digital/MODO</p>
+        <ul>
+          <li>Primarily sponsorship Opportunities for regional events</li>
+          <li>Follow the same pipeline stages as other regions</li>
+          <li>Often have longer negotiation cycles due to deal size</li>
+        </ul>
+      </div>
+
+      <div class="region-card us">
+        <h3>US / Global — Greg Stuart, Aaron Sultan &amp; US Team</h3>
+        <p>The US team has <strong>lighter Opportunity usage</strong> compared to regional teams. Their primary use is logging Closed Won membership deals after the fact, and tracking Greg Stuart's global/NA membership conversations.</p>
+        <ul>
+          <li>Log Closed Won for new US/Global member deals</li>
+          <li>Track large global renewal conversations</li>
+          <li>Generally, US renewals are more automated and tracked at the Account level</li>
+        </ul>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>When to create an Opportunity vs. just updating the Account:</strong> Create an Opportunity whenever there's an active deal to track — a renewal conversation, a negotiation, or a sponsorship discussion. If a renewal just auto-renews with no active conversation, you may just update the Account fields directly. When in doubt, create the Opportunity — it provides a historical record.</div>
+      </div>
+
+      <h2 class="section-heading">Opportunity Naming for Renewals: Year Matters</h2>
+      <p>Each year's renewal should be a new Opportunity record. Don't edit the prior year's closed Opportunity. Create a new one for the current year. This preserves the deal history and makes year-over-year reporting accurate.</p>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Tip:</strong> When a prior year's Opportunity is Closed Won, clone it (use the Clone button in Salesforce) to create the new year's renewal Opportunity. Update the name, close date, and amount as needed. This saves time and ensures all fields carry over correctly.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Opportunities — Last updated April 2026 — Questions? Aaron Sultan (US/Global), Bülent Doruker (EMEA), Rohit Dadwal (APAC)
+  </div>
+
+  <script id="search-script">
+  (function () {
+    var SELECTORS = [
+      '.card', '.integration-card', '.overview-item',
+      '.callout', '.flow-step', '.ownership-card',
+      '.concept-card', '.howto-card', '.sf-help-card',
+      '.status-ref-card', '.region-card', '.region-section',
+      '.dash-card', '.report-row', '.sp-type-row', '.board-field-row',
+      'tbody tr'
+    ].join(', ');
+
+    var input      = document.getElementById('handbook-search');
+    var countEl    = document.getElementById('search-count');
+    var clearBtn   = document.getElementById('search-clear');
+    var noResults  = document.getElementById('no-results');
+    var noResultsQ = document.getElementById('no-results-query');
+    var headings   = Array.from(document.querySelectorAll('h2.section-heading, h3.sub-heading'));
+
+    if (!input) return;
+
+    var blocks = Array.from(document.querySelectorAll(SELECTORS));
+    var origHTML = new Map();
+    blocks.forEach(function (el) { origHTML.set(el, el.innerHTML); });
+
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function highlight(html, re) {
+      return html.replace(/>([^<]*)</g, function (_, t) {
+        return '>' + t.replace(re, '<mark class="sh">$&</mark>') + '<';
+      });
+    }
+
+    function applySearch(raw) {
+      var q = raw.trim();
+
+      // Restore originals
+      blocks.forEach(function (el) {
+        el.innerHTML = origHTML.get(el);
+        el.classList.remove('search-hidden');
+      });
+      headings.forEach(function (h) { h.classList.remove('search-hidden'); });
+      if (noResults) noResults.style.display = 'none';
+
+      if (!q) {
+        countEl.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      var re      = new RegExp(escRe(q), 'gi');
+      var reLower = q.toLowerCase();
+      var total   = 0;
+
+      blocks.forEach(function (el) {
+        if (el.textContent.toLowerCase().indexOf(reLower) !== -1) {
+          el.innerHTML = highlight(origHTML.get(el), re);
+          total++;
+        } else {
+          el.classList.add('search-hidden');
+        }
+      });
+
+      // Smart-hide headings whose following content is all hidden
+      headings.forEach(function (h) {
+        var el = h.nextElementSibling;
+        var vis = false;
+        while (el && !el.matches('h2.section-heading')) {
+          if (!el.classList.contains('search-hidden') && el.id !== 'no-results') vis = true;
+          el = el.nextElementSibling;
+        }
+        if (!vis) h.classList.add('search-hidden');
+      });
+
+      countEl.textContent   = total + (total === 1 ? ' result' : ' results');
+      countEl.style.display  = 'inline';
+      clearBtn.style.display = 'inline';
+
+      if (total === 0 && noResults) {
+        noResultsQ.textContent = '\u201c' + q + '\u201d';
+        noResults.style.display = 'block';
+      }
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value;
+      timer = setTimeout(function () { applySearch(val); }, 120);
+    });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { this.value = ''; applySearch(''); }
+    });
+    clearBtn.addEventListener('click', function () {
+      input.value = ''; applySearch(''); input.focus();
+    });
+  })();
+  </script>
+</body>
+</html>
