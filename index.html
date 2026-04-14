@@ -5,19 +5,25 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>MMA Salesforce Handbook</title>
 <style>
-:root{--primary:#1a1a2e;--accent-bright:#e94560;--sidebar-width:260px;--font:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--text:#1e1e2e;--text-muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--card-bg:#ffffff;}
+    @font-face {font-family:'Sohne';src:url('fonts/Sohne-Halbfett.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap;}
+    @font-face {font-family:'Sohne';src:url('fonts/Sohne-Leicht.otf') format('opentype');font-weight:300;font-style:normal;font-display:swap;}
+    @font-face {font-family:'Tiempos Text';src:url('fonts/TiemposText-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap;}
+    @font-face {font-family:'Tiempos Text';src:url('fonts/TiemposText-RegularItalic.otf') format('opentype');font-weight:400;font-style:italic;font-display:swap;}
+    @font-face {font-family:'Tiempos Text';src:url('fonts/TiemposText-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap;}
+    @font-face {font-family:'Tiempos Text';src:url('fonts/TiemposText-MediumItalic.otf') format('opentype');font-weight:500;font-style:italic;font-display:swap;}
+    :root{--primary:#111111;--accent-bright:#ffa400;--sidebar-width:260px;--font:'Sohne','Helvetica Neue',Arial,sans-serif;--font-body:'Tiempos Text',Georgia,serif;--text:#111111;--text-muted:#6b6c6c;--border:#e7e8e8;--bg:#f7f8f8;--card-bg:#ffffff;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;} p,li,td,blockquote{font-family:var(--font-body);}
 .layout{display:flex;min-height:100vh;align-items:flex-start;}
 .sidebar{width:var(--sidebar-width);background:var(--primary);color:#fff;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;}
 .sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);}
 .sidebar-logo .org-name{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
 .sidebar-logo .handbook-title{font-size:16px;font-weight:700;color:#fff;line-height:1.3;}
-.sidebar-logo .handbook-title span{color:#e94560;}
+.sidebar-logo .handbook-title span{color:#ffa400;}
 .sidebar-nav{padding:16px 0;flex:1;}
 .nav-section-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:12px 20px 6px;}
 .sidebar-nav a{display:flex;align-items:center;gap:10px;padding:9px 20px;color:rgba(255,255,255,.75);text-decoration:none;font-size:14px;font-weight:500;border-left:3px solid transparent;transition:all .15s ease;cursor:pointer;}
-.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:#e94560;}
+.sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(255,255,255,.08);border-left-color:#ffa400;}
 .sidebar-nav a .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
 .sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.3);}
 .main{flex:1;min-width:0;}
@@ -27,7 +33,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .page-header .breadcrumb a{color:rgba(255,255,255,.5);text-decoration:none;cursor:pointer;}
 .page-header .breadcrumb a:hover{color:#fff;}
 .page-header h1{font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:12px;}
-.page-header h1 span{color:#e94560;}
+.page-header h1 span{color:#ffa400;}
 .page-header .subtitle{font-size:16px;color:rgba(255,255,255,.7);max-width:640px;line-height:1.6;}
 .content{padding:40px 32px;max-width:1100px;}
 h2.section-heading{font-size:22px;font-weight:700;color:var(--primary);margin:40px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--border);}
@@ -55,8 +61,8 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .page-footer{padding:20px 48px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);background:var(--card-bg);}
 .section-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:40px;}
 .section-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;text-decoration:none;color:inherit;display:block;transition:all .2s ease;border-top:4px solid #0f3460;cursor:pointer;}
-.section-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-top-color:#e94560;}
-.section-card .card-icon{font-size:28px;margin-bottom:12px;}.section-card .card-title{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--primary);}.section-card .card-desc{font-size:13.5px;color:var(--text-muted);line-height:1.6;}.section-card .card-arrow{display:inline-block;margin-top:14px;font-size:13px;font-weight:600;color:#e94560;}
+.section-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-top-color:#ffa400;}
+.section-card .card-icon{font-size:28px;margin-bottom:12px;}.section-card .card-title{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--primary);}.section-card .card-desc{font-size:13.5px;color:var(--text-muted);line-height:1.6;}.section-card .card-arrow{display:inline-block;margin-top:14px;font-size:13px;font-weight:600;color:#ffa400;}
 .intro-block{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:32px;}
 .intro-block h2{font-size:20px;font-weight:700;margin-bottom:14px;color:var(--primary);}
 .team-table-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:32px;}
@@ -67,11 +73,11 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .ecosystem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
 .eco-item{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px;}
 .eco-item .eco-name{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:4px;}.eco-item .eco-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
-.eco-item.eco-marketer{border-left:4px solid #e94560;}.eco-item.eco-sp{border-left:4px solid #0f3460;}
+.eco-item.eco-marketer{border-left:4px solid #ffa400;}.eco-item.eco-sp{border-left:4px solid #0f3460;}
 .eco-split{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
 .eco-side{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;}
 .eco-side-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
-.eco-side-label.label-m{color:#e94560;}.eco-side-label.label-sp{color:#0f3460;}
+.eco-side-label.label-m{color:#ffa400;}.eco-side-label.label-sp{color:#0f3460;}
 .eco-side h4{font-size:18px;font-weight:800;color:var(--primary);margin-bottom:8px;}
 .eco-side p{font-size:13px;color:var(--text-muted);line-height:1.6;}
 .eco-side .eco-count{display:inline-block;font-size:12px;font-weight:600;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:2px 10px;margin-top:10px;color:var(--text-muted);}
@@ -102,7 +108,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .region-comparison{display:grid;grid-template-columns:1fr;gap:24px;margin:20px 0;}
 .region-block{border-radius:14px;border:1px solid var(--border);overflow:hidden;}
 .region-header{color:white;padding:20px 24px;display:flex;align-items:flex-start;gap:16px;}
-.region-header.us{background:linear-gradient(135deg,#1e40af,#3b82f6);}.region-header.apac{background:linear-gradient(135deg,#15803d,#22c55e);}.region-header.emea{background:linear-gradient(135deg,#6b21a8,#a855f7);}.region-header.latam{background:linear-gradient(135deg,#92400e,#f59e0b);}.region-header.mea{background:linear-gradient(135deg,#881337,#e94560);}
+.region-header.us{background:linear-gradient(135deg,#1e40af,#3b82f6);}.region-header.apac{background:linear-gradient(135deg,#15803d,#22c55e);}.region-header.emea{background:linear-gradient(135deg,#6b21a8,#a855f7);}.region-header.latam{background:linear-gradient(135deg,#92400e,#f59e0b);}.region-header.mea{background:linear-gradient(135deg,#881337,#ffa400);}
 .region-flag{font-size:36px;}.region-header-text h3{font-size:20px;font-weight:800;margin-bottom:4px;}.region-header-text p{font-size:13px;opacity:.85;line-height:1.4;margin:0;}
 .region-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .region-section h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:10px;}
@@ -110,7 +116,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .workflow-steps{list-style:none;margin:0;padding:0;}
 .workflow-steps li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:13.5px;line-height:1.5;color:#374151;}
 .step-num{background:var(--primary);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
-.step-num.blue{background:#3b82f6;}.step-num.green{background:#22c55e;}.step-num.purple{background:#a855f7;}.step-num.amber{background:#f59e0b;}.step-num.red{background:#e94560;}
+.step-num.blue{background:#3b82f6;}.step-num.green{background:#22c55e;}.step-num.purple{background:#a855f7;}.step-num.amber{background:#f59e0b;}.step-num.red{background:#ffa400;}
 .people-list{font-size:13.5px;line-height:1.7;color:#374151;}.people-list .person{margin-bottom:6px;}.people-list .person strong{color:var(--primary);}
 .how-to-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:32px;}
 .how-to-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;}
@@ -129,7 +135,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .example-item{font-family:'Menlo','Consolas',monospace;font-size:13px;color:#a5f3fc;margin-bottom:6px;}
 .ownership-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin:16px 0 24px;}
 .ownership-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #e5e7eb;}
-.ownership-card.primary{border-top-color:#e94560;}.ownership-card.regional{border-top-color:#3b82f6;}
+.ownership-card.primary{border-top-color:#ffa400;}.ownership-card.regional{border-top-color:#3b82f6;}
 .ownership-card .oc-region{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px;}
 .ownership-card .oc-owner{font-size:16px;font-weight:700;color:var(--primary);margin-bottom:4px;}
 .ownership-card .oc-scope{font-size:13px;color:#374151;line-height:1.55;margin-bottom:10px;}
@@ -145,7 +151,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 .howto-steps{list-style:none;margin:0;padding:0;}
 .howto-steps li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:13.5px;line-height:1.5;color:#374151;border-bottom:1px solid var(--border);}
 .howto-steps li:last-child{border-bottom:none;}
-.step-n{background:#e94560;color:white;min-width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.step-n{background:#ffa400;color:white;min-width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;}
 .steps-list .step-content{flex:1;}
 .steps-list .step-content strong{display:block;font-size:14px;font-weight:700;color:var(--primary);margin-bottom:3px;}
 .steps-list .step-content span{font-size:13.5px;color:#374151;line-height:1.55;}
@@ -912,9 +918,9 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 <p style="margin-bottom:16px;">The ecosystem field was assigned manually by people who understood each company's primary role. A few patterns worth knowing:</p>
 <div class="card" style="margin-bottom:16px;">
 <h3>Same company, different ecosystem depending on the entity</h3>
-<p style="margin-top:10px;font-size:14px;line-height:1.7;"><strong>Walmart</strong> (the retailer) = <span style="color:#e94560;font-weight:700;">Marketer</span> — they advertise to consumers to drive store traffic. <strong>Walmart Connect</strong> = <span style="color:#0f3460;font-weight:700;">Seller</span> — they sell ad inventory to brands on the Walmart platform. Two separate Account records, two different ecosystems, both correct.</p>
+<p style="margin-top:10px;font-size:14px;line-height:1.7;"><strong>Walmart</strong> (the retailer) = <span style="color:#ffa400;font-weight:700;">Marketer</span> — they advertise to consumers to drive store traffic. <strong>Walmart Connect</strong> = <span style="color:#0f3460;font-weight:700;">Seller</span> — they sell ad inventory to brands on the Walmart platform. Two separate Account records, two different ecosystems, both correct.</p>
 <p style="margin-top:8px;font-size:14px;line-height:1.7;"><strong>Google</strong> (global) = <span style="color:#0f3460;font-weight:700;">Seller</span>. <strong>Google India Private Limited</strong> = <span style="color:#0f3460;font-weight:700;">Enabler</span>. Different legal entities, different primary functions in that market.</p>
-<p style="margin-top:8px;font-size:14px;line-height:1.7;"><strong>AT&amp;T</strong> and <strong>Verizon</strong> = <span style="color:#e94560;font-weight:700;">Marketer</span> — even though they're telecoms, they're members because of their marketing function (spending billions on advertising), not their carrier function.</p>
+<p style="margin-top:8px;font-size:14px;line-height:1.7;"><strong>AT&amp;T</strong> and <strong>Verizon</strong> = <span style="color:#ffa400;font-weight:700;">Marketer</span> — even though they're telecoms, they're members because of their marketing function (spending billions on advertising), not their carrier function.</p>
 </div>
 <div class="card" style="margin-bottom:16px;">
 <h3>Kantar appears as both Agency and Enabler</h3>
@@ -930,7 +936,7 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 <table style="margin-top:8px;font-size:13px;width:100%;border-collapse:collapse;">
 <thead><tr style="background:#f1f5f9;"><th style="padding:6px 10px;text-align:left;font-weight:600;">Ecosystem</th><th style="padding:6px 10px;text-align:left;font-weight:600;">Type</th><th style="padding:6px 10px;text-align:right;font-weight:600;">Active Accounts</th></tr></thead>
 <tbody>
-<tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Marketer</td><td style="padding:6px 10px;color:#e94560;font-weight:600;">Marketer</td><td style="padding:6px 10px;text-align:right;">297</td></tr>
+<tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Marketer</td><td style="padding:6px 10px;color:#ffa400;font-weight:600;">Marketer</td><td style="padding:6px 10px;text-align:right;">297</td></tr>
 <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Enabler</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">200</td></tr>
 <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Agency</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">182</td></tr>
 <tr style="border-top:1px solid var(--border);"><td style="padding:6px 10px;">Seller</td><td style="padding:6px 10px;color:#0f3460;font-weight:600;">Solution Provider</td><td style="padding:6px 10px;text-align:right;">132</td></tr>
@@ -3494,7 +3500,7 @@ ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</pre>
 <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #22c55e;"><div style="font-size:28px;margin-bottom:10px;">✉️</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">List Emails</div><div style="font-size:13px;color:#374151;line-height:1.6;">The actual emails you send to a list. Built from a template, sent to one or more lists at a scheduled time.</div></div>
 <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #f59e0b;"><div style="font-size:28px;margin-bottom:10px;">🖼️</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">Templates</div><div style="font-size:13px;color:#374151;line-height:1.6;">Reusable email designs. Build once, use many times. Contain the layout, branding, and variable merge fields.</div></div>
 <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #a855f7;"><div style="font-size:28px;margin-bottom:10px;">📝</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">Form Handlers</div><div style="font-size:13px;color:#374151;line-height:1.6;">Connect external web forms to Pardot. When someone submits a form on MMAGlobal.com, Pardot captures it and can trigger actions.</div></div>
-<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #e94560;"><div style="font-size:28px;margin-bottom:10px;">⚙️</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">Automation Rules</div><div style="font-size:13px;color:#374151;line-height:1.6;">Triggered actions based on prospect criteria. "If prospect is in list X and score &gt; 50, add to list Y." Run once or repeatedly.</div></div>
+<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #ffa400;"><div style="font-size:28px;margin-bottom:10px;">⚙️</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">Automation Rules</div><div style="font-size:13px;color:#374151;line-height:1.6;">Triggered actions based on prospect criteria. "If prospect is in list X and score &gt; 50, add to list Y." Run once or repeatedly.</div></div>
 <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:4px solid #3b82f6;"><div style="font-size:28px;margin-bottom:10px;">🔄</div><div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px;">Engagement Studio</div><div style="font-size:13px;color:#374151;line-height:1.6;">Visual drip-sequence builder. Send a series of emails over time with branching logic based on how prospects respond.</div></div>
 </div>
 <h2 class="section-heading">Salesforce ↔ Pardot Sync</h2>
@@ -3821,7 +3827,7 @@ ALL_Wbs_20260429_POSSIBLE2026_MFCandB2BCouncilLunch</pre>
 
 <h2 class="section-heading">Key Dashboards</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px;">
-<div class="card" style="border-top:4px solid #e94560;">
+<div class="card" style="border-top:4px solid #ffa400;">
 <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Event dashboards</div>
 <h3>2026 Events</h3>
 <p style="font-size:13px;margin-top:8px;">Main events tracking dashboard for the current year — CCS, CATS, roundtables, POSSIBLE. Registration counts, attendance rates, and status breakdowns. Updated continuously as campaign data comes in.</p>
