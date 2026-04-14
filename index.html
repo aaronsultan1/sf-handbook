@@ -322,6 +322,14 @@ code{background:#f1f5f9;color:#0f172a;padding:2px 6px;border-radius:4px;font-fam
 <span class="callout-icon">🚫</span>
 <div><strong>Do not edit the UNKNWN account.</strong> This is a system placeholder account for unmatched leads. Contacts here are in a queue for cleanup. Do not move contacts to or from it manually.</div>
 </div>
+<div class="callout callout-danger">
+<span class="callout-icon">🚫</span>
+<div><strong>Do not add contacts to "Holding for Non-Accounts."</strong> This is a legacy account that predates MMA having a Salesforce admin. It was used as a workaround when someone changed jobs but their new company didn't exist in Salesforce yet. That workaround is now obsolete — always create the real Account instead. If you see contacts sitting here, flag them to Aaron Sultan for proper re-assignment.</div>
+</div>
+<div class="callout callout-warning">
+<span class="callout-icon">⚠️</span>
+<div><strong>"Holding Pattern" contacts are being tracked intentionally — do not delete them.</strong> When a known contact leaves their company and doesn't yet have a new position, they're moved to the Holding Pattern account. MMA keeps tabs on senior executives in transition so they can be re-engaged when they land somewhere new. Do not remove or archive these contacts without checking with Aaron Sultan first.</div>
+</div>
 <div class="callout callout-warning">
 <span class="callout-icon">⚠️</span>
 <div><strong>Membership lives on the Account, not the Contact.</strong> If someone's membership status looks wrong, always check their Account record first. The Contact simply inherits the Account's status.</div>
@@ -987,6 +995,18 @@ contacts = sf.query(f"""
 <div>
 <strong>Admin Holding Account</strong> — An internal bucket for contacts that failed matching during lead conversion. Similar to UNKNWN — contacts here are awaiting cleanup and re-assignment to their correct company account. Do not use this account for real data entry.
         </div>
+</div>
+<div class="callout callout-danger">
+<span class="callout-icon">🚫</span>
+<div>
+<strong>Holding for Non-Accounts</strong> — A legacy workaround account that should no longer be used. Before MMA had a dedicated Salesforce admin, when a contact changed jobs and their new company didn't exist in Salesforce yet, they were placed here rather than creating a proper Account record. That practice is now obsolete. If you see contacts in this account, do not move them without flagging to Aaron Sultan first — they need to be matched to a real Account or have one created. <strong>Never add new contacts here.</strong>
+</div>
+</div>
+<div class="callout callout-tip">
+<span class="callout-icon">👔</span>
+<div>
+<strong>Holding Pattern</strong> — An active, intentional account for contacts who are between jobs. When a known contact (particularly a senior marketer or executive MMA tracks) leaves their company but hasn't yet announced a new role, they're moved here rather than deleted. This preserves their engagement history and keeps them visible so MMA can re-engage quickly when they land somewhere new. Contacts in Holding Pattern are there <em>on purpose</em> — do not remove or re-assign them without checking with Aaron Sultan. When the person joins a new company, move them to that company's Account.
+</div>
 </div>
 <h2 class="section-heading">How to Find Member Accounts</h2>
 <p>When building a list view or report of member companies, always filter on <code>Status__c</code>:</p>
