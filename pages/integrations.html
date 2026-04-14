@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrations &amp; APIs — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Halbfett.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sohne';
+      src: url('../fonts/Sohne-Leicht.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Tiempos Text';
+      src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype');
+      font-weight: 500;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo .org-name { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .sidebar-logo .handbook-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+    .sidebar-logo .handbook-title span { color: #ffa400; }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-warning { background: #fffbeb; border: 1px solid #fbbf24; color: #78350f; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-danger  { background: #fff1f2; border: 1px solid #fda4af; color: #881337; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; }
+    th { background: var(--bg); color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+
+    /* INTEGRATION CARDS */
+    .integration-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .integration-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .integration-icon { font-size: 32px; flex-shrink: 0; }
+    .integration-title { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 3px; }
+    .integration-subtitle { font-size: 13px; color: var(--text-muted); }
+    .integration-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .integration-body { padding: 20px 24px; }
+    .integration-body p { margin-bottom: 10px; font-size: 14.5px; }
+    .integration-body p:last-child { margin-bottom: 0; }
+    .integration-fields { margin-top: 14px; }
+    .integration-fields h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+    .field-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .field-chip { background: #f1f5f9; color: #0f172a; padding: 3px 10px; border-radius: 6px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12px; }
+
+    /* OVERVIEW GRID */
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .overview-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .overview-item .oi-icon { font-size: 28px; margin-bottom: 8px; }
+    .overview-item .oi-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+    .overview-item .oi-type { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .overview-item .oi-status { }
+
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } .overview-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html" class="active"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Team Guides &rsaquo; Integrations &amp; APIs</div>
+      <h1>Integrations <span>&amp; APIs</span></h1>
+      <p class="subtitle">Salesforce doesn't work alone. MMA connects it to a dozen external platforms for email marketing, data enrichment, outreach sequencing, and more. This page explains what each integration does and what it touches in Salesforce.</p>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <h2 class="section-heading">Integration Ecosystem Overview</h2>
+      <p>MMA's Salesforce instance is the hub for a network of connected platforms. These integrations show up in Salesforce as <strong>custom field namespaces</strong> (e.g., <code>pi__</code> for Pardot, <code>LID__</code> for LinkedIn) or as fields explicitly created to track data flowing in from external tools.</p>
+
+      <div class="overview-grid">
+        <div class="overview-item">
+          <div class="oi-icon">📧</div>
+          <div class="oi-name">Pardot / Account Engagement</div>
+          <div class="oi-type">Email Marketing Platform</div>
+          <div class="oi-status"><span class="badge badge-green">Active — Core</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">📤</div>
+          <div class="oi-name">Outreach</div>
+          <div class="oi-type">Sales Sequencing</div>
+          <div class="oi-status"><span class="badge badge-green">Active</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">📰</div>
+          <div class="oi-name">Rasa.io</div>
+          <div class="oi-type">Newsletter Delivery</div>
+          <div class="oi-status"><span class="badge badge-green">Active</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">📊</div>
+          <div class="oi-name">MediaRadar</div>
+          <div class="oi-type">Ad Spend Intelligence</div>
+          <div class="oi-status"><span class="badge badge-green">Active — API Connector</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">💼</div>
+          <div class="oi-name">LinkedIn</div>
+          <div class="oi-type">Sales Navigator</div>
+          <div class="oi-status"><span class="badge badge-green">Active — API Connector</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">🔎</div>
+          <div class="oi-name">Apollo</div>
+          <div class="oi-type">Enrichment (Manual)</div>
+          <div class="oi-status"><span class="badge badge-yellow">Script-Based</span></div>
+        </div>
+        <div class="overview-item">
+          <div class="oi-icon">🌐</div>
+          <div class="oi-name">Web-to-Lead Forms</div>
+          <div class="oi-type">Inbound Form Submissions</div>
+          <div class="oi-status"><span class="badge badge-green">Active — Core</span></div>
+        </div>
+      </div>
+
+      <!-- PARDOT -->
+      <h2 class="section-heading">Integrations — Detailed Reference</h2>
+
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">📧</div>
+          <div>
+            <div class="integration-title">Pardot / Account Engagement</div>
+            <div class="integration-subtitle">Salesforce's marketing automation &amp; email platform — MMA's primary outreach tool</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active — Core</span>
+              <span class="badge badge-blue">Bidirectional Sync</span>
+              <span class="badge badge-purple">Native SF Integration</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>Pardot (officially "Marketing Cloud Account Engagement") is MMA's email marketing platform. It is deeply integrated with Salesforce — every mailable Contact in SF has a corresponding <strong>Prospect</strong> in Pardot. The two systems sync automatically: changes to key fields in one propagate to the other.</p>
+          <p><strong>What Pardot does for MMA:</strong> Sends all mass email campaigns (event invitations, newsletters, member communications), tracks email opens and clicks, manages mailing lists and suppression lists, and records engagement back into Salesforce.</p>
+          <p><strong>How the sync works:</strong> A Pardot connector runs continuously. When a Contact is created or updated in Salesforce, it syncs to Pardot as a Prospect (if it meets the mailable criteria). When a Prospect interacts with an email in Pardot (open, click, form fill), that engagement data writes back to Salesforce fields prefixed <code>pi__</code>.</p>
+          <p><strong>Regional note:</strong> EMEA and APAC teams use separate Pardot Business Units (different <code>BU_ID</code>) but share the same Salesforce org. Bülent Doruker manages the EMEA Pardot setup and regional email sends.</p>
+          <div class="integration-fields">
+            <h4>Key SF Fields (prefix: pi__)</h4>
+            <div class="field-chips">
+              <span class="field-chip">pi__pardot_hard_bounced__c</span>
+              <span class="field-chip">pi__score__c</span>
+              <span class="field-chip">pi__grade__c</span>
+              <span class="field-chip">pi__last_activity__c</span>
+              <span class="field-chip">pi__campaign__c</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTREACH -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">📤</div>
+          <div>
+            <div class="integration-title">Outreach</div>
+            <div class="integration-subtitle">Sales sequencing &amp; outreach automation — used for targeted membership outreach campaigns</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active</span>
+              <span class="badge badge-orange">One-Way Push to SF</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>Outreach is a sales engagement platform used primarily by the US/Global membership team for multi-step outreach sequences — series of emails and tasks to prospect or re-engage member contacts. Outreach sequences are built in the Outreach platform and the contacts (called "Prospects" in Outreach) are synced from Salesforce.</p>
+          <p><strong>How Salesforce is involved:</strong> When a contact is added to an Outreach sequence, Outreach writes the sequence ID and status back to Salesforce via the <code>Outreach_Id__c</code> field on the Contact record. This allows the SF team to see which contacts are in active outreach sequences.</p>
+          <p><strong>Pardot integration:</strong> Outreach sequences can feed into Pardot suppression lists. The Python script <code>outreach_seq_to_pardot_list.py</code> pulls all prospects from a given Outreach sequence and adds them to a Pardot list (e.g., suppression for a specific campaign). This is run on demand by Aaron Sultan.</p>
+          <p><strong>Who uses it:</strong> Primarily the US membership sales and renewal team. Outreach access is separate from Salesforce access — contact Aaron Sultan or your team lead to be set up.</p>
+          <div class="integration-fields">
+            <h4>Key SF Fields</h4>
+            <div class="field-chips">
+              <span class="field-chip">Outreach_Id__c</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RASA.IO -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">📰</div>
+          <div>
+            <div class="integration-title">Rasa.io</div>
+            <div class="integration-subtitle">AI-personalized newsletter delivery — tracks newsletter engagement in Salesforce</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active</span>
+              <span class="badge badge-blue">Writes to SF Fields</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>Rasa.io is MMA's newsletter platform, which uses AI to personalize content for each subscriber. MMA sends regular newsletters through Rasa.io to member contacts, and Rasa.io writes engagement data (opens, clicks, subscription status) back to Salesforce fields prefixed <code>rasa_</code>.</p>
+          <p><strong>What the fields capture:</strong> Whether a contact is subscribed to the MMA newsletter, their engagement level with recent issues, and their subscription preferences. These fields are useful for segmenting highly engaged contacts versus those who may need re-engagement outreach.</p>
+          <div class="integration-fields">
+            <h4>Key SF Fields (prefix: rasa_)</h4>
+            <div class="field-chips">
+              <span class="field-chip">rasa_subscribed__c</span>
+              <span class="field-chip">rasa_unsubscribed__c</span>
+              <span class="field-chip">rasa_last_opened__c</span>
+              <span class="field-chip">rasa_engagement__c</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDIARADAR -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">📊</div>
+          <div>
+            <div class="integration-title">MediaRadar</div>
+            <div class="integration-subtitle">Ad spend intelligence — API connector that surfaces media buying activity for member &amp; prospect companies</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active — API Connector</span>
+              <span class="badge badge-blue">Writes to SF Fields</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>MediaRadar is an advertising intelligence platform that tracks media spend for brands and agencies. MMA connects to MediaRadar via API, and spend data is pushed directly into Salesforce Account records — giving the membership team ad investment context without ever leaving SF.</p>
+          <p><strong>Practical use:</strong> When preparing for a membership renewal or prospecting call, checking the MediaRadar fields on the Account gives you a sense of the company's media investment level. Higher spend typically correlates with stronger interest in MMA's research and advocacy work.</p>
+          <p><strong>Who manages it:</strong> Primarily used by the membership sales team. Contact Aaron Sultan if you have questions about the data or notice it's out of date.</p>
+          <div class="integration-fields">
+            <h4>Key SF Fields (prefix: MediaRadar_)</h4>
+            <div class="field-chips">
+              <span class="field-chip">MediaRadar_Total_Spend__c</span>
+              <span class="field-chip">MediaRadar_Digital_Spend__c</span>
+              <span class="field-chip">MediaRadar_Last_Updated__c</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINKEDIN -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">💼</div>
+          <div>
+            <div class="integration-title">LinkedIn Sales Navigator</div>
+            <div class="integration-subtitle">Native API connector — surfaces LinkedIn profile data and enables InMail from within Salesforce</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active — API Connector</span>
+              <span class="badge badge-purple">Native SF Package</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>MMA connects to LinkedIn Sales Navigator via a native Salesforce API integration (namespace <code>LID__</code>). The connector syncs LinkedIn profile data directly to Contact records and enables the membership sales team to send LinkedIn InMails and view Sales Navigator insights without leaving Salesforce.</p>
+          <p><strong>What it provides:</strong> LinkedIn profile links, company matching signals, and InMail access from the Contact record. The <code>LID__</code> fields are populated on contacts that have been matched to a LinkedIn profile through the connector.</p>
+          <p><strong>Who uses it:</strong> Primarily the membership sales team for prospecting and outreach via LinkedIn Sales Navigator.</p>
+          <div class="integration-fields">
+            <h4>Key SF Fields (prefix: LID__)</h4>
+            <div class="field-chips">
+              <span class="field-chip">LID__LinkedIn_Member_Token__c</span>
+              <span class="field-chip">LID__LinkedIn_Company_Id__c</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APOLLO -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">🔎</div>
+          <div>
+            <div class="integration-title">Apollo</div>
+            <div class="integration-subtitle">Manual enrichment — used to fill in names &amp; titles for contacts missing data</div>
+            <div class="integration-badges">
+              <span class="badge badge-yellow">Script-Based</span>
+              <span class="badge badge-gray">No Native SF Package</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>Apollo.io is a B2B sales intelligence platform used by the US/Global team for on-demand enrichment. Apollo does <strong>not</strong> have a native Salesforce package — it is accessed via API through Python scripts maintained by Aaron Sultan.</p>
+          <p><strong>How it's used:</strong> When a batch of contacts is missing names or job titles (e.g., after importing from an event registration list), Aaron runs an enrichment script that queries Apollo's API with the contact's email address, gets back name/title/company data, and writes it back to Salesforce directly via the Salesforce API.</p>
+          <p><strong>What it can find:</strong> First name, last name, job title, company name, LinkedIn URL. Apollo matches by email address — if it can't find the email, the contact is skipped (not created in Apollo).</p>
+          <p><strong>Transparency:</strong> There are no Apollo-specific fields in Salesforce. Enriched data goes directly into the standard <code>FirstName</code>, <code>LastName</code>, <code>Title</code> fields. You won't be able to tell post-enrichment whether a field came from Apollo, ZoomInfo, or a human.</p>
+        </div>
+      </div>
+
+      <!-- WEB-TO-LEAD FORMS -->
+      <div class="integration-card">
+        <div class="integration-header">
+          <div class="integration-icon">🌐</div>
+          <div>
+            <div class="integration-title">Web-to-Lead Forms</div>
+            <div class="integration-subtitle">Native Salesforce feature — how MMAGlobal.com forms flow into SF</div>
+            <div class="integration-badges">
+              <span class="badge badge-green">Active — Core</span>
+              <span class="badge badge-purple">Native Salesforce</span>
+            </div>
+          </div>
+        </div>
+        <div class="integration-body">
+          <p>Web-to-Lead is a native Salesforce feature that processes form submissions from any web page and creates Lead records in Salesforce. Every form on MMAGlobal.com — event registration, content download, member inquiry, survey — is a Web-to-Lead form.</p>
+          <p><strong>The critical link — every form = a Campaign:</strong> When a Web-to-Lead form is set up, it is linked to a specific Salesforce Campaign record. The form includes a hidden field containing the Campaign ID. When someone submits the form, the resulting Lead is automatically added as a Campaign Member on that Campaign. This is how MMA tracks which events/webinars people registered for, which content they downloaded, and which forms they've filled out.</p>
+          <p><strong>Campaign Member Status on form submission:</strong> The default status for new Campaign Members from forms is "Responded." This updates to "Attended" or similar statuses later if the person attends the event.</p>
+          <p><strong>Field: <code>Web_To_Lead_Forms__c</code></strong> on the Contact record is a list/text field that summarizes which forms the contact has previously submitted. It's a quick-reference field for account managers reviewing a contact's touchpoint history.</p>
+          <div class="callout callout-warning" style="margin-top: 14px; margin-bottom: 0;">
+            <span class="callout-icon">⚠️</span>
+            <div><strong>Do NOT manually convert Leads from Web-to-Lead submissions.</strong> The nightly automated conversion script handles this. Manually converting a Lead created by a Web-to-Lead form can break campaign membership tracking and create duplicate contacts.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTOMATIONS / SCRIPTS -->
+      <h2 class="section-heading">Automations &amp; Custom Scripts</h2>
+      <p>Beyond the third-party integrations above, MMA runs a set of Python-based automation scripts that handle recurring data management tasks. These are maintained by Aaron Sultan (US/Global) and Bülent Doruker (EMEA automations).</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Script / Automation</th>
+              <th>What It Does</th>
+              <th>Frequency</th>
+              <th>Owner</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lead Auto-Conversion</strong><br><code>sf_lead_converter.py</code></td>
+              <td>Pulls all open Leads, matches to existing Contacts by email, converts unmatched Leads to new Contacts, adds them to the corresponding Campaign</td>
+              <td>Nightly</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><strong>Outreach → Pardot Sync</strong><br><code>outreach_seq_to_pardot_list.py</code></td>
+              <td>Pulls all prospects from a specified Outreach sequence and adds them to a Pardot suppression or mailing list. Used before campaign sends to suppress contacts already in a sequence.</td>
+              <td>On-demand</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><strong>Apollo Enrichment</strong><br><code>enrich_real_acct_contacts.py</code></td>
+              <td>Queries Apollo API with contact email addresses, retrieves names/titles for contacts missing them, and writes results back to SF. Run on real-account contacts that still have [[Unknown]] names.</td>
+              <td>On-demand</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Mailable Snapshot</strong><br><code>membership_growth.py</code></td>
+              <td>Counts all mailable contacts (total, Marketer, Solution Provider, Engaged) using the locked mailable definition and writes the counts to <code>Emailable_Contacts_Snapshot__c</code>.</td>
+              <td>Monthly</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><strong>Contact Remediation</strong><br><code>remediate_unknwn_contacts.py</code></td>
+              <td>Finds contacts stuck on the UNKNWN account, attempts to match them to real Accounts by email domain or Salesforce Contact ID, and moves them. Generates a results CSV for review.</td>
+              <td>On-demand</td>
+              <td>Aaron Sultan</td>
+            </tr>
+            <tr>
+              <td><strong>EMEA Preference Center Sync</strong><br>(Salesforce Flow / Apex)</td>
+              <td>When EMEA contacts update their preferences via Pardot forms, Bülent's automations sync those choices back to the <code>Preference_Ctr_Programs_EMEA__c</code> and related fields. Also updates country-level BOD flags as board membership changes.</td>
+              <td>Triggered / Real-time</td>
+              <td>Bülent Doruker</td>
+            </tr>
+            <tr>
+              <td><strong>Campaign Member Status Auto-Update</strong><br>(Salesforce Flow)</td>
+              <td>When an event attendance is confirmed (e.g., check-in data uploaded), flows update Campaign Member Status from "Registered" to "Attended." This feeds downstream engagement tracking.</td>
+              <td>Triggered / Batch</td>
+              <td>Aaron Sultan / IT</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>Bülent's EMEA automations:</strong> Bülent Doruker (CRM, Automation and Integrated Marketing Director — Istanbul) is MMA's most active non-US builder in Salesforce. He creates and maintains Salesforce Flows, Process Builder automations, and Pardot-connected workflows specifically for EMEA. If you see a workflow or flow active on an EMEA record and aren't sure why, Bülent is the person to ask.</div>
+      </div>
+
+      <!-- ENGAGEMENT TRACKING FIELDS -->
+      <h2 class="section-heading">Engagement Tracking Fields</h2>
+      <p>Multiple integrations contribute to a set of Contact-level engagement tracking fields that roll up a person's activity across all platforms. These are useful for segmentation and identifying highly engaged vs. disengaged contacts.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>What It Captures</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>Last_event_participation__c</code></td>
+              <td>Date of the most recent in-person event or webinar attendance</td>
+              <td>CampaignMember Status updates</td>
+            </tr>
+            <tr>
+              <td><code>Last_webinar_participation__c</code></td>
+              <td>Date of the most recent webinar registration or attendance</td>
+              <td>CampaignMember Status updates</td>
+            </tr>
+            <tr>
+              <td><code>Last_engagement_any__c</code></td>
+              <td>Date of most recent engagement of any type (event, webinar, survey, etc.)</td>
+              <td>Rollup from CampaignMember + Additional_Touchpoint__c</td>
+            </tr>
+            <tr>
+              <td><code>Engagement_level__c</code></td>
+              <td>Composite engagement tier (e.g., Highly Engaged, Engaged, Inactive)</td>
+              <td>Calculated based on engagement recency and frequency</td>
+            </tr>
+            <tr>
+              <td><code>Is_Disengaged__c</code></td>
+              <td>Boolean — true if no engagement in the past 12 months</td>
+              <td>Calculated field / Flow update</td>
+            </tr>
+            <tr>
+              <td><code>pi__score__c</code></td>
+              <td>Pardot engagement score — based on email opens, clicks, form fills</td>
+              <td>Pardot sync</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- REGIONAL PREFERENCE CENTER -->
+      <h2 class="section-heading">Regional Preference Center Fields</h2>
+      <p>MMA gives contacts the ability to manage their communication preferences through region-specific Preference Centers. These preferences are captured in Pardot and synced back to Salesforce. Each region has its own set of fields.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Region</th><th>Programs Field</th><th>Research &amp; Insights Field</th><th>Smarties Field</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-blue">NA / Global</span></td>
+              <td><code>Preference_Ctr_Programs_NA__c</code></td>
+              <td><code>Preference_Ctr_Research_NA__c</code></td>
+              <td><code>Preference_Ctr_Smarties_NA__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-purple">EMEA</span></td>
+              <td><code>Preference_Ctr_Programs_EMEA__c</code></td>
+              <td><code>Preference_Ctr_Research_EMEA__c</code></td>
+              <td><code>Preference_Ctr_Smarties_EMEA__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-green">APAC</span></td>
+              <td><code>Preference_Ctr_Programs_APAC__c</code></td>
+              <td><code>Preference_Ctr_Research_APAC__c</code></td>
+              <td><code>Preference_Ctr_Smarties_APAC__c</code></td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-yellow">LATAM</span></td>
+              <td><code>Preference_Ctr_Programs_LATAM__c</code></td>
+              <td><code>Preference_Ctr_Research_LATAM__c</code></td>
+              <td><code>Preference_Ctr_Smarties_LATAM__c</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>How to use these fields:</strong> When sending regional communications, use the appropriate Preference Center field to segment contacts who have opted in for that content type. For example, when sending EMEA event invitations, include only contacts where <code>Preference_Ctr_Programs_EMEA__c = true</code> (or is not opted out). Bülent manages the EMEA preference center sync; Aaron Sultan manages NA/Global.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    MMA Salesforce Handbook — Integrations &amp; APIs — Last updated April 2026
+  </div>
+
+</body>
+</html>
