@@ -400,7 +400,7 @@
           <p>Apollo.io is a B2B sales intelligence platform used by the US/Global team for on-demand enrichment. Apollo does <strong>not</strong> have a native Salesforce package — it is accessed via API through Python scripts maintained by Aaron Sultan.</p>
           <p><strong>How it's used:</strong> When a batch of contacts is missing names or job titles (e.g., after importing from an event registration list), Aaron runs an enrichment script that queries Apollo's API with the contact's email address, gets back name/title/company data, and writes it back to Salesforce directly via the Salesforce API.</p>
           <p><strong>What it can find:</strong> First name, last name, job title, company name, LinkedIn URL. Apollo matches by email address — if it can't find the email, the contact is skipped (not created in Apollo).</p>
-          <p><strong>Transparency:</strong> There are no Apollo-specific fields in Salesforce. Enriched data goes directly into the standard <code>FirstName</code>, <code>LastName</code>, <code>Title</code> fields. You won't be able to tell post-enrichment whether a field came from Apollo, ZoomInfo, or a human.</p>
+          <p><strong>Transparency:</strong> There are no Apollo-specific fields in Salesforce. Enriched data goes directly into the standard <code>FirstName</code>, <code>LastName</code>, <code>Title</code> fields. You won't be able to tell post-enrichment whether a field came from Apollo or a human.</p>
         </div>
       </div>
 
