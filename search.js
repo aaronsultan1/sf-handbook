@@ -5,12 +5,13 @@
 (function () {
   'use strict';
 
-  // ── Resolve index URL based on page depth ──────────────────────────────────
-  var inPages = /\/pages\//.test(window.location.pathname);
-  // For local file:// access, use relative path; for served, same logic
-  var INDEX_URL = (inPages ? '../' : '') + 'search-index.json';
+  // ── Detect page depth (for building relative URLs in results) ────────────────
+  var inPages = /\/pages\//.test(window.location.pathname) ||
+                /[/\\]pages[/\\]/.test(window.location.href);
 
   // ── State ───────────────────────────────────────────────────────────────────
+  // Index is loaded via <script src="search-index.js"> which sets
+  // window.HANDBOOK_SEARCH_INDEX — no fetch() needed (works on file://).
   var searchIndex   = null;
   var currentItems  = [];
   var selectedIdx   = -1;
@@ -137,12 +138,14 @@
   // ── Load index ──────────────────────────────────────────────────────────────
   function loadIndex(cb) {
     if (searchIndex) { cb(); return; }
-    fetch(INDEX_URL)
-      .then(function (r) { return r.json(); })
-      .then(function (data) { searchIndex = data; cb(); })
-      .catch(function () {
-        resultsEl.innerHTML = '<div id="gs-empty"><div class="gs-empty-icon">⚠️</div>Could not load search index.</div>';
-      });
+    // Prefer the pre-loaded global (set by search-index.js script tag)
+    if (window.HANDBOOK_SEARCH_INDEX) {
+      searchIndex = window.HANDBOOK_SEARCH_INDEX;
+      cb();
+      return;
+    }
+    resultsEl.innerHTML = '<div id="gs-empty"><div class="gs-empty-icon">⚠️</div>' +
+      'Search index not loaded. Make sure search-index.js is included.</div>';
   }
 
   // ── Search ──────────────────────────────────────────────────────────────────
