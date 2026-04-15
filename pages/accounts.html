@@ -757,6 +757,48 @@ contacts = sf.query(f"""
         <p style="margin-top: 10px;">This is the standard scope for US-team reports and mass outreach lists.</p>
       </div>
 
+      <!-- DUES TIER STRUCTURE -->
+      <h2 class="section-heading" id="dues-tiers">Dues Tier Structure</h2>
+      <p>Member dues are stored directly in Salesforce and are structured by ecosystem and revenue band. Each account is assigned a dues tier based on what kind of company they are and how large they are — the tier then determines their annual membership fee.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>2026 Dues Charged</strong></td>
+              <td><code>X2026_Dues_Charged__c</code></td>
+              <td>Actual dues billed for the current membership year. Prefer this over <code>Current_dues__c</code> for 2026 reporting.</td>
+            </tr>
+            <tr>
+              <td><strong>Dues Ecosystem Tier</strong></td>
+              <td><code>Ecosystem_Dues_Tier_2013_new__c</code></td>
+              <td>The formal dues category. Values reflect the metric used for each ecosystem: <strong>Brand Marketer – Total Advertising Spend</strong>, <strong>Agency – Gross Income</strong>, <strong>Media Seller – Total Mobile Ad Revenues</strong>, <strong>Technology Enabler – Total Mobile Revenues</strong>.</td>
+            </tr>
+            <tr>
+              <td><strong>Dues Tier — Marketers</strong></td>
+              <td><code>Dues_Ecosystem_Marketers__c</code></td>
+              <td>Revenue band for Marketer accounts: <strong>Marketers 1 ($0–25M)</strong>, <strong>Marketers 2 ($25–100M)</strong>, <strong>Marketers 3 ($100–500M)</strong>, <strong>Marketers 4 ($500M–2B)</strong>, <strong>Marketers 5 ($2B+)</strong>. Based on total advertising spend.</td>
+            </tr>
+            <tr>
+              <td><strong>Dues Tier — Sellers</strong></td>
+              <td><code>Dues_Ecosystem_Sellers__c</code></td>
+              <td>Revenue band for Media Seller accounts, based on total mobile ad revenues.</td>
+            </tr>
+            <tr>
+              <td><strong>Dues Tier — Enablers</strong></td>
+              <td><code>Dues_Ecosystem_Enablers__c</code></td>
+              <td>Revenue band for Technology Enabler accounts, based on total mobile revenues.</td>
+            </tr>
+            <tr>
+              <td><strong>Payment Frequency</strong></td>
+              <td><code>Payment_Frequency__c</code></td>
+              <td>How the account pays dues. Value of <strong>1</strong> = annual; <strong>2</strong> = installments.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 

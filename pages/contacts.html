@@ -250,6 +250,9 @@
             <tr><td><strong>Last Website Login</strong></td><td><code>Last_website_login__c</code></td><td>Date of most recent MMAGlobal.com login</td></tr>
             <tr><td><strong>Opted Out of Email</strong></td><td><code>HasOptedOutOfEmail</code></td><td>True = they have unsubscribed. Do NOT email opted-out contacts.</td></tr>
             <tr><td><strong>Email Bounced</strong></td><td><code>IsEmailBounced</code></td><td>True = their email address is invalid/bounced. Remove from outreach.</td></tr>
+            <tr><td><strong>Secondary Email</strong></td><td><code>Secondary_Email__c</code></td><td>Holds the contact's <em>previous</em> company email when they change jobs. Their new email becomes the primary; the old one moves here as a reference to their last known employer.</td></tr>
+            <tr><td><strong>Is Key Role</strong></td><td><code>Is_Key_Role__c</code></td><td>True = this contact is a verified Key Role (CMO, CEO, etc.) at their account. Set automatically when the contact appears in a Key Role lookup field on their Account record.</td></tr>
+            <tr><td><strong>Title Level</strong></td><td><code>Title_Level_Dynamic__c</code></td><td>Formula field that classifies the contact's seniority based on their Title: C-Level, VP, Director, Manager, etc. Useful for reporting by seniority. Groupings are editable in the formula if categories need updating.</td></tr>
           </tbody>
         </table>
       </div>
@@ -498,6 +501,65 @@
             <tr><td><strong>DATT Categories</strong></td><td><code>DATT_Categories__c</code></td><td>Content categories from DATT activity</td></tr>
             <tr><td><strong>Clicked DATT</strong></td><td><code>Clicked_DATT__c</code></td><td>Tracks whether/how this contact has clicked in DATT</td></tr>
             <tr><td><strong>Reg DATT</strong></td><td><code>Reg_DATT__c</code></td><td>Picklist — registration status for DATT newsletter</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ENGAGEMENT TRACKING -->
+      <h2 class="section-heading" id="engagement-tracking">Engagement Tracking</h2>
+      <p>Several fields on Contact track when a contact last engaged with MMA events, webinars, or content. These are useful for filtering "recently active" contacts or surfacing who may need re-engagement outreach.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Engagement Level</strong></td>
+              <td><code>Engagement_level__c</code></td>
+              <td>Formula field. Values: <strong>Less than 6 mos</strong> (actively engaged), <strong>Over 12 mos</strong> (lapsing), <strong>Inactive</strong> (no recent tracked engagement). Derived from CampaignMember activity.</td>
+            </tr>
+            <tr>
+              <td><strong>Last Event Participation</strong></td>
+              <td><code>Last_event_participation__c</code></td>
+              <td>Date of the contact's most recent in-person event attendance.</td>
+            </tr>
+            <tr>
+              <td><strong>Last Webinar Participation</strong></td>
+              <td><code>Last_webinar_participation__c</code></td>
+              <td>Date of the contact's most recent webinar attendance or registration.</td>
+            </tr>
+            <tr>
+              <td><strong>Last Engagement (Any)</strong></td>
+              <td><code>Last_engagement_any__c</code></td>
+              <td>Most recent engagement date across all event and webinar types. The broadest recency filter available.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- EVENT OUTREACH TAGS -->
+      <h2 class="section-heading" id="outreach-tags">Event Outreach Tags</h2>
+      <p>These fields are used by the membership and events teams to flag contacts for targeted outreach — speaker nominations, CMO-tier invitations, and specific list segments.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>API Name</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Seed List Tag</strong></td>
+              <td><code>Seed_List_Tag__c</code></td>
+              <td>Picklist that tags a contact for a specific outreach segment. Common values: <strong>2026 Tier 1 CMOs</strong>, <strong>2026 Tier 2 CMOs</strong>, <strong>Member CMOs non Board</strong>, <strong>Tier 3 Sales Prospects</strong>, <strong>2026 Noms</strong> (award/event nominations), <strong>DATT Group 2</strong> (DATT newsletter segment). Managed by the events and membership team.</td>
+            </tr>
+            <tr>
+              <td><strong>Prospective Speaker — CEO Summit</strong></td>
+              <td><code>Prospective_speaker_CEO_Summit__c</code></td>
+              <td>True = this contact has been identified as a potential speaker for a CEO Summit event.</td>
+            </tr>
+            <tr>
+              <td><strong>Prospective Speaker — Forums</strong></td>
+              <td><code>Prospective_speaker_Forums__c</code></td>
+              <td>True = this contact has been identified as a potential speaker at an MMA Forum event.</td>
+            </tr>
           </tbody>
         </table>
       </div>
