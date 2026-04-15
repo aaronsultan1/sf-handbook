@@ -560,9 +560,9 @@
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Apollo Enrichment</strong><br><code>enrich_real_acct_contacts.py</code></td>
-              <td>Queries Apollo API with contact email addresses, retrieves names/titles for contacts missing them, and writes results back to SF. Run on real-account contacts that still have [[Unknown]] names.</td>
-              <td>On-demand</td>
+              <td><strong>Apollo Enrichment</strong><br><span style="font-size:12px;color:#6b7280;">Apollo API Connector (automatic)</span></td>
+              <td>Apollo enriches contacts with missing names and titles via the live API connector — no manual script required. Contacts with [[Unknown]] names are resolved automatically as Apollo matches them by email.</td>
+              <td>Automatic</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
@@ -572,8 +572,8 @@
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Contact Remediation</strong><br><code>remediate_unknwn_contacts.py</code></td>
-              <td>Finds contacts stuck on the UNKNWN account, attempts to match them to real Accounts by email domain or Salesforce Contact ID, and moves them. Generates a results CSV for review.</td>
+              <td><strong>Contact Remediation</strong><br><code>holding_cleanup.py</code></td>
+              <td>Finds contacts stuck on the Holding for Non-Accounts record, attempts to match them to real Accounts by email domain or Salesforce Contact ID, and moves them. Generates a results CSV for review.</td>
               <td>On-demand</td>
               <td>Aaron Sultan</td>
             </tr>
