@@ -15,7 +15,7 @@
       --font-body:'Tiempos Text',Georgia,serif;
       --text:#111111; --muted:#6b6c6c; --border:#e7e8e8; --bg:#f7f8f8; --card:#ffffff;
       /* Salesforce Lightning colours for mockups */
-      --sf-nav:#16325c; --sf-blue:#0176d3; --sf-body:#f3f2f2;
+      --sf-nav:#ffffff; --sf-blue:#0176d3; --sf-body:#f3f2f2;
       --sf-label:#706e6b; --sf-border:#dddbda;
     }
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -76,22 +76,26 @@
     /* ── Salesforce UI Mockups ── */
     .mockup { background:var(--sf-body); border:1px solid var(--sf-border); border-radius:8px; overflow:hidden; margin:12px 0; font-family:'Helvetica Neue',Arial,sans-serif; }
 
-    /* SF Nav bar */
-    .sf-nav { background:var(--sf-nav); height:44px; display:flex; align-items:center; padding:0 12px; gap:10px; }
-    .sf-waffle { color:rgba(255,255,255,0.7); font-size:16px; cursor:pointer; padding:4px; }
-    .sf-logo-dot { width:28px; height:28px; border-radius:50%; background:#0176d3; display:flex; align-items:center; justify-content:center; }
-    .sf-logo-dot svg { width:16px; height:16px; fill:white; }
-    .sf-search { flex:1; max-width:300px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:4px; height:28px; display:flex; align-items:center; padding:0 10px; gap:7px; }
-    .sf-search-icon { color:rgba(255,255,255,0.6); font-size:13px; }
-    .sf-search-text { font-size:12.5px; color:rgba(255,255,255,0.5); }
-    .sf-search-typed { font-size:12.5px; color:#fff; }
-    .sf-nav-spacer { flex:1; }
-    .sf-avatar { width:26px; height:26px; border-radius:50%; background:#54698d; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; font-weight:700; }
+    /* SF Nav bar — white, matches MMA Global org */
+    .sf-nav { background:#fff; border-bottom:1px solid var(--sf-border); display:flex; align-items:center; padding:0 10px; gap:0; flex-wrap:nowrap; min-height:48px; }
+    .sf-waffle { color:#444; font-size:17px; cursor:pointer; padding:4px 8px; flex-shrink:0; }
+    .sf-logo-area { display:flex; align-items:center; gap:6px; padding:0 8px 0 2px; border-right:1px solid #e5e3e0; margin-right:4px; flex-shrink:0; }
+    .sf-mma-logo { font-size:13px; font-weight:900; color:#000; letter-spacing:-0.5px; line-height:1; }
+    .sf-mma-sub { font-size:8px; color:#666; line-height:1; white-space:nowrap; }
+    .sf-org-name { font-size:13px; font-weight:700; color:#181818; white-space:nowrap; }
+    .sf-nav-tabs { display:flex; align-items:flex-end; flex:1; height:100%; overflow:hidden; }
+    .sf-ntab { padding:0 10px 10px; font-size:12.5px; color:#444; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; height:100%; display:flex; align-items:flex-end; }
+    .sf-ntab.active { color:#181818; border-bottom-color:#ffa400; font-weight:700; }
+    .sf-search { background:#f3f2f2; border:1px solid #dddbda; border-radius:4px; height:28px; display:flex; align-items:center; padding:0 10px; gap:7px; min-width:140px; max-width:220px; flex-shrink:0; margin:0 8px; }
+    .sf-search-icon { color:#706e6b; font-size:12px; }
+    .sf-search-text { font-size:12px; color:#706e6b; }
+    .sf-search-typed { font-size:12px; color:#181818; }
+    .sf-avatar { width:26px; height:26px; border-radius:50%; background:#0176d3; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; font-weight:700; flex-shrink:0; }
 
-    /* SF App tabs bar */
-    .sf-tabs { background:#f3f2f2; border-bottom:1px solid var(--sf-border); height:38px; display:flex; align-items:flex-end; padding:0 16px; gap:2px; overflow:hidden; }
-    .sf-tab { padding:0 14px 8px; font-size:12.5px; color:#54698d; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
-    .sf-tab.active { color:var(--sf-nav); border-bottom-color:var(--sf-blue); font-weight:600; }
+    /* SF App tabs bar (standalone, used in some mockups) */
+    .sf-tabs { background:#fff; border-bottom:1px solid var(--sf-border); height:36px; display:flex; align-items:flex-end; padding:0 16px; gap:0; overflow:hidden; }
+    .sf-tab { padding:0 12px 8px; font-size:12.5px; color:#444; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+    .sf-tab.active { color:#181818; border-bottom-color:#ffa400; font-weight:700; }
 
     /* SF breadcrumb / record header */
     .sf-record-header { background:#fff; padding:14px 16px 10px; border-bottom:1px solid var(--sf-border); }
@@ -104,8 +108,8 @@
 
     /* SF record tabs */
     .sf-record-tabs { background:#fff; border-bottom:1px solid var(--sf-border); display:flex; padding:0 16px; }
-    .sf-rtab { padding:10px 16px; font-size:13px; color:#54698d; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
-    .sf-rtab.active { color:var(--sf-nav); border-bottom-color:var(--sf-blue); font-weight:600; }
+    .sf-rtab { padding:10px 16px; font-size:13px; color:#444; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+    .sf-rtab.active { color:#181818; border-bottom-color:#ffa400; font-weight:700; }
 
     /* SF field rows */
     .sf-fields { background:#fff; padding:16px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -256,12 +260,10 @@
             <div class="mockup">
               <div class="sf-nav">
                 <div class="sf-waffle">⊞</div>
-                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-                <div class="sf-search hl" style="max-width:260px;">
-                  <span class="sf-search-icon">🔍</span>
-                  <span class="sf-search-typed">Sarah Johnson</span>
-                </div>
-                <div class="sf-nav-spacer"></div>
+                <div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div>
+                <div class="sf-org-name" style="margin-right:12px;">MMA Global</div>
+                <div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div>
+                <div class="sf-search hl"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">Sarah Johnson</span></div>
                 <div class="sf-avatar">AS</div>
               </div>
               <div class="sf-dropdown">
@@ -289,9 +291,10 @@
             <div class="mockup">
               <div class="sf-nav">
                 <div class="sf-waffle">⊞</div>
-                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-                <div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">Sarah Johnson</span></div>
-                <div class="sf-nav-spacer"></div>
+                <div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div>
+                <div class="sf-org-name" style="margin-right:12px;">MMA Global</div>
+                <div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div>
+                <div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">Sarah Johnson</span></div>
                 <div class="sf-avatar">AS</div>
               </div>
               <div class="sf-dropdown">
@@ -316,7 +319,7 @@
             <div class="step-action">You're on the Contact record</div>
             <div class="step-desc">Clicking a name takes you directly to that contact's record. You'll see their details, related campaign memberships, activity history, and more.</div>
             <div class="mockup">
-              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div><div class="sf-org-name" style="margin-right:10px;">MMA Global</div><div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div><div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div><div class="sf-avatar">AS</div></div>
               <div class="sf-record-header">
                 <div class="sf-breadcrumb">Contacts &rsaquo; Sarah Johnson</div>
                 <div class="sf-record-name">Sarah Johnson</div>
@@ -361,10 +364,11 @@
             <div class="step-desc">Click the waffle icon (⊞) in the top-left corner to open the App Launcher, then type "Contacts" and click the Contacts app icon. Or click "Contacts" if it appears in your nav tabs.</div>
             <div class="mockup">
               <div class="sf-nav">
-                <div class="sf-waffle hl" style="font-size:20px;color:#fff;">⊞</div>
-                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-                <div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div>
-                <div class="sf-nav-spacer"></div>
+                <div class="sf-waffle hl">⊞</div>
+                <div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div>
+                <div class="sf-org-name" style="margin-right:10px;">MMA Global</div>
+                <div class="sf-nav-tabs"><span class="sf-ntab active">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab">Contacts ▾</span><span class="sf-ntab">Campaigns ▾</span><span class="sf-ntab">Reports ▾</span></div>
+                <div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div>
                 <div class="sf-avatar">AS</div>
               </div>
               <div class="sf-tabs">
@@ -386,7 +390,7 @@
             <div class="step-action">Click the "New" button</div>
             <div class="step-desc">From the Contacts list view, click the blue "New" button in the top-right area of the list. This opens a new contact form.</div>
             <div class="mockup">
-              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div><div class="sf-org-name" style="margin-right:10px;">MMA Global</div><div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div><div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div><div class="sf-avatar">AS</div></div>
               <div class="sf-listview-bar">
                 <div class="sf-listview-title">All Contacts</div>
                 <div style="display:flex;gap:8px;align-items:center;">
@@ -492,7 +496,7 @@
             <div class="step-action">Click the "Edit" button — or click directly on a field</div>
             <div class="step-desc">You have two options: click the blue <strong>Edit</strong> button at the top to open the full edit form, or hover over any individual field and click the small pencil icon that appears to edit just that one field inline.</div>
             <div class="mockup">
-              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div><div class="sf-org-name" style="margin-right:10px;">MMA Global</div><div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div><div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div><div class="sf-avatar">AS</div></div>
               <div class="sf-record-header">
                 <div class="sf-breadcrumb">Contacts &rsaquo; Sarah Johnson</div>
                 <div class="sf-record-name">Sarah Johnson</div>
@@ -564,9 +568,10 @@
             <div class="mockup">
               <div class="sf-nav">
                 <div class="sf-waffle">⊞</div>
-                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
-                <div class="sf-search hl" style="max-width:280px;"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">POSSIBLE 2026</span></div>
-                <div class="sf-nav-spacer"></div>
+                <div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div>
+                <div class="sf-org-name" style="margin-right:10px;">MMA Global</div>
+                <div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab">Contacts ▾</span><span class="sf-ntab active">Marketing Campaigns ▾</span><span class="sf-ntab">Reports ▾</span></div>
+                <div class="sf-search hl"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">POSSIBLE 2026</span></div>
                 <div class="sf-avatar">AS</div>
               </div>
               <div class="sf-dropdown">
@@ -591,7 +596,7 @@
             <div class="step-action">Click the "Campaign Members" related list tab</div>
             <div class="step-desc">Once inside the campaign record, look at the tabs below the campaign name. Click <strong>Campaign Members</strong> to see who's already added and to add new people.</div>
             <div class="mockup">
-              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div><div class="sf-org-name" style="margin-right:10px;">MMA Global</div><div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div><div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div><div class="sf-avatar">AS</div></div>
               <div class="sf-record-header">
                 <div class="sf-breadcrumb">Campaigns &rsaquo; POSSIBLE 2026 — Miami</div>
                 <div class="sf-record-name">POSSIBLE 2026 — Miami</div>
@@ -755,7 +760,7 @@
             <div class="step-action">Go to the Reports tab</div>
             <div class="step-desc">Click <strong>Reports</strong> in the top navigation tabs. If you don't see it, click the waffle icon (⊞) and search for "Reports."</div>
             <div class="mockup">
-              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-area"><div><div class="sf-mma-logo">MMA</div><div class="sf-mma-sub">Marketing + Media Alliance</div></div></div><div class="sf-org-name" style="margin-right:10px;">MMA Global</div><div class="sf-nav-tabs"><span class="sf-ntab">Home</span><span class="sf-ntab">Accounts ▾</span><span class="sf-ntab active">Contacts ▾</span><span class="sf-ntab">Leads ▾</span><span class="sf-ntab">Reports ▾</span></div><div class="sf-search"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search...</span></div><div class="sf-avatar">AS</div></div>
               <div class="sf-tabs">
                 <div class="sf-tab">Home</div>
                 <div class="sf-tab">Accounts</div>
