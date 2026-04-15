@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How-To Guides — MMA Salesforce Handbook</title>
+  <style>
+    @font-face { font-family:'Sohne'; src:url('../fonts/Sohne-Halbfett.otf') format('opentype'); font-weight:700; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Sohne'; src:url('../fonts/Sohne-Leicht.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Tiempos Text'; src:url('../fonts/TiemposText-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Tiempos Text'; src:url('../fonts/TiemposText-Medium.otf') format('opentype'); font-weight:500; font-style:normal; font-display:swap; }
+    :root {
+      --primary:#111111; --accent:#ffa400; --sidebar-width:260px;
+      --font:'Sohne','Helvetica Neue',Arial,sans-serif;
+      --font-body:'Tiempos Text',Georgia,serif;
+      --text:#111111; --muted:#6b6c6c; --border:#e7e8e8; --bg:#f7f8f8; --card:#ffffff;
+      /* Salesforce Lightning colours for mockups */
+      --sf-nav:#16325c; --sf-blue:#0176d3; --sf-body:#f3f2f2;
+      --sf-label:#706e6b; --sf-border:#dddbda;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; }
+    p, li, td { font-family:var(--font-body); }
+
+    /* ── Sidebar ── */
+    .sidebar { width:var(--sidebar-width); background:var(--primary); color:#fff; position:fixed; top:0; left:0; height:100vh; overflow-y:auto; z-index:100; display:flex; flex-direction:column; }
+    .sidebar-nav { padding:16px 0; flex:1; }
+    .nav-section-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:12px 20px 6px; }
+    .sidebar-nav a { display:flex; align-items:center; gap:10px; padding:9px 20px; color:rgba(255,255,255,0.75); text-decoration:none; font-size:14px; font-weight:500; border-left:3px solid transparent; transition:all 0.15s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color:#fff; background:rgba(255,255,255,0.08); border-left-color:#ffa400; }
+    .sidebar-nav a .nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+    .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,0.1); font-size:11px; color:rgba(255,255,255,0.3); }
+
+    /* ── Layout ── */
+    .main { margin-left:var(--sidebar-width); }
+    .page-header { background:var(--primary); color:white; padding:48px 32px 40px; }
+    .page-header .breadcrumb { font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:12px; letter-spacing:0.05em; text-transform:uppercase; }
+    .page-header .breadcrumb a { color:rgba(255,255,255,0.5); text-decoration:none; }
+    .page-header .breadcrumb a:hover { color:#fff; }
+    .page-header h1 { font-size:32px; font-weight:800; letter-spacing:-0.5px; margin-bottom:12px; }
+    .page-header h1 span { color:#ffa400; }
+    .page-header .subtitle { font-size:16px; color:rgba(255,255,255,0.7); max-width:640px; line-height:1.6; }
+    .content { padding:40px 32px; max-width:900px; }
+    .page-footer { margin-left:var(--sidebar-width); padding:20px 48px; border-top:1px solid var(--border); font-size:12px; color:var(--muted); background:var(--card); }
+
+    /* ── Tutorial index grid ── */
+    .guide-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; margin:24px 0 48px; }
+    .guide-pill { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; text-decoration:none; color:var(--text); display:flex; gap:14px; align-items:flex-start; transition:box-shadow .15s, border-color .15s; }
+    .guide-pill:hover { border-color:var(--accent); box-shadow:0 2px 10px rgba(0,0,0,.08); }
+    .guide-pill .gp-icon { font-size:26px; flex-shrink:0; }
+    .guide-pill .gp-title { font-size:14px; font-weight:700; color:var(--primary); margin-bottom:3px; }
+    .guide-pill .gp-meta { font-size:12px; color:var(--muted); font-family:var(--font-body); }
+
+    /* ── Tutorial card ── */
+    .tutorial { background:var(--card); border:1px solid var(--border); border-radius:14px; margin-bottom:48px; overflow:hidden; }
+    .tutorial-header { background:var(--primary); padding:22px 28px 20px; display:flex; align-items:center; gap:18px; }
+    .tutorial-num { font-size:28px; font-weight:800; color:var(--accent); line-height:1; flex-shrink:0; min-width:36px; }
+    .tutorial-title { font-size:20px; font-weight:700; color:#fff; margin-bottom:4px; }
+    .tutorial-meta { font-size:13px; color:rgba(255,255,255,0.55); }
+    .tutorial-meta span { margin-right:16px; }
+
+    /* ── Steps ── */
+    .steps { padding:8px 0; }
+    .step { display:flex; gap:0; border-bottom:1px solid var(--border); }
+    .step:last-child { border-bottom:none; }
+    .step-left { width:52px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; padding:24px 0 0; }
+    .step-circle { width:30px; height:30px; border-radius:50%; background:var(--accent); color:#fff; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-line { width:2px; background:var(--border); flex:1; margin:6px 0 0; }
+    .step:last-child .step-line { display:none; }
+    .step-body { flex:1; padding:20px 24px 24px 8px; }
+    .step-action { font-size:15px; font-weight:700; color:var(--primary); margin-bottom:10px; }
+    .step-desc { font-size:14px; color:#374151; line-height:1.65; margin-bottom:12px; font-family:var(--font-body); }
+    .step-tip { background:#eff6ff; border:1px solid #93c5fd; color:#1e3a8a; border-radius:8px; padding:10px 14px; font-size:13px; line-height:1.55; margin-top:10px; font-family:var(--font-body); }
+    .step-warn { background:#fffbeb; border:1px solid #fbbf24; color:#78350f; border-radius:8px; padding:10px 14px; font-size:13px; line-height:1.55; margin-top:10px; font-family:var(--font-body); }
+
+    /* ── Salesforce UI Mockups ── */
+    .mockup { background:var(--sf-body); border:1px solid var(--sf-border); border-radius:8px; overflow:hidden; margin:12px 0; font-family:'Helvetica Neue',Arial,sans-serif; }
+
+    /* SF Nav bar */
+    .sf-nav { background:var(--sf-nav); height:44px; display:flex; align-items:center; padding:0 12px; gap:10px; }
+    .sf-waffle { color:rgba(255,255,255,0.7); font-size:16px; cursor:pointer; padding:4px; }
+    .sf-logo-dot { width:28px; height:28px; border-radius:50%; background:#0176d3; display:flex; align-items:center; justify-content:center; }
+    .sf-logo-dot svg { width:16px; height:16px; fill:white; }
+    .sf-search { flex:1; max-width:300px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:4px; height:28px; display:flex; align-items:center; padding:0 10px; gap:7px; }
+    .sf-search-icon { color:rgba(255,255,255,0.6); font-size:13px; }
+    .sf-search-text { font-size:12.5px; color:rgba(255,255,255,0.5); }
+    .sf-search-typed { font-size:12.5px; color:#fff; }
+    .sf-nav-spacer { flex:1; }
+    .sf-avatar { width:26px; height:26px; border-radius:50%; background:#54698d; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; font-weight:700; }
+
+    /* SF App tabs bar */
+    .sf-tabs { background:#f3f2f2; border-bottom:1px solid var(--sf-border); height:38px; display:flex; align-items:flex-end; padding:0 16px; gap:2px; overflow:hidden; }
+    .sf-tab { padding:0 14px 8px; font-size:12.5px; color:#54698d; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+    .sf-tab.active { color:var(--sf-nav); border-bottom-color:var(--sf-blue); font-weight:600; }
+
+    /* SF breadcrumb / record header */
+    .sf-record-header { background:#fff; padding:14px 16px 10px; border-bottom:1px solid var(--sf-border); }
+    .sf-breadcrumb { font-size:11px; color:var(--sf-label); margin-bottom:6px; }
+    .sf-record-name { font-size:18px; font-weight:700; color:#080707; margin-bottom:8px; }
+    .sf-action-bar { display:flex; gap:8px; align-items:center; }
+    .sf-btn { background:var(--sf-blue); color:#fff; border:none; border-radius:4px; padding:5px 14px; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .sf-btn-outline { background:#fff; color:var(--sf-blue); border:1px solid var(--sf-blue); border-radius:4px; padding:5px 14px; font-size:12.5px; font-weight:600; cursor:pointer; }
+    .sf-btn-white { background:#fff; color:#444; border:1px solid #c9c7c5; border-radius:4px; padding:5px 14px; font-size:12.5px; cursor:pointer; }
+
+    /* SF record tabs */
+    .sf-record-tabs { background:#fff; border-bottom:1px solid var(--sf-border); display:flex; padding:0 16px; }
+    .sf-rtab { padding:10px 16px; font-size:13px; color:#54698d; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
+    .sf-rtab.active { color:var(--sf-nav); border-bottom-color:var(--sf-blue); font-weight:600; }
+
+    /* SF field rows */
+    .sf-fields { background:#fff; padding:16px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .sf-field { }
+    .sf-field-label { font-size:11px; color:var(--sf-label); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+    .sf-field-value { font-size:14px; color:#080707; }
+    .sf-field-value.empty { color:#c9c7c5; font-style:italic; }
+    .sf-field-editing { border:1px solid var(--sf-blue); border-radius:3px; padding:4px 8px; font-size:13px; color:#080707; background:#fff; width:100%; outline:2px solid rgba(1,118,211,0.25); }
+
+    /* SF list view / search results */
+    .sf-list { background:#fff; }
+    .sf-list-header { padding:10px 16px; background:#f3f2f2; border-bottom:1px solid var(--sf-border); font-size:12px; font-weight:700; color:var(--sf-label); text-transform:uppercase; letter-spacing:0.06em; display:flex; align-items:center; gap:10px; }
+    .sf-list-row { padding:10px 16px; border-bottom:1px solid var(--sf-border); font-size:13px; color:#080707; display:flex; align-items:center; gap:12px; }
+    .sf-list-row:last-child { border-bottom:none; }
+    .sf-list-link { color:var(--sf-blue); font-weight:600; text-decoration:none; }
+    .sf-list-sub { font-size:11.5px; color:var(--sf-label); }
+
+    /* SF search dropdown */
+    .sf-dropdown { background:#fff; border:1px solid var(--sf-border); border-radius:0 0 4px 4px; box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+    .sf-dropdown-section { padding:8px 12px 4px; font-size:10.5px; font-weight:700; color:var(--sf-label); text-transform:uppercase; letter-spacing:0.07em; }
+    .sf-dropdown-item { padding:7px 12px; display:flex; gap:10px; align-items:center; cursor:pointer; }
+    .sf-dropdown-item:hover { background:#f3f2f2; }
+    .sf-dropdown-icon { font-size:15px; flex-shrink:0; }
+    .sf-dropdown-name { font-size:13px; color:var(--sf-blue); font-weight:600; }
+    .sf-dropdown-detail { font-size:11.5px; color:var(--sf-label); }
+
+    /* Click indicator */
+    .click-here { display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#000; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:20px; margin-top:6px; }
+    .click-here::before { content:'👆'; font-size:13px; }
+
+    /* Highlight ring */
+    .hl { outline:2px solid var(--accent); outline-offset:2px; border-radius:3px; }
+    .hl-btn { outline:3px solid var(--accent); outline-offset:3px; border-radius:5px; }
+
+    /* New button in list view header */
+    .sf-listview-bar { background:#fff; padding:12px 16px; border-bottom:1px solid var(--sf-border); display:flex; justify-content:space-between; align-items:center; }
+    .sf-listview-title { font-size:15px; font-weight:700; color:#080707; }
+
+    /* Report area */
+    .sf-report-filter { background:#fff; padding:14px 16px; }
+    .sf-filter-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+    .sf-filter-label { font-size:13px; color:var(--sf-label); width:130px; flex-shrink:0; }
+    .sf-filter-val { border:1px solid var(--sf-border); border-radius:3px; padding:5px 10px; font-size:13px; flex:1; color:#080707; }
+    .sf-run-btn { background:#2e844a; color:#fff; border:none; border-radius:4px; padding:7px 20px; font-size:13px; font-weight:700; cursor:pointer; }
+
+    /* Status badges for campaign members */
+    .sf-badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; }
+    .sf-badge-green { background:#cdefc4; color:#0e6027; }
+    .sf-badge-blue  { background:#d8edff; color:#05428e; }
+    .sf-badge-gray  { background:#e5e5e5; color:#444; }
+    .sf-badge-red   { background:#fdd4d4; color:#8e1b1b; }
+
+    /* Section heading */
+    h2.section-heading { font-size:22px; font-weight:700; color:var(--primary); margin:40px 0 16px; padding-bottom:10px; border-bottom:2px solid var(--border); }
+
+    @media (max-width:768px) { .sidebar { transform:translateX(-100%); } .main,.page-footer { margin-left:0; } .page-header,.content { padding:24px 20px; } .sf-fields { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-logo" style="padding:0;">
+    <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+      <img src="../fonts/mma-logo.png" alt="MMA" style="width:100%;max-width:180px;display:block;" />
+    </div>
+    <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+    <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+    <a href="how-to-guides.html" class="active"><span class="nav-icon">🎯</span> How-To Guides</a>
+    <div class="nav-section-label">Core Objects</div>
+    <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+    <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+    <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+    <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+    <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+    <div class="nav-section-label">Team Guides</div>
+    <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+    <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+    <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+    <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+    <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+  </div>
+  <div class="sidebar-footer">Last updated: April 2026</div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; How-To Guides</div>
+    <h1>How-To <span>Guides</span></h1>
+    <p class="subtitle">Step-by-step walkthroughs for the most common Salesforce tasks. Each guide shows exactly where to click and what to fill in.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- Index -->
+    <div class="guide-grid">
+      <a class="guide-pill" href="#lookup-contact">
+        <div class="gp-icon">🔍</div>
+        <div><div class="gp-title">Look Up a Contact</div><div class="gp-meta">3 steps &nbsp;·&nbsp; ~30 sec</div></div>
+      </a>
+      <a class="guide-pill" href="#create-contact">
+        <div class="gp-icon">➕</div>
+        <div><div class="gp-title">Create a New Contact</div><div class="gp-meta">5 steps &nbsp;·&nbsp; ~2 min</div></div>
+      </a>
+      <a class="guide-pill" href="#edit-contact">
+        <div class="gp-icon">✏️</div>
+        <div><div class="gp-title">Edit a Contact Field</div><div class="gp-meta">4 steps &nbsp;·&nbsp; ~1 min</div></div>
+      </a>
+      <a class="guide-pill" href="#add-to-campaign">
+        <div class="gp-icon">📣</div>
+        <div><div class="gp-title">Add Someone to a Campaign</div><div class="gp-meta">5 steps &nbsp;·&nbsp; ~2 min</div></div>
+      </a>
+      <a class="guide-pill" href="#campaign-statuses">
+        <div class="gp-icon">📋</div>
+        <div><div class="gp-title">Check Campaign Statuses</div><div class="gp-meta">4 steps &nbsp;·&nbsp; ~1 min</div></div>
+      </a>
+      <a class="guide-pill" href="#run-report">
+        <div class="gp-icon">📊</div>
+        <div><div class="gp-title">Run a List View or Report</div><div class="gp-meta">4 steps &nbsp;·&nbsp; ~1 min</div></div>
+      </a>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 1: Look Up a Contact                         -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="lookup-contact">
+      <div class="tutorial-header">
+        <div class="tutorial-num">01</div>
+        <div>
+          <div class="tutorial-title">Look Up a Contact</div>
+          <div class="tutorial-meta"><span>⏱ ~30 seconds</span><span>📍 From any page in Salesforce</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click the Search bar at the top of the page</div>
+            <div class="step-desc">The Global Search bar runs across the top of every Salesforce page. Click it and start typing — a name, email address, or company name all work.</div>
+            <div class="mockup">
+              <div class="sf-nav">
+                <div class="sf-waffle">⊞</div>
+                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+                <div class="sf-search hl" style="max-width:260px;">
+                  <span class="sf-search-icon">🔍</span>
+                  <span class="sf-search-typed">Sarah Johnson</span>
+                </div>
+                <div class="sf-nav-spacer"></div>
+                <div class="sf-avatar">AS</div>
+              </div>
+              <div class="sf-dropdown">
+                <div class="sf-dropdown-section">Top Results</div>
+                <div class="sf-dropdown-item">
+                  <div class="sf-dropdown-icon">👤</div>
+                  <div><div class="sf-dropdown-name">Sarah Johnson</div><div class="sf-dropdown-detail">VP Marketing &nbsp;·&nbsp; Nike</div></div>
+                </div>
+                <div class="sf-dropdown-item">
+                  <div class="sf-dropdown-icon">👤</div>
+                  <div><div class="sf-dropdown-name">Sarah Johnson-Lee</div><div class="sf-dropdown-detail">CMO &nbsp;·&nbsp; Unilever</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">💡 You can search by first name, last name, email address, or company. Partial matches work — "sarah" will return all Sarahs.</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Select the correct contact from the dropdown</div>
+            <div class="step-desc">A dropdown appears as you type showing the best matches. If you see the right person, click their name. If the dropdown doesn't show them, press Enter to see the full results page and filter by "Contacts."</div>
+            <div class="mockup">
+              <div class="sf-nav">
+                <div class="sf-waffle">⊞</div>
+                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+                <div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">Sarah Johnson</span></div>
+                <div class="sf-nav-spacer"></div>
+                <div class="sf-avatar">AS</div>
+              </div>
+              <div class="sf-dropdown">
+                <div class="sf-dropdown-section">Contacts</div>
+                <div class="sf-dropdown-item hl">
+                  <div class="sf-dropdown-icon">👤</div>
+                  <div><div class="sf-dropdown-name">Sarah Johnson</div><div class="sf-dropdown-detail">VP Marketing &nbsp;·&nbsp; Nike</div></div>
+                </div>
+                <div class="sf-dropdown-item" style="opacity:0.5;">
+                  <div class="sf-dropdown-icon">👤</div>
+                  <div><div class="sf-dropdown-name">Sarah Johnson-Lee</div><div class="sf-dropdown-detail">CMO &nbsp;·&nbsp; Unilever</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div></div>
+          <div class="step-body">
+            <div class="step-action">You're on the Contact record</div>
+            <div class="step-desc">Clicking a name takes you directly to that contact's record. You'll see their details, related campaign memberships, activity history, and more.</div>
+            <div class="mockup">
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-record-header">
+                <div class="sf-breadcrumb">Contacts &rsaquo; Sarah Johnson</div>
+                <div class="sf-record-name">Sarah Johnson</div>
+                <div class="sf-action-bar">
+                  <button class="sf-btn">Edit</button>
+                  <button class="sf-btn-white">Clone</button>
+                  <button class="sf-btn-white">Send Email</button>
+                </div>
+              </div>
+              <div class="sf-fields">
+                <div class="sf-field"><div class="sf-field-label">Title</div><div class="sf-field-value">VP Marketing</div></div>
+                <div class="sf-field"><div class="sf-field-label">Account Name</div><div class="sf-field-value" style="color:var(--sf-blue)">Nike</div></div>
+                <div class="sf-field"><div class="sf-field-label">Email</div><div class="sf-field-value" style="color:var(--sf-blue)">sarah@nike.com</div></div>
+                <div class="sf-field"><div class="sf-field-label">Phone</div><div class="sf-field-value">+1 503-671-6453</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /steps -->
+    </div><!-- /tutorial -->
+
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 2: Create a New Contact                       -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="create-contact">
+      <div class="tutorial-header">
+        <div class="tutorial-num">02</div>
+        <div>
+          <div class="tutorial-title">Create a New Contact</div>
+          <div class="tutorial-meta"><span>⏱ ~2 minutes</span><span>📍 Contacts list view</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Navigate to Contacts using the App Launcher</div>
+            <div class="step-desc">Click the waffle icon (⊞) in the top-left corner to open the App Launcher, then type "Contacts" and click the Contacts app icon. Or click "Contacts" if it appears in your nav tabs.</div>
+            <div class="mockup">
+              <div class="sf-nav">
+                <div class="sf-waffle hl" style="font-size:20px;color:#fff;">⊞</div>
+                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+                <div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div>
+                <div class="sf-nav-spacer"></div>
+                <div class="sf-avatar">AS</div>
+              </div>
+              <div class="sf-tabs">
+                <div class="sf-tab active">Home</div>
+                <div class="sf-tab">Accounts</div>
+                <div class="sf-tab">Contacts</div>
+                <div class="sf-tab">Campaigns</div>
+                <div class="sf-tab">Reports</div>
+              </div>
+            </div>
+            <div class="step-tip">💡 "Contacts" should already be in your nav tabs at the top. If not, use the waffle (⊞) → search "Contacts."</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click the "New" button</div>
+            <div class="step-desc">From the Contacts list view, click the blue "New" button in the top-right area of the list. This opens a new contact form.</div>
+            <div class="mockup">
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-listview-bar">
+                <div class="sf-listview-title">All Contacts</div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <button class="sf-btn-white">Import</button>
+                  <button class="sf-btn hl-btn">New</button>
+                </div>
+              </div>
+              <div class="sf-list-header">Name &nbsp;·&nbsp; Title &nbsp;·&nbsp; Account &nbsp;·&nbsp; Email</div>
+              <div class="sf-list-row"><span class="sf-list-link">Alex Rivera</span><span class="sf-list-sub">&nbsp;·&nbsp; CMO &nbsp;·&nbsp; Procter &amp; Gamble</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Beth Chung</span><span class="sf-list-sub">&nbsp;·&nbsp; VP Digital &nbsp;·&nbsp; L'Oréal</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Fill in the required fields</div>
+            <div class="step-desc">A modal form opens. The <strong>three required fields</strong> are marked with a red asterisk: <strong>Last Name</strong>, <strong>Account Name</strong> (their company), and <strong>Email</strong>. You cannot save without these.</div>
+            <div class="mockup" style="background:#fff;">
+              <div style="padding:16px 20px;border-bottom:1px solid var(--sf-border);display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:16px;font-weight:700;color:#080707;">New Contact</div>
+                <div style="font-size:18px;color:#706e6b;cursor:pointer;">✕</div>
+              </div>
+              <div style="padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="sf-field"><div class="sf-field-label">First Name</div><input class="sf-field-editing" placeholder="e.g. Sarah" /></div>
+                <div class="sf-field"><div class="sf-field-label" style="color:#c23934;">Last Name <span style="color:#c23934;">*</span></div><input class="sf-field-editing" placeholder="Required" /></div>
+                <div class="sf-field" style="grid-column:1/-1;"><div class="sf-field-label" style="color:#c23934;">Account Name <span style="color:#c23934;">*</span></div><input class="sf-field-editing" placeholder="Start typing company name…" /></div>
+                <div class="sf-field" style="grid-column:1/-1;"><div class="sf-field-label" style="color:#c23934;">Email <span style="color:#c23934;">*</span></div><input class="sf-field-editing" placeholder="Required" /></div>
+              </div>
+            </div>
+            <div class="step-warn">⚠️ Always search for the Account by typing the company name — don't type it freeform. This links the contact to the correct account record so membership status flows through.</div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Fill in recommended additional fields</div>
+            <div class="step-desc">While not required by the system, these fields are important for MMA outreach and reporting. Fill in as many as you know:</div>
+            <div style="margin:12px 0;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
+                <thead><tr style="background:var(--bg);"><th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);">Field</th><th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);">Why it matters</th></tr></thead>
+                <tbody>
+                  <tr><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:monospace;font-size:12px;">Title</td><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Used for seniority scoring and outreach targeting</td></tr>
+                  <tr><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:monospace;font-size:12px;">Mobile / Phone</td><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Used for direct outreach</td></tr>
+                  <tr><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:monospace;font-size:12px;">LinkedIn URL</td><td style="padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Helps with Apollo enrichment</td></tr>
+                  <tr><td style="padding:10px 14px;font-family:monospace;font-size:12px;">Region</td><td style="padding:10px 14px;font-family:var(--font-body);">Ensures they receive the correct regional comms</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">5</div></div>
+          <div class="step-body">
+            <div class="step-action">Click Save</div>
+            <div class="step-desc">Click the blue "Save" button at the bottom of the form. The contact is created and you'll land on their new record. Double-check the Account link to confirm they're attached to the right company.</div>
+            <div class="mockup" style="background:#fff;">
+              <div style="padding:14px 20px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--sf-border);">
+                <button class="sf-btn-white">Cancel</button>
+                <button class="sf-btn hl-btn">Save</button>
+              </div>
+            </div>
+            <div class="step-tip">💡 After saving, Pardot and Apollo enrichment may automatically populate additional fields (industry, company size, etc.) within 24 hours.</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tutorial -->
+
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 3: Edit a Contact Field                       -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="edit-contact">
+      <div class="tutorial-header">
+        <div class="tutorial-num">03</div>
+        <div>
+          <div class="tutorial-title">Edit / Update a Contact Field</div>
+          <div class="tutorial-meta"><span>⏱ ~1 minute</span><span>📍 From the contact record</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Open the contact record</div>
+            <div class="step-desc">Use Global Search (Guide 01) to find and open the contact you want to update.</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click the "Edit" button — or click directly on a field</div>
+            <div class="step-desc">You have two options: click the blue <strong>Edit</strong> button at the top to open the full edit form, or hover over any individual field and click the small pencil icon that appears to edit just that one field inline.</div>
+            <div class="mockup">
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-record-header">
+                <div class="sf-breadcrumb">Contacts &rsaquo; Sarah Johnson</div>
+                <div class="sf-record-name">Sarah Johnson</div>
+                <div class="sf-action-bar">
+                  <button class="sf-btn hl-btn">Edit</button>
+                  <button class="sf-btn-white">Clone</button>
+                </div>
+              </div>
+              <div class="sf-fields">
+                <div class="sf-field" style="position:relative;">
+                  <div class="sf-field-label">Title</div>
+                  <div class="sf-field-value">VP Marketing <span style="font-size:11px;color:var(--sf-blue);margin-left:6px;cursor:pointer;">✏️</span></div>
+                </div>
+                <div class="sf-field"><div class="sf-field-label">Account Name</div><div class="sf-field-value" style="color:var(--sf-blue)">Nike</div></div>
+              </div>
+            </div>
+            <div class="step-tip">💡 Inline edit (pencil icon) is faster for changing one field. Use the full Edit button when updating several fields at once.</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Make your changes</div>
+            <div class="step-desc">Update the field values. For text fields, just type. For picklists (dropdowns), click to see the options and select one. For lookups (like Account Name), start typing and select from the suggestions.</div>
+            <div class="mockup" style="background:#fff;">
+              <div style="padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="sf-field"><div class="sf-field-label">Title</div><input class="sf-field-editing" value="SVP Marketing" /></div>
+                <div class="sf-field"><div class="sf-field-label">Account Name</div><div class="sf-field-value" style="color:var(--sf-blue)">Nike</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div></div>
+          <div class="step-body">
+            <div class="step-action">Click Save</div>
+            <div class="step-desc">Click the blue <strong>Save</strong> button to commit your changes. The record refreshes and shows the updated values. If you made a mistake, click <strong>Cancel</strong> to discard and start over.</div>
+            <div class="step-warn">⚠️ Do not navigate away before saving — your changes will be lost.</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tutorial -->
+
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 4: Add Someone to a Campaign                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="add-to-campaign">
+      <div class="tutorial-header">
+        <div class="tutorial-num">04</div>
+        <div>
+          <div class="tutorial-title">Add Someone to a Campaign</div>
+          <div class="tutorial-meta"><span>⏱ ~2 minutes</span><span>📍 From the campaign record</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Search for and open the Campaign</div>
+            <div class="step-desc">Use Global Search to find the campaign. Type the event name (e.g. "POSSIBLE 2026" or "CCS 2026") in the search bar. Select it from the results under "Campaigns."</div>
+            <div class="mockup">
+              <div class="sf-nav">
+                <div class="sf-waffle">⊞</div>
+                <div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+                <div class="sf-search hl" style="max-width:280px;"><span class="sf-search-icon">🔍</span><span class="sf-search-typed">POSSIBLE 2026</span></div>
+                <div class="sf-nav-spacer"></div>
+                <div class="sf-avatar">AS</div>
+              </div>
+              <div class="sf-dropdown">
+                <div class="sf-dropdown-section">Campaigns</div>
+                <div class="sf-dropdown-item">
+                  <div class="sf-dropdown-icon">📣</div>
+                  <div><div class="sf-dropdown-name">POSSIBLE 2026 — Miami</div><div class="sf-dropdown-detail">Summit &nbsp;·&nbsp; Apr 27, 2026</div></div>
+                </div>
+                <div class="sf-dropdown-item">
+                  <div class="sf-dropdown-icon">📣</div>
+                  <div><div class="sf-dropdown-name">POSSIBLE 2026 — Invite List</div><div class="sf-dropdown-detail">Possible &nbsp;·&nbsp; Feb 2026</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click the "Campaign Members" related list tab</div>
+            <div class="step-desc">Once inside the campaign record, look at the tabs below the campaign name. Click <strong>Campaign Members</strong> to see who's already added and to add new people.</div>
+            <div class="mockup">
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-record-header">
+                <div class="sf-breadcrumb">Campaigns &rsaquo; POSSIBLE 2026 — Miami</div>
+                <div class="sf-record-name">POSSIBLE 2026 — Miami</div>
+              </div>
+              <div class="sf-record-tabs">
+                <div class="sf-rtab">Details</div>
+                <div class="sf-rtab active hl">Campaign Members</div>
+                <div class="sf-rtab">Activity</div>
+                <div class="sf-rtab">Files</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click "Add Members"</div>
+            <div class="step-desc">In the Campaign Members section, look for the <strong>Add Members</strong> button. Click it to open the member search panel.</div>
+            <div class="mockup">
+              <div class="sf-listview-bar">
+                <div class="sf-listview-title">Campaign Members <span style="font-size:13px;color:var(--sf-label);font-weight:normal;">(142)</span></div>
+                <div style="display:flex;gap:8px;">
+                  <button class="sf-btn-white">Manage Members</button>
+                  <button class="sf-btn hl-btn">Add Members</button>
+                </div>
+              </div>
+              <div class="sf-list-header">Name &nbsp;·&nbsp; Company &nbsp;·&nbsp; Status</div>
+              <div class="sf-list-row"><span class="sf-list-link">Alex Rivera</span><span class="sf-list-sub">&nbsp;·&nbsp; P&amp;G &nbsp;·&nbsp;</span><span class="sf-badge sf-badge-blue">Registered</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Beth Chung</span><span class="sf-list-sub">&nbsp;·&nbsp; L'Oréal &nbsp;·&nbsp;</span><span class="sf-badge sf-badge-gray">Invited</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Search for the contact and set their status</div>
+            <div class="step-desc">A search panel opens. Type the person's name or email to find them. Once found, check the box next to their name and choose a <strong>Member Status</strong> from the dropdown — usually "Invited" to start.</div>
+            <div class="mockup" style="background:#fff;">
+              <div style="padding:14px 20px;border-bottom:1px solid var(--sf-border);font-size:14px;font-weight:700;color:#080707;">Add Campaign Members</div>
+              <div style="padding:14px 20px;">
+                <div style="margin-bottom:12px;"><div style="font-size:11px;color:var(--sf-label);text-transform:uppercase;margin-bottom:4px;">Search Contacts</div><input class="sf-field-editing" value="Sarah Johnson" style="width:100%;" /></div>
+                <div class="sf-list-row hl" style="border:1px solid var(--sf-border);border-radius:6px;margin-bottom:8px;"><input type="checkbox" checked style="margin-right:8px;" /><span class="sf-list-link">Sarah Johnson</span><span class="sf-list-sub">&nbsp;·&nbsp; VP Marketing &nbsp;·&nbsp; Nike</span></div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:10px;"><div style="font-size:13px;color:var(--sf-label);">Member Status:</div><select style="border:1px solid var(--sf-border);border-radius:4px;padding:5px 10px;font-size:13px;"><option>Invited</option><option>Registered</option><option>Attended</option></select></div>
+              </div>
+            </div>
+            <div class="step-tip">💡 Common statuses when manually adding: use <strong>Invited</strong> if they were sent an invite, <strong>Registered</strong> if they've confirmed, <strong>Attended</strong> after the event.</div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">5</div></div>
+          <div class="step-body">
+            <div class="step-action">Click "Add to Campaign"</div>
+            <div class="step-desc">Click the <strong>Add to Campaign</strong> (or "Submit") button. The contact now appears in the Campaign Members list with the status you selected.</div>
+            <div class="step-tip">💡 You can add multiple people at once by checking multiple boxes before clicking Add to Campaign.</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tutorial -->
+
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 5: Check Campaign Member Statuses             -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="campaign-statuses">
+      <div class="tutorial-header">
+        <div class="tutorial-num">05</div>
+        <div>
+          <div class="tutorial-title">Check Campaign Member Statuses</div>
+          <div class="tutorial-meta"><span>⏱ ~1 minute</span><span>📍 From the campaign record</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Open the Campaign record</div>
+            <div class="step-desc">Search for the event by name using Global Search (e.g. "CCS 2026"). Click the campaign from the dropdown to open it.</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Go to the Campaign Members tab</div>
+            <div class="step-desc">Click the <strong>Campaign Members</strong> tab in the record's tab bar (same as Guide 04, Step 2).</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Read the Status column</div>
+            <div class="step-desc">Each row shows a member's name, company, and current status. Statuses are color-coded so you can scan quickly.</div>
+            <div class="mockup">
+              <div class="sf-listview-bar">
+                <div class="sf-listview-title">Campaign Members <span style="font-size:13px;color:var(--sf-label);font-weight:normal;">(86)</span></div>
+                <div><button class="sf-btn-white">Export</button></div>
+              </div>
+              <div class="sf-list-header">Name &nbsp;·&nbsp; Company &nbsp;·&nbsp; Status</div>
+              <div class="sf-list-row"><span class="sf-list-link">Alex Rivera</span><span class="sf-list-sub">&nbsp;·&nbsp; P&amp;G</span><span style="flex:1;"></span><span class="sf-badge sf-badge-green">Attended</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Beth Chung</span><span class="sf-list-sub">&nbsp;·&nbsp; L'Oréal</span><span style="flex:1;"></span><span class="sf-badge sf-badge-blue">Registered</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Carlos Diaz</span><span class="sf-list-sub">&nbsp;·&nbsp; Nestlé</span><span style="flex:1;"></span><span class="sf-badge sf-badge-gray">Invited</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Dana Kim</span><span class="sf-list-sub">&nbsp;·&nbsp; Samsung</span><span style="flex:1;"></span><span class="sf-badge sf-badge-red">No Show</span></div>
+            </div>
+            <div style="margin:12px 0;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead><tr style="background:var(--bg);"><th style="padding:9px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);">Status</th><th style="padding:9px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);">Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);"><span class="sf-badge sf-badge-green">Attended / Checked In</span></td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Confirmed present at the event</td></tr>
+                  <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);"><span class="sf-badge sf-badge-blue">Registered / Verbal Yes</span></td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Confirmed they are coming</td></tr>
+                  <tr><td style="padding:9px 14px;border-bottom:1px solid var(--border);"><span class="sf-badge sf-badge-gray">Invited / Sent</span></td><td style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--font-body);">Reached out but no response yet</td></tr>
+                  <tr><td style="padding:9px 14px;"><span class="sf-badge sf-badge-red">No Show / Cancelled</span></td><td style="padding:9px 14px;font-family:var(--font-body);">Did not attend after confirming</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div></div>
+          <div class="step-body">
+            <div class="step-action">Update a status (if needed)</div>
+            <div class="step-desc">Click on any person's name to open their campaign member record. Click the <strong>Status</strong> field and choose a new value, then Save. Or, to update many people at once, ask Aaron — bulk status updates are done via data import.</div>
+            <div class="step-tip">💡 Need to see statuses for a specific person across <em>all</em> events? Use the <a href="../../mma-event-lookup/static/index.html" style="color:var(--accent);">Event Registration Lookup tool</a> instead — it shows all 2026 event registrations for any contact in one view.</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tutorial -->
+
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- TUTORIAL 6: Run a List View or Report                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="tutorial" id="run-report">
+      <div class="tutorial-header">
+        <div class="tutorial-num">06</div>
+        <div>
+          <div class="tutorial-title">Run a List View or Report</div>
+          <div class="tutorial-meta"><span>⏱ ~1 minute</span><span>📍 Reports tab or any object list</span></div>
+        </div>
+      </div>
+      <div class="steps">
+
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Go to the Reports tab</div>
+            <div class="step-desc">Click <strong>Reports</strong> in the top navigation tabs. If you don't see it, click the waffle icon (⊞) and search for "Reports."</div>
+            <div class="mockup">
+              <div class="sf-nav"><div class="sf-waffle">⊞</div><div class="sf-logo-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg></div><div class="sf-search" style="max-width:260px;"><span class="sf-search-icon">🔍</span><span class="sf-search-text">Search Salesforce</span></div><div class="sf-nav-spacer"></div><div class="sf-avatar">AS</div></div>
+              <div class="sf-tabs">
+                <div class="sf-tab">Home</div>
+                <div class="sf-tab">Accounts</div>
+                <div class="sf-tab">Contacts</div>
+                <div class="sf-tab">Campaigns</div>
+                <div class="sf-tab active hl">Reports</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Find your report</div>
+            <div class="step-desc">The Reports home page shows your <strong>Recently Viewed</strong> reports. Use the search box to find a report by name, or browse the <strong>All Reports</strong> folder. MMA's shared reports are in the "MMA Reports" folder.</div>
+            <div class="mockup">
+              <div class="sf-listview-bar">
+                <div class="sf-listview-title">Reports</div>
+                <button class="sf-btn">New Report</button>
+              </div>
+              <div style="padding:12px 16px;border-bottom:1px solid var(--sf-border);"><input class="sf-field-editing" placeholder="Search reports…" style="width:100%;max-width:300px;" /></div>
+              <div class="sf-list-header">Report Name &nbsp;·&nbsp; Folder</div>
+              <div class="sf-list-row"><span class="sf-list-link">2026 Active Members by Region</span><span class="sf-list-sub">&nbsp;·&nbsp; MMA Reports</span></div>
+              <div class="sf-list-row hl"><span class="sf-list-link">Campaign Members — POSSIBLE 2026</span><span class="sf-list-sub">&nbsp;·&nbsp; MMA Reports</span></div>
+              <div class="sf-list-row"><span class="sf-list-link">Contacts Missing Email</span><span class="sf-list-sub">&nbsp;·&nbsp; MMA Reports</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-action">Click "Run" to execute the report</div>
+            <div class="step-desc">Click the report name to open it, then click the <strong>Run</strong> button. The report loads with live data from Salesforce. Large reports may take a few seconds.</div>
+            <div class="mockup">
+              <div class="sf-record-header">
+                <div class="sf-breadcrumb">Reports &rsaquo; Campaign Members — POSSIBLE 2026</div>
+                <div class="sf-record-name">Campaign Members — POSSIBLE 2026</div>
+                <div class="sf-action-bar">
+                  <button class="sf-run-btn hl-btn">▶ Run</button>
+                  <button class="sf-btn-white">Edit</button>
+                  <button class="sf-btn-white">Export</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div></div>
+          <div class="step-body">
+            <div class="step-action">Filter or export the results</div>
+            <div class="step-desc">After the report runs, you can narrow results using the <strong>Filters</strong> panel on the left side. To get the data into Excel, click <strong>Export</strong> at the top-right and choose "Export Details" → Excel format (.xlsx).</div>
+            <div class="mockup">
+              <div style="display:flex;min-height:110px;">
+                <div style="width:180px;background:#f3f2f2;border-right:1px solid var(--sf-border);padding:12px;flex-shrink:0;">
+                  <div style="font-size:11px;font-weight:700;color:var(--sf-label);text-transform:uppercase;margin-bottom:10px;">Filters</div>
+                  <div class="sf-filter-row"><div style="font-size:12px;color:#080707;">Status</div></div>
+                  <div style="border:1px solid var(--sf-border);border-radius:3px;padding:4px 8px;font-size:12px;color:#080707;background:#fff;margin-bottom:6px;">Registered</div>
+                  <div style="border:1px solid var(--sf-border);border-radius:3px;padding:4px 8px;font-size:12px;color:var(--sf-label);background:#fff;">+ Add Filter</div>
+                </div>
+                <div style="flex:1;padding:12px 16px;">
+                  <div class="sf-list-header" style="padding:0 0 8px;background:none;border:none;">86 records &nbsp;·&nbsp; Filtered by: Registered</div>
+                  <div class="sf-list-row" style="padding:6px 0;"><span class="sf-list-link">Alex Rivera</span><span class="sf-list-sub">&nbsp;·&nbsp; P&amp;G &nbsp;·&nbsp;</span><span class="sf-badge sf-badge-blue">Registered</span></div>
+                  <div class="sf-list-row" style="padding:6px 0;"><span class="sf-list-link">Beth Chung</span><span class="sf-list-sub">&nbsp;·&nbsp; L'Oréal &nbsp;·&nbsp;</span><span class="sf-badge sf-badge-blue">Registered</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="step-tip">💡 Need a quick list without building a report? Go to any object (Contacts, Campaigns, etc.) → click the <strong>List View</strong> controls → click <strong>New List View</strong> to filter by any field combination.</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /tutorial -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<div class="page-footer">
+  MMA Salesforce Handbook &nbsp;·&nbsp; How-To Guides &nbsp;·&nbsp; Last updated April 2026
+</div>
+
+</body>
+</html>
