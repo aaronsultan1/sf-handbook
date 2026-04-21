@@ -251,6 +251,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -393,7 +394,7 @@
         <div class="integration-body">
           <p>Outreach is a sales engagement platform used primarily by the US/Global membership team for multi-step outreach sequences — series of emails and tasks to prospect or re-engage member contacts. Outreach sequences are built in the Outreach platform and the contacts (called "Prospects" in Outreach) are synced from Salesforce.</p>
           <p><strong>How Salesforce is involved:</strong> When a contact is added to an Outreach sequence, Outreach writes the sequence ID and status back to Salesforce via the <code>Outreach_Id__c</code> field on the Contact record. This allows the SF team to see which contacts are in active outreach sequences.</p>
-          <p><strong>Pardot integration:</strong> Outreach sequences can feed into Pardot suppression lists. The Python script <code>outreach_seq_to_pardot_list.py</code> pulls all prospects from a given Outreach sequence and adds them to a Pardot list (e.g., suppression for a specific campaign). This is run on demand by Aaron Sultan.</p>
+          <p><strong>Pardot integration:</strong> Outreach sequences can feed into Pardot suppression lists. Aaron Sultan handles syncing Outreach sequence members to Pardot lists (e.g., suppression for a specific campaign) on demand — reach out if you need this done before a send.</p>
           <p><strong>Who uses it:</strong> Primarily the US membership sales and renewal team. Outreach access is separate from Salesforce access — contact Aaron Sultan or your team lead to be set up.</p>
           <div class="integration-fields">
             <h4>Key SF Fields</h4>
@@ -495,14 +496,14 @@
             <div class="integration-title">Apollo</div>
             <div class="integration-subtitle">Manual enrichment — used to fill in names &amp; titles for contacts missing data</div>
             <div class="integration-badges">
-              <span class="badge badge-yellow">Script-Based</span>
+              <span class="badge badge-yellow">On-Demand Enrichment</span>
               <span class="badge badge-gray">No Native SF Package</span>
             </div>
           </div>
         </div>
         <div class="integration-body">
-          <p>Apollo.io is a B2B sales intelligence platform used by the US/Global team for on-demand enrichment. Apollo does <strong>not</strong> have a native Salesforce package — it is accessed via API through Python scripts maintained by Aaron Sultan.</p>
-          <p><strong>How it's used:</strong> When a batch of contacts is missing names or job titles (e.g., after importing from an event registration list), Aaron runs an enrichment script that queries Apollo's API with the contact's email address, gets back name/title/company data, and writes it back to Salesforce directly via the Salesforce API.</p>
+          <p>Apollo.io is a B2B sales intelligence platform used by the US/Global team for on-demand enrichment. Apollo does <strong>not</strong> have a native Salesforce package — enrichment is handled by Aaron Sultan as needed.</p>
+          <p><strong>How it's used:</strong> When a batch of contacts is missing names or job titles (e.g., after importing from an event registration list), Aaron runs an enrichment process that queries Apollo's API with the contact's email address, gets back name/title/company data, and writes it back to Salesforce.</p>
           <p><strong>What it can find:</strong> First name, last name, job title, company name, LinkedIn URL. Apollo matches by email address — if it can't find the email, the contact is skipped (not created in Apollo).</p>
           <p><strong>Transparency:</strong> There are no Apollo-specific fields in Salesforce. Enriched data goes directly into the standard <code>FirstName</code>, <code>LastName</code>, <code>Title</code> fields. You won't be able to tell post-enrichment whether a field came from Apollo or a human.</p>
         </div>
@@ -528,20 +529,20 @@
           <p><strong>Field: <code>Web_To_Lead_Forms__c</code></strong> on the Contact record is a list/text field that summarizes which forms the contact has previously submitted. It's a quick-reference field for account managers reviewing a contact's touchpoint history.</p>
           <div class="callout callout-warning" style="margin-top: 14px; margin-bottom: 0;">
             <span class="callout-icon">⚠️</span>
-            <div><strong>Do NOT manually convert Leads from Web-to-Lead submissions.</strong> The nightly automated conversion script handles this. Manually converting a Lead created by a Web-to-Lead form can break campaign membership tracking and create duplicate contacts.</div>
+            <div><strong>Do NOT manually convert Leads from Web-to-Lead submissions.</strong> The nightly automated conversion process handles this. Manually converting a Lead created by a Web-to-Lead form can break campaign membership tracking and create duplicate contacts.</div>
           </div>
         </div>
       </div>
 
-      <!-- AUTOMATIONS / SCRIPTS -->
-      <h2 class="section-heading">Automations &amp; Custom Scripts</h2>
-      <p>Beyond the third-party integrations above, MMA runs a set of Python-based automation scripts that handle recurring data management tasks. These are maintained by Aaron Sultan (US/Global) and Bülent Doruker (EMEA automations).</p>
+      <!-- AUTOMATIONS / BACKGROUND PROCESSES -->
+      <h2 class="section-heading">Background Automations</h2>
+      <p>Beyond the third-party integrations above, MMA runs a set of background processes that handle recurring data management tasks. These are maintained by Aaron Sultan (US/Global) and Bülent Doruker (EMEA automations).</p>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Script / Automation</th>
+              <th>Automation</th>
               <th>What It Does</th>
               <th>Frequency</th>
               <th>Owner</th>
@@ -549,43 +550,43 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>Lead Auto-Conversion</strong><br><span style="font-size:12px;color:#6b7280;">Salesforce Flow (native automation)</span></td>
-              <td>Runs nightly inside Salesforce — matches open Leads to existing Contacts by email, converts unmatched Leads to new Contacts, and adds them to their corresponding Campaign. No script required.</td>
+              <td><strong>Lead Auto-Conversion</strong></td>
+              <td>Runs nightly — matches open Leads to existing Contacts by email, converts unmatched Leads to new Contacts, and adds them to their corresponding Campaign.</td>
               <td>Nightly</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Outreach → Pardot Sync</strong><br><code>outreach_seq_to_pardot_list.py</code></td>
+              <td><strong>Outreach → Pardot Sync</strong></td>
               <td>Pulls all prospects from a specified Outreach sequence and adds them to a Pardot suppression or mailing list. Used before campaign sends to suppress contacts already in a sequence.</td>
               <td>On-demand</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Apollo Enrichment</strong><br><span style="font-size:12px;color:#6b7280;">Apollo API Connector (automatic)</span></td>
-              <td>Apollo enriches contacts with missing names and titles via the live API connector — no manual script required. Contacts with [[Unknown]] names are resolved automatically as Apollo matches them by email.</td>
+              <td><strong>Apollo Enrichment</strong></td>
+              <td>Enriches contacts with missing names and titles via Apollo's API. Contacts with [[Unknown]] names are resolved as Apollo matches them by email.</td>
               <td>Automatic</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Monthly Mailable Snapshot</strong><br><code>membership_growth.py</code></td>
+              <td><strong>Monthly Mailable Snapshot</strong></td>
               <td>Counts all mailable contacts (total, Marketer, Solution Provider, Engaged) using the locked mailable definition and writes the counts to <code>Emailable_Contacts_Snapshot__c</code>.</td>
               <td>Monthly</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>Contact Remediation</strong><br><code>holding_cleanup.py</code></td>
-              <td>Finds contacts stuck on the Holding for Non-Accounts record, attempts to match them to real Accounts by email domain or Salesforce Contact ID, and moves them. Generates a results CSV for review.</td>
+              <td><strong>Contact Remediation</strong></td>
+              <td>Finds contacts stuck on the Holding for Non-Accounts record, attempts to match them to real Accounts by email domain or Salesforce Contact ID, and moves them.</td>
               <td>On-demand</td>
               <td>Aaron Sultan</td>
             </tr>
             <tr>
-              <td><strong>EMEA Preference Center Sync</strong><br>(Salesforce Flow / Apex)</td>
+              <td><strong>EMEA Preference Center Sync</strong><br><span style="font-size:12px;color:#6b7280;">(Salesforce Flow / Apex)</span></td>
               <td>When EMEA contacts update their preferences via Pardot forms, Bülent's automations sync those choices back to the <code>Preference_Ctr_Programs_EMEA__c</code> and related fields. Also updates country-level BOD flags as board membership changes.</td>
               <td>Triggered / Real-time</td>
               <td>Bülent Doruker</td>
             </tr>
             <tr>
-              <td><strong>Campaign Member Status Auto-Update</strong><br>(Salesforce Flow)</td>
+              <td><strong>Campaign Member Status Auto-Update</strong><br><span style="font-size:12px;color:#6b7280;">(Salesforce Flow)</span></td>
               <td>When an event attendance is confirmed (e.g., check-in data uploaded), flows update Campaign Member Status from "Registered" to "Attended." This feeds downstream engagement tracking.</td>
               <td>Triggered / Batch</td>
               <td>Aaron Sultan / IT</td>

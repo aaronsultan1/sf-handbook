@@ -181,6 +181,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -226,14 +227,14 @@
       <div class="callout callout-danger">
         <span class="callout-icon">🚫</span>
         <div>
-          <strong>Do NOT manually convert leads.</strong> MMA runs a daily automated lead conversion script (<code>lead_convert_prep.py</code>). If you manually convert a lead, you may create duplicate contacts, miss critical field mappings, or break the automation logic. Always coordinate with Aaron Sultan before touching leads.
+          <strong>Do NOT manually convert leads.</strong> MMA runs a daily automated lead conversion process. If you manually convert a lead, you may create duplicate contacts, miss critical field mappings, or break the automation logic. Always coordinate with Aaron Sultan before touching leads.
         </div>
       </div>
 
       <h2 class="section-heading">What Is a Lead?</h2>
       <p>In Salesforce, a <strong>Lead</strong> is an unconfirmed person — someone who has shown interest in MMA but hasn't been verified and matched to a company Account yet. Leads are a temporary state. The end goal is always to <em>convert</em> a lead into a Contact linked to the correct Account.</p>
 
-      <p>Think of leads as the "waiting room" of Salesforce. When someone fills out a form on MMAGlobal.com, registers for a webinar, or is imported from an event list, they typically start as a Lead. Once Salesforce (or the automation script) identifies their company, the lead is promoted to a full Contact.</p>
+      <p>Think of leads as the "waiting room" of Salesforce. When someone fills out a form on MMAGlobal.com, registers for a webinar, or is imported from an event list, they typically start as a Lead. Once Salesforce identifies their company, the lead is promoted to a full Contact.</p>
 
       <h2 class="section-heading">Where Do Leads Come From?</h2>
       <p>Leads arrive in Salesforce through several channels, tracked in the <code>LeadSource</code> field:</p>
@@ -291,7 +292,7 @@
             <tr>
               <td><span class="badge badge-blue">New</span></td>
               <td>Just arrived in Salesforce — not yet reviewed by anyone</td>
-              <td>Daily script will attempt auto-conversion. If no match, stays as New.</td>
+              <td>Daily automation will attempt auto-conversion. If no match, stays as New.</td>
             </tr>
             <tr>
               <td><span class="badge badge-yellow">Working</span></td>
@@ -318,13 +319,13 @@
       </div>
 
       <h2 class="section-heading">The Daily Auto-Conversion Process</h2>
-      <p>MMA runs a Python script called <code>lead_convert_prep.py</code> every morning. This script is the right way to handle lead conversion at scale. Here's how it works:</p>
+      <p>MMA runs a daily automated lead conversion process every morning. This is the right way to handle lead conversion at scale. Here's how it works:</p>
 
       <div class="flow-diagram">
         <div class="flow-step">
           <div class="flow-num">1</div>
           <div class="flow-content">
-            <strong>Script runs each morning</strong>
+            <strong>Process runs each morning</strong>
             <p>The automation queries all leads with Status = <em>New</em> or <em>Working</em> and reviews them for conversion eligibility.</p>
           </div>
         </div>
@@ -332,7 +333,7 @@
           <div class="flow-num">2</div>
           <div class="flow-content">
             <strong>Company matching</strong>
-            <p>The script compares the lead's Company Name and Email Domain against existing Salesforce Accounts. It looks for exact or close matches.</p>
+            <p>The automation compares the lead's Company Name and Email Domain against existing Salesforce Accounts. It looks for exact or close matches.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -360,7 +361,7 @@
 
       <div class="callout callout-warning">
         <span class="callout-icon">⚠️</span>
-        <div><strong>Why the automation matters:</strong> The auto-conversion script handles field mapping, duplicate detection, and campaign member updating all at once. Manual conversions bypass these safeguards and can create inconsistent or duplicate data. Trust the script.</div>
+        <div><strong>Why the automation matters:</strong> The automated conversion process handles field mapping, duplicate detection, and campaign member updating all at once. Manual conversions bypass these safeguards and can create inconsistent or duplicate data. Trust the process.</div>
       </div>
 
       <h2 class="section-heading">What You Can Do With Leads</h2>

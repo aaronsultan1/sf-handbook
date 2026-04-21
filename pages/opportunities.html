@@ -205,6 +205,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -392,59 +393,95 @@
         </p>
       </div>
 
-      <h2 class="section-heading">Who Uses Opportunities by Region</h2>
+      <h2 class="section-heading">Who Creates and Owns Opportunities</h2>
+
+      <div class="callout callout-warning">
+        <span class="callout-icon">⚠️</span>
+        <div><strong>Important:</strong> Regional teams (APAC, EMEA, LATAM) do <strong>not</strong> create or close Opportunities in Salesforce. All Opportunity entry is handled centrally by the Membership and Finance teams. Regional teams provide deal context and updates — the actual Salesforce records are created and managed by the people listed below.</div>
+      </div>
+
+      <div class="table-wrap" style="margin-top: 20px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Opportunity Type</th>
+              <th>Region(s)</th>
+              <th>Who Creates It</th>
+              <th>Who Closes It (Closed/Won/Paid)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>New Membership</strong></td>
+              <td>All regions (NA, Global, APAC, EMEA, LATAM)</td>
+              <td><strong>Shauna Peck</strong> — enters all new membership Opportunities across every region</td>
+              <td><strong>Finance (Betsy)</strong> — only Finance marks any Opportunity as Closed/Won/Paid based on incoming payment</td>
+            </tr>
+            <tr>
+              <td><strong>Membership Renewal</strong></td>
+              <td>APAC (all regions &amp; local councils), EMEA (all regions &amp; local councils), LATAM, select NA/Global strategic programs</td>
+              <td><strong>Finance (Betsy)</strong> and <strong>Membership (Benji)</strong></td>
+              <td><strong>Finance (Betsy)</strong> only</td>
+            </tr>
+            <tr>
+              <td><strong>Sponsorship</strong></td>
+              <td>APAC, EMEA, LATAM, select NA/Global initiative sponsorships</td>
+              <td><strong>Finance (Betsy)</strong> and <strong>Membership (Benji)</strong></td>
+              <td><strong>Finance (Betsy)</strong> only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-heading">What Regional Teams Do with Opportunities</h3>
+      <p>Even though regional teams don't create or close Opportunities, they are key to the process. The Salesforce record reflects the deal — regional leads drive the actual relationship and negotiation with the member or sponsor.</p>
 
       <div class="region-card apac">
-        <h3>APAC — Rohit Dadwal &amp; Team (Singapore, Indonesia, India, Vietnam, Sri Lanka)</h3>
-        <p>APAC uses Opportunities <strong>very heavily</strong> — it's the primary tool for managing the Local Council membership renewals and event sponsorships across the region.</p>
-        <p><strong>Typical APAC workflow:</strong></p>
+        <h3>APAC — Rohit Dadwal &amp; Team</h3>
+        <p>APAC Opportunities cover Local Council membership renewals and event sponsorships. Rohit's team manages the member relationship — Finance and Membership enter and update the Salesforce records based on APAC's updates.</p>
+        <p><strong>Key examples:</strong> Indonesia Smarties Unplugged, India IMPACT events, Vietnam Innovate event sponsorships</p>
         <ul>
-          <li>Create Opportunity at <em>Prospecting</em> stage when renewal season begins</li>
-          <li>Advance through stages as conversations happen</li>
-          <li>Send renewal invoice → move to <em>Invoice Sent (Renewal Notification)</em></li>
-          <li>Payment received → move to <em>Closed Won</em></li>
-          <li>Update Account's Status__c to Active if needed</li>
+          <li>Rohit's team conducts renewal conversations and negotiates with members</li>
+          <li>Updates and deal progress are communicated to Finance/Membership for SF entry</li>
+          <li>Finance marks the Opportunity Closed/Won when payment is received</li>
         </ul>
-        <p style="margin-top:10px;"><strong>Key examples:</strong> Indonesia Smarties Unplugged, India IMPACT events, Vietnam Innovate event sponsorships</p>
       </div>
 
       <div class="region-card emea">
-        <h3>EMEA / MEA / EU — Melis Ertem, Elvin Altun, Bülent Doruker (CRM Director)</h3>
-        <p>EMEA uses Opportunities for <strong>membership renewals and event sponsorships</strong> across Turkey, Germany, EU, and MEA markets. Bülent Doruker in Istanbul manages CRM automation for the region.</p>
-        <p><strong>Typical EMEA workflow:</strong></p>
+        <h3>EMEA / MEA / EU — Melis Ertem, Elvin Altun, Bülent Doruker</h3>
+        <p>EMEA Opportunities cover membership renewals and event sponsorships across Turkey, Germany, EU, and MEA. Bülent Doruker manages CRM automation for the region and coordinates with Finance/Membership on SF entries.</p>
+        <p><strong>Key examples:</strong> DMEXCO sponsorships, Germany CMO Lunches, Turkey Strategic Memberships</p>
         <ul>
-          <li>Create renewal or sponsorship Opportunity</li>
-          <li>Manage through negotiation stages</li>
-          <li>Contract and invoice sent</li>
-          <li>Close as Won or Lost with notes</li>
+          <li>Regional team manages member conversations and deal progression</li>
+          <li>Finance/Membership enter and update the Salesforce Opportunity records</li>
+          <li>Finance marks Closed/Won when payment clears</li>
         </ul>
-        <p style="margin-top:10px;"><strong>Key examples:</strong> DMEXCO sponsorships, Germany CMO Lunches, Turkey Strategic Memberships</p>
       </div>
 
       <div class="region-card latam">
         <h3>LATAM — Fabiano Destri Lobo &amp; Thais Schauff</h3>
-        <p>LATAM manages <strong>large sponsorship deals</strong> — often the highest-value individual Opportunities in the entire MMA pipeline. These deals can range from tens of thousands to over $170,000.</p>
+        <p>LATAM manages <strong>large sponsorship deals</strong> — often the highest-value individual Opportunities in the entire MMA pipeline, ranging from tens of thousands to over $170,000. Finance and Membership manage the Salesforce records.</p>
         <p><strong>Key examples:</strong> Mercado Libre ($170k), ICBC Argentina, Play Digital/MODO</p>
         <ul>
-          <li>Primarily sponsorship Opportunities for regional events</li>
-          <li>Follow the same pipeline stages as other regions</li>
-          <li>Often have longer negotiation cycles due to deal size</li>
+          <li>LATAM team handles the complex, multi-step negotiation cycles</li>
+          <li>Finance/Membership enter Opportunities and advance stages based on LATAM's updates</li>
+          <li>Finance closes as Won/Lost when payment is received or deal falls through</li>
         </ul>
       </div>
 
       <div class="region-card us">
         <h3>US / Global — Greg Stuart, Aaron Sultan &amp; US Team</h3>
-        <p>The US team has <strong>lighter Opportunity usage</strong> compared to regional teams. Their primary use is logging Closed Won membership deals after the fact, and tracking Greg Stuart's global/NA membership conversations.</p>
+        <p>For NA/Global, Shauna enters New membership Opportunities. Finance and Membership also handle select strategic program and initiative sponsorships in the US. Greg Stuart's executive-level membership conversations are tracked here.</p>
         <ul>
-          <li>Log Closed Won for new US/Global member deals</li>
-          <li>Track large global renewal conversations</li>
-          <li>Generally, US renewals are more automated and tracked at the Account level</li>
+          <li>Shauna creates New membership Opportunities when a prospect is being onboarded</li>
+          <li>Finance/Membership enter renewal and sponsorship Opportunities for strategic NA/Global programs</li>
+          <li>Finance closes all Opportunities as Closed/Won when payment is received</li>
         </ul>
       </div>
 
       <div class="callout callout-tip">
         <span class="callout-icon">💡</span>
-        <div><strong>When to create an Opportunity vs. just updating the Account:</strong> Create an Opportunity whenever there's an active deal to track — a renewal conversation, a negotiation, or a sponsorship discussion. If a renewal just auto-renews with no active conversation, you may just update the Account fields directly. When in doubt, create the Opportunity — it provides a historical record.</div>
+        <div><strong>If you need an Opportunity created or updated:</strong> Contact Shauna Peck (new memberships) or reach out to Finance/Membership (renewals and sponsorships). Do not create Opportunity records directly — all entry goes through these central owners to ensure accurate pipeline reporting.</div>
       </div>
 
       <h2 class="section-heading">Opportunity Naming for Renewals: Year Matters</h2>

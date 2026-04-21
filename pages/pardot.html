@@ -190,6 +190,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -308,7 +309,7 @@
       </div>
       <div class="callout callout-tip">
         <span class="callout-icon">💡</span>
-        <div><strong>When running scripts</strong> that interact with Pardot (e.g., <code>outreach_seq_to_pardot_list.py</code>), the <code>PARDOT_BUSINESS_UNIT_ID</code> environment variable must be set to the correct BU. The NA BU ID is stored in the team's <code>.env</code> file.</div>
+        <div><strong>Pardot Business Unit:</strong> MMA's Pardot instance is scoped to the NA Business Unit by default. If you're unsure which Business Unit applies to your send, check with Aaron Sultan before proceeding.</div>
       </div>
 
       <h2 class="section-heading">Lists</h2>
@@ -360,7 +361,7 @@
           </li>
           <li>
             <div class="step-num-circle">4</div>
-            <div class="step-content"><strong>Add prospects</strong><span>Use the "Add Prospects" button to search and add by email, or import a CSV. Alternatively, run a Pardot Automation Rule or use the Python script to batch-add by Salesforce Contact ID.</span></div>
+            <div class="step-content"><strong>Add prospects</strong><span>Use the "Add Prospects" button to search and add by email, or import a CSV. You can also use a Pardot Automation Rule to add prospects dynamically. For large or complex list builds, contact Aaron Sultan.</span></div>
           </li>
         </ul>
       </div>
@@ -385,7 +386,7 @@
 
       <div class="callout callout-warning">
         <span class="callout-icon">⚠️</span>
-        <div><strong>Dynamic lists don't apply MMA's full mailable definition automatically.</strong> Pardot can filter on CRM fields, but it can't replicate the full SOQL logic (active account, region, board exclusions, email bounced, opted out) in one dynamic list. For complex audience pulls, it's more reliable to build the list in Salesforce/Python, export the emails, and import to a static Pardot list. Talk to Aaron Sultan if you need a segmented pull.</div>
+        <div><strong>Dynamic lists don't apply MMA's full mailable definition automatically.</strong> Pardot can filter on CRM fields, but it can't replicate the full SOQL logic (active account, region, board exclusions, email bounced, opted out) in one dynamic list. For complex audience pulls, it's more reliable to build the list from Salesforce data and import it as a static Pardot list. Talk to Aaron Sultan if you need a segmented pull.</div>
       </div>
 
       <h2 class="section-heading">Email Templates</h2>
@@ -687,7 +688,7 @@
 
       <div class="callout callout-tip">
         <span class="callout-icon">💡</span>
-        <div><strong>When in doubt, ask Aaron Sultan for the audience list.</strong> For any send where the audience is derived from Salesforce data (member type, event attendance, campaign history), Aaron can build the list in Python and provide a clean CSV to import into Pardot rather than attempting to replicate the Salesforce filters manually in a dynamic list.</div>
+        <div><strong>When in doubt, ask Aaron Sultan for the audience list.</strong> For any send where the audience is derived from Salesforce data (member type, event attendance, campaign history), Aaron can pull the right audience from Salesforce and provide a clean CSV to import into Pardot rather than attempting to replicate the filters manually in a dynamic list.</div>
       </div>
 
       <h2 class="section-heading">List Scoring, Rule Groups &amp; Segmentation Rules</h2>

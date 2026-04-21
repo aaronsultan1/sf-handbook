@@ -203,6 +203,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -296,7 +297,7 @@
 
       <div class="card">
         <h3>1. Web Forms → Leads → Auto-Conversion</h3>
-        <p style="margin-bottom:10px;">Every registration form, download form, and sign-up page on MMAGlobal.com is connected to Salesforce as a <strong>Web-to-Lead form</strong>. When someone submits a form, a <strong>Lead record</strong> is automatically created. A nightly automation script then runs and:</p>
+        <p style="margin-bottom:10px;">Every registration form, download form, and sign-up page on MMAGlobal.com is connected to Salesforce as a <strong>Web-to-Lead form</strong>. When someone submits a form, a <strong>Lead record</strong> is automatically created. A nightly automated process then runs and:</p>
         <ol style="margin-left: 18px; margin-bottom: 0;">
           <li>Looks up the email against existing Contacts</li>
           <li>If a match is found, updates the existing Contact (no duplicate created)</li>
@@ -305,7 +306,7 @@
         </ol>
         <div class="callout callout-warning" style="margin-top: 14px; margin-bottom: 0;">
           <span class="callout-icon">⚠️</span>
-          <div><strong>Do NOT manually convert Leads.</strong> The automation script handles this nightly. Manual conversion can create duplicates, miscredit campaigns, or break the pipeline. If a Lead seems stuck, contact Aaron Sultan.</div>
+          <div><strong>Do NOT manually convert Leads.</strong> This is handled automatically each night. Manual conversion can create duplicates, miscredit campaigns, or break the pipeline. If a Lead seems stuck, contact Aaron Sultan.</div>
         </div>
       </div>
 
@@ -321,7 +322,7 @@
 
       <div class="card">
         <h3>4. Enrichment Tools (ZoomInfo, Apollo)</h3>
-        <p style="margin-bottom:0;">ZoomInfo automatically enriches existing Contact and Account records with updated titles, phone numbers, and company information via a native Salesforce integration (fields prefixed <code>DOZISF__</code>). Apollo is used by the US/Global team for manual enrichment passes on contacts missing names or titles — it does not have a native Salesforce package; updates are applied via Python scripts.</p>
+        <p style="margin-bottom:0;">ZoomInfo automatically enriches existing Contact and Account records with updated titles, phone numbers, and company information via a native Salesforce integration (fields prefixed <code>DOZISF__</code>). Apollo is used by the US/Global team for manual enrichment passes on contacts missing names or titles — updates are applied by Aaron Sultan on an as-needed basis.</p>
       </div>
 
       <div class="card">
@@ -430,7 +431,7 @@
               <td><span class="raci-i">I</span></td>
             </tr>
             <tr>
-              <td><strong>Integration &amp; automation scripts</strong><br><small>Python scripts, Pardot sync, ZoomInfo enrichment, BriteVerify</small></td>
+              <td><strong>Integrations &amp; automations</strong><br><small>Pardot sync, ZoomInfo enrichment, BriteVerify, backend data processes</small></td>
               <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
               <td><span class="raci-i">I</span></td>
               <td><span class="raci-i">I</span></td>
@@ -475,7 +476,7 @@
           <li>A new form is created in Salesforce as a Web-to-Lead form. The form is linked to a specific Campaign record.</li>
           <li>The form embeds a hidden field containing the Campaign ID.</li>
           <li>When someone submits the form, Salesforce creates a Lead record and also adds them as a Campaign Member on that campaign.</li>
-          <li>The nightly lead conversion script picks up the Lead and converts it to a Contact (or updates the existing Contact).</li>
+          <li>The nightly automated process picks up the Lead and converts it to a Contact (or updates the existing Contact).</li>
           <li>The Campaign Member record persists — this is how event attendance and registrations get tracked in SF reports.</li>
         </ul>
       </div>

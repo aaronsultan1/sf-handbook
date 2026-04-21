@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Pathway — MMA Salesforce Handbook</title>
+  <style>
+    /* MMA Brand Fonts */
+    @font-face { font-family: 'Sohne'; src: url('../fonts/Sohne-Halbfett.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Sohne'; src: url('../fonts/Sohne-Leicht.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Tiempos Text'; src: url('../fonts/TiemposText-Regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Tiempos Text'; src: url('../fonts/TiemposText-RegularItalic.otf') format('opentype'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Tiempos Text'; src: url('../fonts/TiemposText-Medium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Tiempos Text'; src: url('../fonts/TiemposText-MediumItalic.otf') format('opentype'); font-weight: 500; font-style: italic; font-display: swap; }
+
+    :root {
+      --primary: #111111; --accent-bright: #ffa400; --sidebar-width: 260px;
+      --font: 'Sohne', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Tiempos Text', Georgia, serif;
+      --text: #111111; --text-muted: #6b6c6c; --border: #e7e8e8; --bg: #f7f8f8; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    p, li, td, blockquote { font-family: var(--font-body); }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: #fff; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-nav { padding: 16px 0; flex: 1; }
+    .nav-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 12px 20px 6px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #ffa400; }
+    .sidebar-nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.3); }
+    .main { margin-left: var(--sidebar-width); }
+    .page-header { background: var(--primary); color: white; padding: 48px 32px 40px; }
+    .page-header .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .page-header .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .page-header .breadcrumb a:hover { color: #fff; }
+    .page-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .page-header h1 span { color: #ffa400; }
+    .page-header .subtitle { font-size: 16px; color: rgba(255,255,255,0.7); max-width: 640px; line-height: 1.6; }
+    .content { padding: 40px 32px; max-width: 1100px; }
+    h2.section-heading { font-size: 22px; font-weight: 700; color: var(--primary); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3.sub-heading { font-size: 16px; font-weight: 700; color: var(--primary); margin: 24px 0 10px; }
+    p { font-size: 15px; line-height: 1.75; color: #374151; margin-bottom: 14px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+    .badge-gray   { background: #f3f4f6; color: #374151; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-blue   { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #f3e8ff; color: #6b21a8; }
+    .badge-orange { background: #fff7ed; color: #9a3412; }
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.6; }
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-tip     { background: #eff6ff; border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-success { background: #f0fdf4; border: 1px solid #86efac; color: #14532d; }
+    .callout strong { font-weight: 700; }
+    code { background: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; font-family: 'Menlo', 'Consolas', monospace; font-size: 12.5px; }
+    ul, ol { margin: 10px 0 14px 20px; }
+    li { font-size: 14.5px; line-height: 1.7; color: #374151; }
+    li + li { margin-top: 4px; }
+
+    /* LEVEL CARDS */
+    .level-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .level-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .level-number {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800;
+      flex-shrink: 0;
+      font-family: var(--font);
+    }
+    .level-1 .level-number { background: #f0fdf4; color: #166534; }
+    .level-2 .level-number { background: #eff6ff; color: #1e40af; }
+    .level-3 .level-number { background: #fff7ed; color: #9a3412; }
+    .level-4 .level-number { background: #f3e8ff; color: #6b21a8; }
+    .level-header-text { flex: 1; }
+    .level-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .level-who { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .level-body { padding: 24px 28px; }
+    .level-outcome {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-family: var(--font-body);
+    }
+    .level-1 .level-outcome { background: #f0fdf4; border-left: 4px solid #22c55e; color: #14532d; }
+    .level-2 .level-outcome { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e3a8a; }
+    .level-3 .level-outcome { background: #fff7ed; border-left: 4px solid #f97316; color: #9a3412; }
+    .level-4 .level-outcome { background: #f3e8ff; border-left: 4px solid #a855f7; color: #6b21a8; }
+    .level-outcome strong { font-weight: 700; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 0; }
+    .level-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px; }
+
+    .read-list { list-style: none; margin: 0; padding: 0; }
+    .read-list li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .read-list li:last-child { border-bottom: none; }
+    .read-list li .read-icon { font-size: 15px; margin-top: 1px; flex-shrink: 0; }
+    .read-list a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .read-list a:hover { color: #ffa400; }
+    .read-list .read-note { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: var(--font); }
+
+    .checklist { list-style: none; margin: 0; padding: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; color: #374151; font-family: var(--font-body); line-height: 1.5; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: '☐'; font-size: 16px; color: #d1d5db; flex-shrink: 0; margin-top: 1px; }
+
+    /* PATHWAY OVERVIEW */
+    .pathway-overview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 24px 0 40px;
+    }
+    .pathway-step {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      position: relative;
+    }
+    .pathway-step::after {
+      content: '→';
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--text-muted);
+      z-index: 1;
+    }
+    .pathway-step:last-child::after { display: none; }
+    .ps-emoji { font-size: 28px; margin-bottom: 8px; }
+    .ps-level { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+    .ps-name { font-size: 13px; font-weight: 700; color: var(--primary); line-height: 1.3; }
+
+    .page-footer { margin-left: var(--sidebar-width); padding: 20px 48px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); background: var(--card-bg); }
+
+    /* SEARCH */
+    .search-wrap { position: sticky; top: 0; z-index: 90; background: #fff; border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; gap: 14px; }
+    .search-inner { position: relative; flex: 1; max-width: 540px; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 15px; pointer-events: none; }
+    #handbook-search { width: 100%; padding: 10px 14px 10px 40px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 14px; color: var(--text); background: var(--bg); outline: none; transition: border-color .15s, box-shadow .15s; }
+    #handbook-search:focus { border-color: var(--accent-bright); box-shadow: 0 0 0 3px rgba(255,164,0,.15); background: #fff; }
+    #handbook-search::placeholder { color: #aaa; }
+    .search-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #search-count { font-size: 13px; color: var(--text-muted); display: none; white-space: nowrap; }
+    #search-clear { display: none; background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 4px; transition: color .15s; }
+    #search-clear:hover { color: var(--text); }
+    mark.sh { background: #fff3b0; color: inherit; border-radius: 2px; padding: 0 1px; }
+    .search-hidden { display: none !important; }
+
+    /* TRAILHEAD SECTION */
+    .trailhead-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .trailhead-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .trailhead-list li a {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--primary);
+      text-decoration: none; font-family: var(--font);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .trailhead-list li a:hover { border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34,211,238,.12); color: #0e7490; }
+    .trailhead-list li a .th-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 9999px;
+      background: #ecfeff; color: #0e7490; white-space: nowrap;
+    }
+    .trailhead-list li a .th-badge.module { background: #ecfeff; color: #0e7490; }
+    .trailhead-list li a .th-badge.trail { background: #f0fdf4; color: #15803d; }
+    .trailhead-list li a .th-badge.cert { background: #fef9c3; color: #854d0e; }
+
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .pathway-overview { grid-template-columns: repeat(2, 1fr); } .pathway-step::after { display: none; } }
+    @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .main, .page-footer { margin-left: 0; } .page-header, .content { padding: 24px 20px; } .pathway-overview { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo" style="padding:0;">
+      <div style="background:#ffffff;padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="../fonts/mma-logo.png" alt="MMA — Marketing + Media Alliance" style="width:100%;max-width:180px;display:block;" />
+      </div>
+      <div style="padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;font-family:var(--font);">Salesforce</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;font-family:var(--font);letter-spacing:-0.2px;">Field <span style="color:#ffa400;">Handbook</span></div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
+      <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
+      <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html" class="active"><span class="nav-icon">🎓</span> Training Pathway</a>
+      <div class="nav-section-label">Core Objects</div>
+      <a href="accounts.html"><span class="nav-icon">🏢</span> Accounts</a>
+      <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
+      <a href="leads.html"><span class="nav-icon">📋</span> Leads</a>
+      <a href="campaigns.html"><span class="nav-icon">📣</span> Campaigns</a>
+      <a href="opportunities.html"><span class="nav-icon">💼</span> Opportunities</a>
+      <div class="nav-section-label">Team Guides</div>
+      <a href="regional.html"><span class="nav-icon">🌍</span> Regional Guide</a>
+      <a href="governance.html"><span class="nav-icon">🛡️</span> Governance</a>
+      <a href="integrations.html"><span class="nav-icon">🔌</span> Integrations</a>
+      <a href="pardot.html"><span class="nav-icon">📧</span> Pardot / Email</a>
+      <a href="reports.html"><span class="nav-icon">📊</span> Reports &amp; Dashboards</a>
+    </div>
+    <div class="sidebar-footer">Last updated: April 2026</div>
+  </nav>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Training Pathway</div>
+      <h1>Training <span>Pathway</span></h1>
+      <p class="subtitle">A self-serve curriculum for MMA staff. Work through the levels that match your role — each one builds on the last and links directly to the relevant handbook sections.</p>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrap">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="handbook-search" placeholder="Search this page…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="search-meta">
+        <span id="search-count"></span>
+        <button id="search-clear" title="Clear (Esc)">✕</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div id="no-results" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted);font-size:15px;">
+        <div style="font-size:36px;margin-bottom:12px;">🔎</div>
+        <div>No results for <strong id="no-results-query"></strong></div>
+        <div style="margin-top:6px;font-size:13px;">Try a different keyword</div>
+      </div>
+
+      <p>Everyone with a Salesforce login should complete <strong>Level 1</strong>. From there, continue to the levels that match how you actually use the system. You don't need to do all four — go as deep as your role requires.</p>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
+        <div><strong>How to use this pathway:</strong> Read through each section in the handbook, then use the checklist to confirm you can do each task on your own. If you get stuck or something isn't covered, <a href="governance.html#requests" style="color:#1e40af;">submit a request</a> or reach out to Aaron.</div>
+      </div>
+
+      <!-- OVERVIEW GRID -->
+      <div class="pathway-overview">
+        <div class="pathway-step">
+          <div class="ps-emoji">🌱</div>
+          <div class="ps-level">Level 1</div>
+          <div class="ps-name">Foundation<br><span style="font-weight:400;color:var(--text-muted);">All SF users</span></div>
+        </div>
+        <div class="pathway-step">
+          <div class="ps-emoji">🔧</div>
+          <div class="ps-level">Level 2</div>
+          <div class="ps-name">Standard User<br><span style="font-weight:400;color:var(--text-muted);">Regular SF users</span></div>
+        </div>
+        <div class="pathway-step">
+          <div class="ps-emoji">📧</div>
+          <div class="ps-level">Level 3</div>
+          <div class="ps-name">Pardot / Email<br><span style="font-weight:400;color:var(--text-muted);">Marketing users</span></div>
+        </div>
+        <div class="pathway-step">
+          <div class="ps-emoji">⚙️</div>
+          <div class="ps-level">Level 4</div>
+          <div class="ps-name">Power User<br><span style="font-weight:400;color:var(--text-muted);">Regional admins</span></div>
+        </div>
+      </div>
+
+      <!-- ── LEVEL 1 ── -->
+      <div class="level-card level-1">
+        <div class="level-header">
+          <div class="level-number">1</div>
+          <div class="level-header-text">
+            <div class="level-title">🌱 Foundation</div>
+            <div class="level-who"><span class="badge badge-green">Required for everyone</span> &nbsp; Anyone with a Salesforce login, regardless of how often you use it.</div>
+          </div>
+        </div>
+        <div class="level-body">
+          <div class="level-outcome">
+            <strong>After this level you'll be able to:</strong> Understand how MMA uses Salesforce, know the rules around data and access, find contacts and accounts, and know how to ask for help the right way.
+          </div>
+          <div class="two-col">
+            <div>
+              <div class="level-section-title">📖 What to read</div>
+              <ul class="read-list">
+                <li>
+                  <span class="read-icon">🛡️</span>
+                  <div>
+                    <a href="governance.html">Governance &amp; Ownership</a>
+                    <div class="read-note">Full page — especially Data Ownership, How Contacts Enter SF, and the Request Process</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">👤</span>
+                  <div>
+                    <a href="contacts.html">Contacts — What Is a Contact?</a>
+                    <div class="read-note">Focus on: Key Fields, What Makes a Contact Mailable, and Board Member Flags</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🏢</span>
+                  <div>
+                    <a href="accounts.html">Accounts — What Is an Account?</a>
+                    <div class="read-note">Focus on: Marketer vs Solution Provider definitions and the quick test</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">⚡</span>
+                  <div>
+                    <a href="quick-reference.html">Quick Reference</a>
+                    <div class="read-note">Bookmark this — useful for day-to-day lookups</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-section-title">✅ Skills checklist</div>
+              <ul class="checklist">
+                <li>I know the difference between a Contact and an Account in MMA's system</li>
+                <li>I understand why some contacts can't receive emails (mailable criteria)</li>
+                <li>I know the 5 ways contacts enter Salesforce</li>
+                <li>I understand who owns what data (the RACI model)</li>
+                <li>I know how to submit a Salesforce request using the correct form</li>
+                <li>I know not to create duplicate contacts or accounts without checking first</li>
+                <li>I can look up a contact and understand their key fields</li>
+              </ul>
+            </div>
+          </div>
+          <div class="trailhead-section">
+            <div class="level-section-title">🎓 Trailhead — complete these modules</div>
+            <ul class="trailhead-list">
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/lex_salesforce_basics" target="_blank">Salesforce Platform Basics <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/salesforce_advantageous" target="_blank">Who Sees What in Salesforce <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/data_management" target="_blank">Data Management <span class="th-badge module">Module</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEVEL 2 ── -->
+      <div class="level-card level-2">
+        <div class="level-header">
+          <div class="level-number">2</div>
+          <div class="level-header-text">
+            <div class="level-title">🔧 Standard User</div>
+            <div class="level-who"><span class="badge badge-blue">Recommended for regular users</span> &nbsp; Anyone who actively works in Salesforce — managing contacts, tracking events, running reports.</div>
+          </div>
+        </div>
+        <div class="level-body">
+          <div class="level-outcome">
+            <strong>After this level you'll be able to:</strong> Work independently in Salesforce on day-to-day tasks — creating and updating contacts, managing campaign membership, building and running reports, and tracking opportunities.
+          </div>
+          <div class="two-col">
+            <div>
+              <div class="level-section-title">📖 What to read</div>
+              <ul class="read-list">
+                <li>
+                  <span class="read-icon">👤</span>
+                  <div>
+                    <a href="contacts.html">Contacts — full page</a>
+                    <div class="read-note">Creating contacts, reassigning, engagement tracking, event tags</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🏢</span>
+                  <div>
+                    <a href="accounts.html">Accounts — full page</a>
+                    <div class="read-note">Membership logic, ecosystem values, account types</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📣</span>
+                  <div>
+                    <a href="campaigns.html">Campaigns</a>
+                    <div class="read-note">How campaigns work, campaign members, statuses</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📊</span>
+                  <div>
+                    <a href="reports.html">Reports &amp; Dashboards</a>
+                    <div class="read-note">Building reports, standard filters, saving to folders</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🎯</span>
+                  <div>
+                    <a href="how-to-guides.html">How-To Guides</a>
+                    <div class="read-note">Step-by-step walkthroughs for common tasks</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-section-title">✅ Skills checklist</div>
+              <ul class="checklist">
+                <li>I can create a new contact and fill in all required fields correctly</li>
+                <li>I can reassign a contact to the correct account</li>
+                <li>I can add a contact to a campaign and set the correct status</li>
+                <li>I understand what Opportunity records are and when to create them</li>
+                <li>I can build a basic report filtered by region, account type, or campaign</li>
+                <li>I know where to save reports so the right people can find them</li>
+                <li>I understand what engagement tracking fields mean on a contact record</li>
+                <li>I can identify when a contact record has a data quality issue</li>
+              </ul>
+            </div>
+          </div>
+          <div class="trailhead-section">
+            <div class="level-section-title">🎓 Trailhead — complete these modules</div>
+            <ul class="trailhead-list">
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/accounts_contacts_lightning_experience" target="_blank">Accounts &amp; Contacts for Lightning Experience <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/campaign-management" target="_blank">Campaign Management <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/trails/report-on-your-business" target="_blank">Reports &amp; Dashboards for Lightning Experience <span class="th-badge trail">Trail</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/opportunity-management" target="_blank">Opportunity Management <span class="th-badge module">Module</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEVEL 3 ── -->
+      <div class="level-card level-3">
+        <div class="level-header">
+          <div class="level-number">3</div>
+          <div class="level-header-text">
+            <div class="level-title">📧 Pardot / Email User</div>
+            <div class="level-who"><span class="badge badge-orange">Marketing &amp; comms users</span> &nbsp; Anyone who sends emails, builds lists, or runs email campaigns through Pardot / Account Engagement.</div>
+          </div>
+        </div>
+        <div class="level-body">
+          <div class="level-outcome">
+            <strong>After this level you'll be able to:</strong> Build compliant email lists, understand how Salesforce and Pardot stay in sync, segment contacts beyond basic lists, send list emails, and know the rules around what you can and can't do.
+          </div>
+          <div class="two-col">
+            <div>
+              <div class="level-section-title">📖 What to read</div>
+              <ul class="read-list">
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#what-is-pardot">What Is Pardot?</a>
+                    <div class="read-note">The SF ↔ Pardot sync and MMA's Business Unit setup</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#lists">Lists</a>
+                    <div class="read-note">Static vs dynamic lists, how to build each, naming conventions</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#list-scoring">List Scoring, Rule Groups &amp; Segmentation Rules</a>
+                    <div class="read-note">Multi-condition logic, segmentation rules, dynamic filtering</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#automation-rules">Automation Rules &amp; Engagement Studio</a>
+                    <div class="read-note">When to use each — ongoing automation vs. one-off sends</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#sending">Sending a List Email</a>
+                    <div class="read-note">Step-by-step send process and pre-send checklist</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">📧</span>
+                  <div>
+                    <a href="pardot.html#compliance">Compliance</a>
+                    <div class="read-note">Required reading — GDPR, opt-outs, what you can't do</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-section-title">✅ Skills checklist</div>
+              <ul class="checklist">
+                <li>I understand how contacts sync between Salesforce and Pardot</li>
+                <li>I know what makes a contact "mailable" before adding them to a list</li>
+                <li>I can create a static list and a dynamic list</li>
+                <li>I can build a dynamic list with multiple conditions using rule groups</li>
+                <li>I know when to use a segmentation rule vs. an automation rule</li>
+                <li>I understand when to use Engagement Studio vs. a one-off list email</li>
+                <li>I can send a list email and connect it to a Salesforce campaign</li>
+                <li>I follow MMA's naming conventions for lists and emails</li>
+                <li>I understand opt-out fields and would never manually override them</li>
+                <li>I know what to do if an email hard-bounces</li>
+              </ul>
+            </div>
+          </div>
+          <div class="trailhead-section">
+            <div class="level-section-title">🎓 Trailhead — complete these modules</div>
+            <ul class="trailhead-list">
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/pardot-lightning-app-basics" target="_blank">Pardot Lightning App Basics <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/pardot-business-units" target="_blank">Pardot Business Units <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/trails/prepare-for-your-marketing-cloud-account-engagement-specialist-credential" target="_blank">Account Engagement Specialist Prep <span class="th-badge cert">Cert Trail</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/pardot-segmentation" target="_blank">Pardot Segmentation <span class="th-badge module">Module</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEVEL 4 ── -->
+      <div class="level-card level-4">
+        <div class="level-header">
+          <div class="level-number">4</div>
+          <div class="level-header-text">
+            <div class="level-title">⚙️ Power User / Regional Admin</div>
+            <div class="level-who"><span class="badge badge-purple">Regional leads &amp; admins</span> &nbsp; Team members who manage regional data quality, coordinate with the global team, or work with integrations.</div>
+          </div>
+        </div>
+        <div class="level-body">
+          <div class="level-outcome">
+            <strong>After this level you'll be able to:</strong> Manage data quality for your region, understand how MMA's integrations work, identify and escalate data issues, and handle advanced scenarios without needing to escalate everything to Aaron.
+          </div>
+          <div class="two-col">
+            <div>
+              <div class="level-section-title">📖 What to read</div>
+              <ul class="read-list">
+                <li>
+                  <span class="read-icon">🌍</span>
+                  <div>
+                    <a href="regional.html">Regional Guide — full page</a>
+                    <div class="read-note">Your region's specific data ownership, contacts, and conventions</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🔌</span>
+                  <div>
+                    <a href="integrations.html">Integrations &amp; APIs</a>
+                    <div class="read-note">Apollo, Rasa, ZoomInfo, Pardot — how data flows between systems</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🛡️</span>
+                  <div>
+                    <a href="governance.html#data-quality">Data Quality Standards</a>
+                    <div class="read-note">Contact quality rules, duplicate handling, helpful quality fields</div>
+                  </div>
+                </li>
+                <li>
+                  <span class="read-icon">🛡️</span>
+                  <div>
+                    <a href="governance.html#admin-training">Admin Training Requirements</a>
+                    <div class="read-note">Ongoing habits and Trailhead recommendations for admins</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div class="level-section-title">✅ Skills checklist</div>
+              <ul class="checklist">
+                <li>I understand how Apollo, Rasa, and ZoomInfo feed into Salesforce</li>
+                <li>I can identify duplicate contacts and know the correct process to resolve them</li>
+                <li>I know which fields my region is responsible for keeping current</li>
+                <li>I can run a data quality report for my region's contacts</li>
+                <li>I understand the difference between Work Tier 1, 2, and 3 requests and when to escalate</li>
+                <li>I know what changes require Aaron's approval vs. what I can do myself</li>
+                <li>I can train a new team member using this handbook independently</li>
+              </ul>
+            </div>
+          </div>
+          <div class="trailhead-section">
+            <div class="level-section-title">🎓 Trailhead — complete these modules</div>
+            <ul class="trailhead-list">
+              <li><a href="https://trailhead.salesforce.com/content/learn/trails/force_com_admin_beginner" target="_blank">Admin Beginner <span class="th-badge trail">Trail</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/trails/force_com_admin_intermediate" target="_blank">Admin Intermediate <span class="th-badge trail">Trail</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/lex_implementation_data_management" target="_blank">Data Management for Lightning Experience <span class="th-badge module">Module</span></a></li>
+              <li><a href="https://trailhead.salesforce.com/content/learn/modules/lex_migration_rollout" target="_blank">Change Management &amp; Rollout Strategy <span class="th-badge module">Module</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM CALLOUT -->
+      <div class="callout callout-success">
+        <span class="callout-icon">✅</span>
+        <div><strong>Questions or gaps?</strong> If something isn't covered in the handbook or you're unsure about a task, don't guess — <a href="governance.html" style="color:#14532d;">submit a request</a> or reach out to Aaron at <a href="mailto:aaron@mmaglobal.com" style="color:#14532d;">aaron@mmaglobal.com</a>. This handbook is a living document and gets updated as things change.</div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <footer class="page-footer">
+    MMA Salesforce Field Handbook &mdash; Last updated April 2026
+  </footer>
+
+  <script>
+    // Search
+    const input = document.getElementById('handbook-search');
+    const clear = document.getElementById('search-clear');
+    const count = document.getElementById('search-count');
+    const noRes = document.getElementById('no-results');
+    const noResQ = document.getElementById('no-results-query');
+    function doSearch(q) {
+      const sections = document.querySelectorAll('.level-card, .callout, .pathway-overview, p');
+      let found = 0;
+      sections.forEach(el => {
+        if (!q) { el.classList.remove('search-hidden'); el.innerHTML = el.innerHTML.replace(/<mark class="sh">(.*?)<\/mark>/g,'$1'); return; }
+        const txt = el.textContent;
+        if (txt.toLowerCase().includes(q.toLowerCase())) { el.classList.remove('search-hidden'); found++; } else { el.classList.add('search-hidden'); }
+      });
+      count.style.display = q ? 'inline' : 'none';
+      count.textContent = q ? `${found} section${found !== 1 ? 's' : ''}` : '';
+      clear.style.display = q ? 'inline' : 'none';
+      noRes.style.display = (q && found === 0) ? 'block' : 'none';
+      if (noResQ) noResQ.textContent = q;
+    }
+    input.addEventListener('input', e => doSearch(e.target.value.trim()));
+    clear.addEventListener('click', () => { input.value = ''; doSearch(''); input.focus(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { input.value = ''; doSearch(''); } });
+  </script>
+</body>
+</html>

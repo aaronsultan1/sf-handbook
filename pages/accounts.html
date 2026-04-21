@@ -225,6 +225,7 @@
       <a href="../index.html"><span class="nav-icon">🏠</span> Home</a>
       <a href="quick-reference.html"><span class="nav-icon">⚡</span> Quick Reference</a>
       <a href="how-to-guides.html"><span class="nav-icon">🎯</span> How-To Guides</a>
+      <a href="training-pathway.html"><span class="nav-icon">🎓</span> Training Pathway</a>
       <div class="nav-section-label">Core Objects</div>
       <a href="accounts.html" class="active"><span class="nav-icon">🏢</span> Accounts</a>
       <a href="contacts.html"><span class="nav-icon">👤</span> Contacts</a>
@@ -415,14 +416,16 @@
         <div class="eco-side">
           <div class="eco-side-label label-m">Single ecosystem value</div>
           <h4>Marketer</h4>
-          <p>A company whose marketing team is an <em>internal function</em> — they spend money on advertising and media to promote their own brand, products, or services to consumers. They are the ones <strong>buying</strong> the marketing ecosystem's outputs.</p>
-          <p class="eco-examples">Ford, Coca-Cola, Bank of America, Marriott, Walmart, American Express, GEICO, Eli Lilly, L'Oreal, Unilever, Mastercard, The Home Depot, Heineken, Verizon</p>
+          <p>Any organization with an internal marketing team that invests in advertising, data, and media to build its own brand, grow its customer base, or drive demand for its own offerings. The defining characteristic is that they are <strong>buyers</strong> in the marketing ecosystem — they spend on media, data, and technology to reach their own audiences, rather than selling those capabilities to others.</p>
+          <p>This spans a wide range of organizations: consumer brands, retailers, financial services, healthcare systems, pharma, automotive, hospitality, entertainment, sports, and B2B technology companies. What unites them is the presence of an internal marketing function with its own advertising budget — not the type of product or service they offer.</p>
+          <p class="eco-examples">Ford, Coca-Cola, Bank of America, Marriott, Walmart, American Express, GEICO, Eli Lilly, L'Oreal, Unilever, Mastercard, The Home Depot, Heineken, Verizon, Mayo Clinic, Canva, NBA Properties, Workday, JP Morgan Chase, Paramount</p>
           <span class="eco-count">297 active accounts</span>
         </div>
         <div class="eco-side">
           <div class="eco-side-label label-sp">Every other ecosystem value</div>
           <h4>Solution Provider</h4>
-          <p>Any company that <em>sells</em> something into the marketing process — services, technology, media inventory, data, or research. They exist to help marketers do their jobs, or to profit from marketers' spending.</p>
+          <p>Any company that makes its business by <em>selling into</em> the marketing ecosystem — offering services, technology, media inventory, data, or expertise to organizations that do their own marketing. The defining characteristic is that they are <strong>sellers or enablers</strong> in the ecosystem, not buyers of advertising for their own brand.</p>
+          <p>Solution Provider is an umbrella that covers a wide range of business models: agencies that plan and execute on behalf of clients, media platforms and publishers that sell ad inventory, ad tech and mar tech companies that power the infrastructure, data and measurement firms, and research or trade organizations. What unites them is that their value proposition is directed at marketers, not at end consumers or general audiences.</p>
           <div class="sp-types">
             <div class="sp-type-row">📣 <strong>Agency</strong> — media, creative, PR, research agencies</div>
             <div class="sp-type-row">📺 <strong>Seller</strong> — platforms, publishers, media that sell ad space</div>
@@ -437,7 +440,7 @@
       <div class="callout callout-warning">
         <span class="callout-icon">🔑</span>
         <div>
-          <strong>The quick test:</strong> Ask — "Does this company have a marketing department that <em>spends</em> money on advertising to sell its own products?" If yes → <strong>Marketer</strong>. If they're selling services, technology, or inventory that helps other companies market → <strong>Solution Provider</strong>.
+          <strong>The quick test:</strong> Ask — "Does this organization have an internal marketing team that invests in advertising, media, or data to build its own brand and reach its own audiences?" If yes → <strong>Marketer</strong>. If the company makes its business by selling advertising capabilities, media inventory, marketing technology, agency services, or data to other organizations → <strong>Solution Provider</strong>. When in doubt: are they spending marketing budgets, or selling to the people who do?
         </div>
       </div>
 
@@ -446,7 +449,7 @@
       <div class="ecosystem-grid">
         <div class="eco-item eco-marketer">
           <div class="eco-name">Marketer</div>
-          <div class="eco-desc">Brands and advertisers. Their marketing team is internal — they buy media and run campaigns to sell their own products or services. Spans retail, CPG, financial services, healthcare, auto, hospitality, and more. The largest single ecosystem in MMA's membership.</div>
+          <div class="eco-desc">Any organization with an internal marketing team that invests in advertising, media, or data to build its own brand and reach its own audiences. Spans consumer brands, retailers, financial services, healthcare, pharma, auto, hospitality, entertainment, sports, and B2B technology. The largest single ecosystem in MMA's membership.</div>
         </div>
         <div class="eco-item eco-sp">
           <div class="eco-name">Agency</div>
@@ -680,36 +683,10 @@
         </table>
       </div>
 
-      <h3 class="sub-heading">How to Pull CMOs for a Member Segment (Python — 2-step pattern)</h3>
-      <p style="margin-bottom: 10px;">SOQL can't filter Contact mailable criteria through a Key Role relationship traversal in a single query. Use this two-step approach:</p>
-      <pre style="background:#1e1e2e; color:#cdd6f4; padding:20px; border-radius:8px; font-size:12.5px; line-height:1.6; overflow-x:auto; margin-bottom:20px;"><code><span style="color:#89b4fa"># Step 1 — get active Marketer accounts with CMO populated</span>
-accounts = sf.query("""
-    SELECT Id, Name, CMO__c, CMO__r.FirstName, CMO__r.LastName, CMO__r.Email
-    FROM Account
-    WHERE Status__c LIKE 'Active%'
-      AND Region__c IN ('NA', 'Global')
-      AND Primary_Ecosystem__c = 'Marketer'
-      AND CMO__c != null
-""")
-
-<span style="color:#89b4fa"># Step 2 — apply mailable + board exclusion to those Contact IDs</span>
-cmo_ids = [a['CMO__c'] for a in accounts['records']]
-ids_str = "'" + "','".join(cmo_ids) + "'"
-contacts = sf.query(f"""
-    SELECT Id, FirstName, LastName, Email, Title, Account.Name
-    FROM Contact
-    WHERE Id IN ({ids_str})
-      AND Email != null
-      AND HasOptedOutOfEmail = false
-      AND IsEmailBounced = false
-      AND Is_Board_Member__c = false
-      AND Current_B2B_CMO_Council_member__c = false
-""")</code></pre>
-
-      <div class="callout callout-warning">
-        <span class="callout-icon">⚠️</span>
+      <div class="callout callout-tip">
+        <span class="callout-icon">💡</span>
         <div>
-          <strong>Board members can hold Key Roles.</strong> A contact listed as the CMO in <code>CMO__c</code> may also be a board member. For invite-based programs (e.g., CCS) where board members should be excluded, apply the standard board exclusion in Step 2. For all-CMO mailings where board members are OK to include, omit those filters — your choice depends on the use case.
+          <strong>Need a CMO list for a specific member segment?</strong> Contact Aaron Sultan — pulling this correctly requires cross-referencing the Key Role lookups against mailable criteria and board exclusions. He can provide a clean, ready-to-use list. Note that a contact listed as the CMO may also be a board member, so the right exclusions depend on the use case (e.g., CCS invites exclude board members; general CMO mailings may not).
         </div>
       </div>
 
@@ -718,7 +695,7 @@ contacts = sf.query(f"""
       <div class="callout callout-danger">
         <span class="callout-icon">🚫</span>
         <div>
-          <strong>UNKNWN Account</strong> — This is a system placeholder. Leads and contacts that can't be matched to a real company are temporarily placed here. Do NOT manually move contacts to or from this account. The daily automation script manages this queue. Talk to Aaron Sultan if you see a contact here that should be matched to a real account.
+          <strong>UNKNWN Account</strong> — This is a system placeholder. Leads and contacts that can't be matched to a real company are temporarily placed here. Do NOT manually move contacts to or from this account. This queue is managed automatically in the background. Talk to Aaron Sultan if you see a contact here that should be matched to a real account.
         </div>
       </div>
 
