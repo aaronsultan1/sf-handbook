@@ -122,6 +122,8 @@
     .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; color: #374151; font-family: var(--font-body); line-height: 1.5; }
     .checklist li:last-child { border-bottom: none; }
     .checklist li::before { content: '☐'; font-size: 16px; color: #d1d5db; flex-shrink: 0; margin-top: 1px; }
+    .checklist a { color: var(--primary); text-decoration: underline; text-decoration-color: #d1d5db; text-underline-offset: 2px; font-family: var(--font-body); transition: color .15s, text-decoration-color .15s; }
+    .checklist a:hover { color: #ffa400; text-decoration-color: #ffa400; }
 
     /* PATHWAY OVERVIEW */
     .pathway-overview {
@@ -334,13 +336,13 @@
             <div>
               <div class="level-section-title">✅ Skills checklist</div>
               <ul class="checklist">
-                <li>I know the difference between a Contact and an Account in MMA's system</li>
-                <li>I understand why some contacts can't receive emails (mailable criteria)</li>
-                <li>I know the 5 ways contacts enter Salesforce</li>
-                <li>I understand who owns what data (the RACI model)</li>
-                <li>I know how to submit a Salesforce request using the correct form</li>
-                <li>I know not to create duplicate contacts or accounts without checking first</li>
-                <li>I can look up a contact and understand their key fields</li>
+                <li>I know the difference between a <a href="contacts.html">Contact</a> and an <a href="accounts.html">Account</a> in MMA's system</li>
+                <li>I understand why some contacts can't receive emails (<a href="contacts.html#mailable">mailable criteria</a>)</li>
+                <li>I know the <a href="governance.html#entry-points">5 ways contacts enter Salesforce</a></li>
+                <li>I understand who owns what data (the <a href="governance.html#raci">RACI model</a>)</li>
+                <li>I know how to <a href="governance.html#requesting-work">submit a Salesforce request</a> using the correct form</li>
+                <li>I know not to create <a href="governance.html#data-quality">duplicate contacts or accounts</a> without checking first</li>
+                <li>I can <a href="contacts.html#search">look up a contact</a> and understand their <a href="contacts.html#key-fields">key fields</a></li>
               </ul>
             </div>
           </div>
@@ -412,14 +414,14 @@
             <div>
               <div class="level-section-title">✅ Skills checklist</div>
               <ul class="checklist">
-                <li>I can create a new contact and fill in all required fields correctly</li>
-                <li>I can reassign a contact to the correct account</li>
-                <li>I can add a contact to a campaign and set the correct status</li>
-                <li>I understand what Opportunity records are and when to create them</li>
-                <li>I can build a basic report filtered by region, account type, or campaign</li>
-                <li>I know where to save reports so the right people can find them</li>
-                <li>I understand what engagement tracking fields mean on a contact record</li>
-                <li>I can identify when a contact record has a data quality issue</li>
+                <li>I can <a href="contacts.html#creating">create a new contact</a> and fill in all required fields correctly</li>
+                <li>I can <a href="contacts.html#reassign">reassign a contact</a> to the correct account</li>
+                <li>I can <a href="campaigns.html">add a contact to a campaign</a> and set the correct status</li>
+                <li>I understand what <a href="opportunities.html">Opportunity records</a> are and when to create them</li>
+                <li>I can <a href="reports.html">build a basic report</a> filtered by region, account type, or campaign</li>
+                <li>I know where to <a href="reports.html">save reports</a> so the right people can find them</li>
+                <li>I understand what <a href="contacts.html#engagement">engagement tracking fields</a> mean on a contact record</li>
+                <li>I can identify when a contact record has a <a href="governance.html#data-quality">data quality issue</a></li>
               </ul>
             </div>
           </div>
@@ -499,16 +501,16 @@
             <div>
               <div class="level-section-title">✅ Skills checklist</div>
               <ul class="checklist">
-                <li>I understand how contacts sync between Salesforce and Pardot</li>
-                <li>I know what makes a contact "mailable" before adding them to a list</li>
-                <li>I can create a static list and a dynamic list</li>
-                <li>I can build a dynamic list with multiple conditions using rule groups</li>
-                <li>I know when to use a segmentation rule vs. an automation rule</li>
-                <li>I understand when to use Engagement Studio vs. a one-off list email</li>
-                <li>I can send a list email and connect it to a Salesforce campaign</li>
-                <li>I follow MMA's naming conventions for lists and emails</li>
-                <li>I understand opt-out fields and would never manually override them</li>
-                <li>I know what to do if an email hard-bounces</li>
+                <li>I understand how <a href="pardot.html#sync">contacts sync between Salesforce and Pardot</a></li>
+                <li>I know what makes a contact <a href="contacts.html#mailable">"mailable"</a> before adding them to a list</li>
+                <li>I can create a <a href="pardot.html#lists">static list and a dynamic list</a></li>
+                <li>I can build a dynamic list with multiple conditions using <a href="pardot.html#list-scoring">rule groups</a></li>
+                <li>I know when to use a <a href="pardot.html#automation-rules">segmentation rule vs. an automation rule</a></li>
+                <li>I understand when to use <a href="pardot.html#automation-rules">Engagement Studio</a> vs. a one-off list email</li>
+                <li>I can <a href="pardot.html#sending">send a list email</a> and connect it to a Salesforce campaign</li>
+                <li>I follow MMA's <a href="pardot.html#conventions">naming conventions</a> for lists and emails</li>
+                <li>I understand <a href="pardot.html#compliance">opt-out fields</a> and would never manually override them</li>
+                <li>I know what to do if an email <a href="pardot.html#deliverability">hard-bounces</a></li>
               </ul>
             </div>
           </div>
@@ -574,12 +576,12 @@
             <div>
               <div class="level-section-title">✅ Skills checklist</div>
               <ul class="checklist">
-                <li>I understand how Apollo, Rasa, and ZoomInfo feed into Salesforce</li>
-                <li>I can identify duplicate contacts and know the correct process to resolve them</li>
-                <li>I know which fields my region is responsible for keeping current</li>
-                <li>I can run a data quality report for my region's contacts</li>
-                <li>I understand the difference between Work Tier 1, 2, and 3 requests and when to escalate</li>
-                <li>I know what changes require Aaron's approval vs. what I can do myself</li>
+                <li>I understand how <a href="integrations.html">Apollo, Rasa, and ZoomInfo</a> feed into Salesforce</li>
+                <li>I can identify <a href="governance.html#data-quality">duplicate contacts</a> and know the correct process to resolve them</li>
+                <li>I know which fields <a href="regional.html">my region</a> is responsible for keeping current</li>
+                <li>I can run a <a href="reports.html">data quality report</a> for my region's contacts</li>
+                <li>I understand the difference between <a href="governance.html#work-tiers">Work Tier 1, 2, and 3</a> requests and when to escalate</li>
+                <li>I know what changes require Aaron's approval vs. what I can do <a href="governance.html#raci">myself</a></li>
                 <li>I can train a new team member using this handbook independently</li>
               </ul>
             </div>
