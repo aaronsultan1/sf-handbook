@@ -248,8 +248,8 @@
       </div>
       <!-- DATA OWNERSHIP -->
       <h2 class="section-heading">Data Ownership Model</h2>
-      <p>MMA's Salesforce instance is a <strong>centrally managed, globally shared CRM</strong>. The US/Global Membership team is the primary steward of the system — they own the core data model, integration scripts, and data quality standards. Regional teams (APAC, EMEA, LATAM, MEA) own the contact and opportunity records for their geographic markets.</p>
-      <p>Think of it this way: the US/Global team owns the <em>platform and rules</em>; regional teams own their <em>records within those rules</em>.</p>
+      <p>MMA's Salesforce instance is a <strong>centrally managed, globally shared CRM</strong>. <strong>Aaron Sultan is the global data owner for the entire instance — across all regions.</strong> This includes US/Global, APAC, EMEA, LATAM, and MEA. Aaron owns the core data model, integration scripts, data quality standards, and all governance and compliance decisions regardless of which region's data is involved. Regional leads (Bülent Doruker for EMEA, Rohit Dadwal for APAC, Fabiano Destri Lobo for LATAM) are the regional super users and subject-matter experts for their markets — they handle day-to-day records and regional workflows within the framework Aaron maintains.</p>
+      <p>Think of it this way: Aaron owns the <em>platform, rules, and data for every region</em>. Regional super users know their markets best and are your first call for day-to-day regional questions — but governance, compliance, and data policy decisions for <em>any</em> region route through Aaron.</p>
 
       <div class="ownership-grid">
         <div class="ownership-card primary">
@@ -259,25 +259,25 @@
           <div class="oc-contact">asultan@mmaglobal.com</div>
         </div>
         <div class="ownership-card regional">
-          <div class="oc-region">🌏 APAC</div>
+          <div class="oc-region">🌏 APAC — Regional Super User</div>
           <div class="oc-owner">Rohit Dadwal (MD)</div>
           <div class="oc-scope">APAC member contacts (India, Vietnam, Indonesia, Singapore, China, etc.), APAC Local Council Opportunities, APAC campaign records. Team: Nam Nguyen, Shanti Tolani, Rudrashish Nag, Prerana Shukla.</div>
           <div class="oc-contact">rohit@mmaglobal.com</div>
         </div>
         <div class="ownership-card regional">
-          <div class="oc-region">🇪🇺 EMEA / EU / Turkey</div>
+          <div class="oc-region">🇪🇺 EMEA / EU / Turkey — Regional Super User</div>
           <div class="oc-owner">Bülent Doruker (CRM Director)</div>
           <div class="oc-scope">EMEA/EU/Turkey member contacts, CRM automations, Pardot for EMEA, EMEA Opportunities. Also manages country-level BOD flags, Preference Center syncs, and regional mismatch workflows. Team: Melis Ertem, Zeynep Albora, Elvin Altun.</div>
           <div class="oc-contact">bulent@mmaglobal.com</div>
         </div>
         <div class="ownership-card regional">
-          <div class="oc-region">🌍 MEA (Africa)</div>
+          <div class="oc-region">🌍 MEA (Africa) — Regional Super User</div>
           <div class="oc-owner">Sarah Utermark</div>
           <div class="oc-scope">South Africa and MEA region member contacts and accounts. MEA contacts are often grouped under the EMEA umbrella in reporting.</div>
           <div class="oc-contact">sarah@mmaglobal.com</div>
         </div>
         <div class="ownership-card regional">
-          <div class="oc-region">🌎 LATAM</div>
+          <div class="oc-region">🌎 LATAM — Regional Super User</div>
           <div class="oc-owner">Fabiano Destri Lobo (MD)</div>
           <div class="oc-scope">Brazil, Argentina, Mexico, and broader LATAM member contacts and large sponsorship Opportunities.</div>
           <div class="oc-contact">fabiano@mmaglobal.com</div>
@@ -286,7 +286,7 @@
 
       <div class="callout callout-tip">
         <span class="callout-icon">💡</span>
-        <div><strong>Simple rule:</strong> If a contact or account is in the US or tagged Global, it's US/Global team's domain. If it's in a specific regional market, the regional owner is responsible. When in doubt, ask Aaron Sultan — he'll know who to loop in.</div>
+        <div><strong>Global ownership, every region:</strong> Aaron Sultan is the data owner for the entire Salesforce instance — not just US/Global. Regional super users manage day-to-day records in their markets, but governance, compliance, and data policy decisions for any region go through Aaron. If you're ever unsure, start with Aaron — he'll know who to loop in.</div>
       </div>
 
       <!-- HOW CONTACTS ENTER SALESFORCE -->
@@ -364,106 +364,11 @@
         </div>
       </div>
 
-      <!-- RACI CHART -->
-      <h2 class="section-heading">RACI — Global Membership Team</h2>
-      <p>The following RACI defines responsibilities for the core data tasks that US/Global Membership team handles in Salesforce. <strong>R = Responsible</strong>, <strong>A = Accountable</strong>, <strong>C = Consulted</strong>, <strong>I = Informed</strong>.</p>
-      <p><em>This RACI covers US/Global Membership only. Regional teams (APAC, EMEA, LATAM) have their own internal processes for regional tasks.</em></p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Task</th>
-              <th>Aaron Sultan<br><small>Sales &amp; Membership<br>Enablement Mgr</small></th>
-              <th>Amanda Hyland<br><small>Membership<br>Marketing</small></th>
-              <th>Membership<br>Sales Team</th>
-              <th>Regional<br>CRM Leads</th>
-              <th>IT / SF<br>Admin</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Contact data quality &amp; cleanup</strong><br><small>Merging duplicates, fixing missing fields, running enrichment</small></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>Pardot list management</strong><br><small>Creating lists, suppression lists, syncing Outreach sequences</small></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>Campaign creation (US/Global)</strong><br><small>Setting up event/webinar campaigns, naming, linking forms</small></td>
-              <td><span class="raci-a">A</span></td>
-              <td><span class="raci-r">R</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>Lead conversion pipeline</strong><br><small>Monitoring nightly scripts, resolving stuck leads, UNKNWN account</small></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-c">C</span></td>
-            </tr>
-            <tr>
-              <td><strong>Opportunity records (US renewals)</strong><br><small>Creating, updating, closing membership renewal Opps</small></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>New member Account creation</strong><br><small>Adding new company Account when a new member joins</small></td>
-              <td><span class="raci-a">A</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-r">R</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>Integrations &amp; automations</strong><br><small>Pardot sync, ZoomInfo enrichment, BriteVerify, backend data processes</small></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-c">C</span></td>
-            </tr>
-            <tr>
-              <td><strong>Engagement reporting / snapshots</strong><br><small>Monthly mailable count snapshots, engaged contact metrics</small></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-            </tr>
-            <tr>
-              <td><strong>SF user access &amp; permissions</strong><br><small>Adding new users, setting profiles, managing licenses</small></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-r">R</span> <span class="raci-a">A</span></td>
-            </tr>
-            <tr>
-              <td><strong>Web forms (new form setup)</strong><br><small>Creating new Web-to-Lead forms, linking to campaigns</small></td>
-              <td><span class="raci-a">A</span></td>
-              <td><span class="raci-r">R</span></td>
-              <td><span class="raci-i">I</span></td>
-              <td><span class="raci-c">C</span></td>
-              <td><span class="raci-c">C</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- RACI CHART — coming soon -->
+      <h2 class="section-heading" id="raci">RACI — Global Membership Team</h2>
+      <div class="callout callout-tip">
+        <span class="callout-icon">🔄</span>
+        <div><strong>Coming soon.</strong> A formal RACI defining responsibilities across the US/Global Membership team is in progress. In the meantime, direct questions to Aaron Sultan — he can clarify ownership for any task.</div>
       </div>
 
       <!-- WEB FORMS -->
@@ -566,7 +471,7 @@
         <li><strong>Read-only access</strong> — Standard for most non-membership staff. Can view all records but cannot edit.</li>
         <li><strong>Edit access</strong> — For Membership team members and regional CRM leads. Required to create/edit contacts, campaigns, and opportunities.</li>
         <li><strong>Admin access</strong> — Restricted to IT and Aaron Sultan (US/Global). Required to modify field definitions, workflows, and system settings.</li>
-        <li><strong>Questions about permissions?</strong> — Ask Aaron Sultan (US/Global data) or your regional CRM lead (APAC: Rohit Dadwal; EMEA: Bülent Doruker; LATAM: Fabiano).</li>
+        <li><strong>Questions about permissions?</strong> — All permissions and governance questions go to Aaron Sultan regardless of region. Regional super users (APAC: Rohit Dadwal; EMEA: Bülent Doruker; LATAM: Fabiano) can advise on day-to-day regional workflows, but access and compliance always routes through Aaron.</li>
       </ul>
 
       <div class="callout callout-danger">
@@ -652,9 +557,14 @@
               <td>Slack or email with list criteria</td>
             </tr>
             <tr>
-              <td>EMEA contact data / CRM automation</td>
+              <td>EMEA contact data / CRM automation (day-to-day)</td>
               <td>Bülent Doruker</td>
               <td>Email or direct message</td>
+            </tr>
+            <tr>
+              <td>EMEA governance, compliance, or data policy</td>
+              <td>Aaron Sultan</td>
+              <td>Slack or email — Aaron is global data owner for all regions</td>
             </tr>
             <tr>
               <td>APAC contact data / opportunities</td>
